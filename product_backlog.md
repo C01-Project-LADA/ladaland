@@ -118,13 +118,20 @@
 
 19. Аs an existing user, I would like to sort posts based on most/least liked, and most/least recent, so that I can quickly find the most relevant, popular, or latest travel experiences that interest me. 
 * Acceptance Criteria:
-    * 
+    * Given the user is on the travel feed, when they select "Sort by Most Liked", then the posts should be ordered from highest to lowest number of likes.
+    * Given the user is on the travel feed, when they select "Sort by Least Liked", then the posts should be ordered from lowest to highest number of likes.
+    * Given the user is on the travel feed, when they select "Sort by Most Recent", then the posts should be displayed in order from most recently posted to least recently.
+
 20. Аs an existing user, I would like to sort destinations based on most/least liked, so that I can easily find the most popular or least recommended places based on community feedback.
 * Acceptance Criteria:
-    * 
+    * Given the user is browsing destinations, when they select "Sort by Most Liked", then the destinations should be ordered from highest to lowest average rating.
+    * Given the user is browsing destinations, when they select "Sort by Least Liked", then the destinations should be ordered from lowest to highest average rating.
+
 21. Аs an existing user, I would like to receive points for every few 'likes' that I get on my posts, so that I am motivated to share high-quality content and engage more with the community. 
 * Acceptance Criteria:
-    * 
+    * Given the user has a post that has received a certain number of likes (for ex., 1 point for evvery 5 likes), when they check their profile, then the earned points should be added to their total.
+    * Given the system tracks post interactions, when a user repeatedly likes and unlikes a post, then the system should prevent points from being awarded and deducted multiple times.
+
 22. Аs an existing user, I would like to add a destination to 'next trip', so that I can see everything in one place related the next trip I want to go on.
 * Acceptance Criteria:
     * 
