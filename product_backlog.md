@@ -52,13 +52,29 @@
 
 9. Аs an existing user, I would like to rate other travellers' posts by liking or disliking them, so that I can express my opinion on the quality of the post. 
 * Acceptance Criteria:
-    * 
+    * Given the user is logged in and viewing a travel post, when they click the "Like" button, then the like count should increase by one, and their interaction should be saved.
+    * Given the user has already liked a post, when they click the "Like" button again, then their like should be removed, and the like count should decrease by one.
+    * Given the user is logged in and viewing a post, when they click the "Dislike" button, then the dislike count should increase by one, and their interaction should be saved.
+    * Given the user has already disliked a post, when they click the "Dislike" button again, then their dislike should be removed, and the dislike count should decrease by one.
+    * Given the user has already liked a post, when they click the "Dislike" button, then their like should be removed, and the dislike should be added instead.
+    * Given the user has already disliked a post, when they click the "Like" button, then their dislike should be removed, and the like should be added instead.
+    * Given the user is logged in and viewing a travel post, when they look at the number of likes and dislikes for the post, then they should see the total number of likes and dislikes.
+
 10. Аs an existing user, I would like to comment on other travellers' posts, so that I can share my own ideas, thoughts and opinions related to the topic.
 * Acceptance Criteria:
-    * 
+    * Given the user is logged in and viewing a post, when they enter text in the comment box and click "Post Comment," then their comment should appear below the post.
+    * Given the user has posted a comment, when they select "Delete Comment," then the comment should be permanently removed.
+    * Given a post has multiple comments, when the user looks at them, then they should be paginated with a button giving the option to see more comments.
+    * Given a post has multiple comments, when the user scrolls through them, then there should be a sorting option to display the comments based on most recent, most liked, or most disliked.
+    * Given the user is viewing comments on a post, when they click the "Like" button on a comment, then the like count should increase by one.
+    * Given the user is viewing comments on a post, when they click the "Dislike" button on a comment, then the dislike count should increase by one.
+
 11. Аs an existing user, I would like to be able to 'favourite' destinations, so that I can plan future trips and stay organized.
 * Acceptance Criteria:
-    * 
+    * Given the user is logged in and viewing a destination page, when they click the "Add to Favourites" button, then the destination should be saved to their favourites list, and the button text should change to "Favourited" instead of "Add to Favourites."
+    * Given the user is browsing a list of destinations, when they scroll through destinations they have previously favourited, then those destinations should display the label "Favourited" instead of "Add to Favourites."
+    * Given the user has already favourited a destination, when they click the "Favourited" button again, then the destination should be removed from their favourites list, and the button should revert to "Add to Favourites."
+
 12. Аs an existing user, I would like to rate a destination I've been to, so that I can share with others how much I liked or disliked a place.
 * Acceptance Criteria:
     * 
