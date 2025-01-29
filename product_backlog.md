@@ -45,10 +45,11 @@
     * Given the user is logged in, when they enter their passport country, then the system should display visa requirements for all countries based on that passport.
     * Given the user has more than one passport, when they enter both passport countries, then the user should see options for all passports.
 
-8. Аs an existing user, I would like to post about my trips and experiences, so that I can share them with others and inspire other travelers.
+8. Аs an existing user, I would like to post about my trips and experiences, as well as input which country this post relates to, so that I can share them with others and inspire other travelers.
 * Acceptance Criteria:
-    * Given the user is logged in, when they navigate to the “Create Post” section and enter text, images, or videos, then they should be able to successfully submit the post, which will appear in the travel feed.
+    * Given the user is logged in, when they navigate to the “Create Post” section and enter text, images, or videos, and select a country related to the post, then they should be able to successfully submit the post, which will appear in the travel feed.
     * Given the user has already created a post, when they choose "Delete Post," then the post should be permanently removed from the travel feed.
+    * Given the user is creating a post, when they try to submit it without selecting a country, then the system should display a validation message: "Please select a country for this post before submitting."
 
 9. Аs an existing user, I would like to rate other travellers' posts by liking or disliking them, so that I can express my opinion on the quality of the post. 
 * Acceptance Criteria:
@@ -77,25 +78,44 @@
 
 12. Аs an existing user, I would like to rate a destination I've been to, so that I can share with others how much I liked or disliked a place.
 * Acceptance Criteria:
-    * 
+    * Given the user is logged in and viewing a destination page, when they select a rating (for ex., 1-5 stars), then the rating should be saved and displayed on the destination page.
+    * Given the user has already rated a destination, when they select a different rating, then the previous rating should be updated with the new selection.
+    * Given other users have rated a destination, when another user views the destination page, then they should see the average rating along with the total number of ratings.
+    * Given the user is browsing a list of destinations, when they scroll through the list, then each destination should display its average rating.
+
 13. Аs an existing user, I would like to earn 20 points for each post I make about my travel experience, so that I can level up and feel motivated to share my experiences with others.
 * Acceptance Criteria:
-    * 
-14. Аs an existing user, I would like to earn 10 points for each valuable comment I make under someone else's post, so that I can feel motivated to engage with others on the platform. 
+    * Given the user is logged in and creates a new post about their travel experience, when they successfully publish the post, then they should be awarded 20 points, which should be added to their total score.
+    * Given the user starts writing a post but does not publish it, when they save it as a draft, then they should not receive points until they officially publish the post.
+    * Given the user has earned points from a post, when they delete that post, then the previously earned points should be deducted from their total.
+
+14. Аs an existing user, I would like to earn 5 points for each valuable comment I make under someone else's post, so that I can feel motivated to engage with others on the platform. 
 * Acceptance Criteria:
-    * 
+    * Given the user is logged in and writes a comment under another traveler’s post, when they successfully submit the comment, then they should be awarded 5 points, which should be added to their total score.
+    * Given the user repeatedly submits very short or irrelevant comments (for ex., "Nice!", "Cool!"), when they attempt to earn points, then the system should not award points for low-quality or duplicate comments.
+    * Given the user has earned points from a comment, when they delete that comment, then the previously earned points should be deducted from their total.
+
 15. Аs an existing user, I would like to add tags related to a country, city and/or destination I visited on my post, so that these posts can be discovered by others searching for a specific category.
 * Acceptance Criteria:
-    * 
+    * Given the user is creating a travel post, when they enter or select tags, then the tags should be saved and displayed along with the post.
+    * Given the user is typing a tag, when there are existing matching tags in the system, then the system should suggest them to maintain consistency and avoid duplicates.
+    * Given the user is viewing a post, when the post has tags, then the tags should be visible and clickable to allow easy navigation to related posts.
 16. Аs an existing user, I would like to search for posts based on country, city and destination tags, so that I can easily find relevant content for my next trip.
 * Acceptance Criteria:
-    * 
+    * Given the user is on the travel feed, when they enter a country, city or destination name in the search bar, then only posts related to that tag should be displayed.
+    * Given the user searches for a country, city, or tag that doesn’t exist, when the search returns no results, then the system should display "No posts found with this tag. Try a different search."
+
 17. Аs an existing user, I would like to level up based on my travel activity and points, so that I feel a sense of achievement.
 * Acceptance Criteria:
-    * 
+    * Given the user has reached the required number of points for the next level, when they check their profile, then their level should be updated, and a message should display "Congratulations! You’ve reached Level X!"
+    * Given the user is earning points, when they check their profile, then they should see their current level, total points, and how many points they need to reach the next level.
+
 18. Аs an existing user, I would like to see if a destination is marked as a 'local quest', so that I know that I'll receive extra points for visiting it on my trip.
 * Acceptance Criteria:
-    * 
+    * Given the user is browsing destinations, when a destination is a local quest, then it should have a "Local Quest" badge or icon displayed next to its name.
+    * Given the user is viewing a local quest destination, when they check the details, then they should see the number of extra points they will earn for visiting and posting about it.
+    * Given the user wants to find local quests, when they select the "Show Local Quests" filter, then only destinations marked as local quests should be displayed.
+
 19. Аs an existing user, I would like to sort posts based on most/least liked, and most/least recent, so that I can quickly find the most relevant, popular, or latest travel experiences that interest me. 
 * Acceptance Criteria:
     * 
