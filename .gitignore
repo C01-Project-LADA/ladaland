@@ -1,0 +1,124 @@
+# ===== General Exclusions =====
+
+# Node.js dependencies (root and all subdirectories)
+node_modules/
+**/node_modules/
+
+# Yarn PnP
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Testing
+coverage/
+**/coverage/
+
+# Production build outputs
+/build/
+**/build/
+
+# Miscellaneous
+.DS_Store
+*.pem
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment variable files (exclude all .env files)
+.env*
+**/.env*
+
+# Vercel deployment files
+.vercel/
+**/.vercel/
+
+# TypeScript build info
+*.tsbuildinfo
+**/*.tsbuildinfo
+
+# Next.js specific files
+/.next/
+**/.next/
+out/
+**/out/
+
+# TypeScript specific files
+next-env.d.ts
+**/next-env.d.ts
+
+# Tailwind CSS generated files (if any)
+tailwind.config.js
+postcss.config.js
+
+# Prettier cache
+.prettiercache
+
+# ===== Core (`core/`) Specific Exclusions =====
+
+# Node.js dependencies for Core
+core/node_modules/
+
+# Build output for Core
+core/dist/
+core/build/
+core/out/
+
+# Prisma generated client and dev database
+core/prisma/generated/
+core/prisma/client/
+core/prisma/dev.db
+
+# Nodemon logs (if any)
+core/nodemon.log
+
+# TypeScript build info specific to Core
+core/**/*.tsbuildinfo
+
+# ===== Client (`client/`) Specific Exclusions =====
+
+# Node.js dependencies for Client
+client/node_modules/
+
+# Next.js build output
+client/.next/
+client/out/
+client/dist/
+client/build/
+
+# TypeScript build info specific to Client
+client/**/*.tsbuildinfo
+
+# ===== Editor & OS Specific Exclusions =====
+
+# IDEs and editors
+.vscode/
+**/.vscode/
+.idea/
+**/.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Miscellaneous
+*.tgz
+
+# ===== Optional: Add More Tool-Specific Exclusions =====
+
+# ESLint cache
+.eslintcache
+
+# Jest coverage and cache
+jest.config.js
+**/jest.config.js
+coverage/
+**/coverage/
