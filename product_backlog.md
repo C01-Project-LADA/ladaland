@@ -1,8 +1,3 @@
-* User stories should follow the format as taught in the lecture, along with proper acceptance criteria.
-
-* All user stories should be documented in JIRA.
-* JIRA access should be provided to assigned TA before the sprint ends.
-
 * STORIES:
 
 1. As a future user, I want to be able to create an account with a unique username, secure password, email address and optional phone number, so that I can have a unique LADA Land account.
@@ -134,13 +129,22 @@
 
 22. Аs an existing user, I would like to add a destination to 'next trip', so that I can see everything in one place related the next trip I want to go on.
 * Acceptance Criteria:
-    * 
+    * Given the user is logged in and viewing a destination page, when they click the "Add to Next Trip" button, then the destination should be saved to their Next Trip list.
+    * Given the user has previously added destinations to their Next Trip list, when they navigate to the Next Trip section, then they should see all saved destinations displayed.
+    * Given the user has a destination saved in their Next Trip list, when they click "Remove from Next Trip", then the destination should be removed from their list.
+
 23. Аs an existing user, I would like to access my saved 'favourites' so that so that I can quickly find destinations, posts, or experiences that interest me without searching for them again.
 * Acceptance Criteria:
-    * 
+    * Given the user has previously favourited destinations, posts, or experiences, when they navigate to the Favourites section, then they should see a list of all their saved items.
+    * Given the user has saved a destination, post, or experience, when they click "Remove from Favourites", then the item should be removed from their favourites list.
+
 24. Аs an existing user, I would like to access my saved 'next trip' ideas so that I can see all destinations in one view to easily compare options, plan my itinerary, and make informed travel decisions.
 * Acceptance Criteria:
-    * 
-25. Аs an existing user, I would like to see how much my trip will cost me before travel expenditures, so that I can budget accordingly and avoid unexpected expenses.
+    * Given the user has previously added destinations to their Next Trip list, when they navigate to the Next Trip section, then they should see a list of all destinations saved for their upcoming trips.
+
+25. Аs an existing user, I would like to see how much my Next Trip will cost me before travel expenditures, so that I can budget accordingly and avoid unexpected expenses.
 * Acceptance Criteria:
-    * 
+    * Given the user has at least one destination saved in their Next Trip list, when they navigate to the Next Trip section, then they should see a button labeled "Calculate Costs".
+    * Given the user has multiple destinations in their Next Trip list, when they click "Calculate Costs", then the system should total up the estimated expenses for each destination.
+    * Given the user has already calculated their trip costs, when they add or remove a destination from the Next Trip list, then the total cost should update.
+    * Given the user has calculated their trip costs, when they exit and return to the Next Trip section, then their most recent cost calculation should be saved and displayed unless they choose to recalculate.
