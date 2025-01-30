@@ -28,6 +28,23 @@ YOUR ANSWER GOES HERE ...
 
 #### Q3: Why would your users choose your product? What are they using today to solve their problem/need?
 
+Competitors:
+* TripIt: Focuses on organizing travel itineraries by consolidating travel confirmations into a single plan.
+* Roadtrippers: Specializes in road trip planning, offering route optimization and points of interest along the way.
+* Wanderlog: Provides collaborative trip planning with features like itinerary creation and expense tracking.
+* TripAdvisor: Offers extensive user-generated reviews and ratings for destinations, accommodations, and attractions.
+* Instagram: Social media sharing.
+
+Differentiation:
+* Comprehensive Travel Tracking: Users can mark visited countries on an interactive world map, providing a visual representation of their travel history and progress.
+* Gamification Elements: Incorporates game-like features, such as leaderboards and achievement badges, to motivate users to explore more destinations.
+* AI-Powered Recommendations: Utilizes artificial intelligence to suggest new destinations tailored to users' preferences, budgets, and visa requirements.
+* Integrated Social Platform: Allows users to share travel experiences, post reviews, and interact with a community of fellow travelers within the app.
+* Visa and Passport Guidance: Provides personalized information on visa requirements based on users' nationality, streamlining the planning process.
+
+Market Size:
+The travel and tourism industry is a substantial and growing market. In 2024, the global travel industry contributed a record $11 trillion to the global GDP, accounting for 10% of the world's economic output. This growth underscores the significant demand for innovative travel solutions like LADA Land.
+
 Our users (a large variety of audience, basically anyone who will ever travel somewhere) have the following needs:
 * A simple way to track and share their travel history (they currently might use spreadsheets, a physical scratch map, memory photo album, or keep track in their head).
 * A visual, game-like platform to see progress (“You’ve visited 5% of the world!”) that incentivizes more travel.
