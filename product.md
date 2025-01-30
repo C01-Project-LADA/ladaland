@@ -44,7 +44,7 @@ Differentiation:
 
 Market Size:
 The travel and tourism industry is a substantial and growing market. In 2024, the global travel industry contributed a record $11 trillion to the global GDP, accounting for 10% of the world's economic output. This growth underscores the significant demand for innovative travel solutions like LADA Land.
-Source: https://www.reuters.com/business/travel-industry-contribute-record-11-trillion-global-gdp-2024-2024-09-03/?utm_source=chatgpt.com
+Source: https://www.reuters.com/business/travel-industry-contribute-record-11-trillion-global-gdp-2024-2024-09-03/
 
 Our users (a large variety of audience, basically anyone who will ever travel somewhere) have the following needs:
 * A simple way to track and share their travel history (they currently might use spreadsheets, a physical scratch map, memory photo album, or keep track in their head).
