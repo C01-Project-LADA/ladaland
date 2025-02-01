@@ -1,5 +1,9 @@
 # LADA LAND
 
+## Figma Link
+
+[Review the Figma here!](https://www.figma.com/design/rxlIF2TwSzRmdNMGywHx9f/LADA-Land?node-id=79-541&t=fSL2aLp7U17Uwhp1-1)
+
 #### Q1: What are you planning to build?
 
 High level description: We are planning to build LADA Land, a travel website that helps users track the countries they’ve visited, see what percentage of the world they’ve explored, and discover new destinations based on personal preferences, budgets, and visa requirements.
