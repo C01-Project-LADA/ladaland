@@ -7,7 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User model
+model VisaRequirement {
+  id          Int    @id @default(autoincrement())
+  passport    String
+  destination String
+  requirement String
+
+  @@unique([passport, destination])
+}
+
 model User {
   id        String  @id @default(uuid())
   username  String  @unique
