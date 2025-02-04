@@ -27,9 +27,13 @@ router.post(
     try {
       let user;
       if (usernameOrEmail.includes('@')) {
-        user = await prisma.user.findUnique({ where: { email: usernameOrEmail } });
+        user = await prisma.user.findUnique({
+          where: { email: usernameOrEmail },
+        });
       } else {
-        user = await prisma.user.findUnique({ where: { username: usernameOrEmail } });
+        user = await prisma.user.findUnique({
+          where: { username: usernameOrEmail },
+        });
       }
 
       if (!user) {
