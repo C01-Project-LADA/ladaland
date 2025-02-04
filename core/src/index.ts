@@ -1,4 +1,6 @@
 import dotenv from 'dotenv';
+import registerRoute from './routes/user/register';
+import loginRoute from './routes/user/login';
 dotenv.config();
 
 import express from 'express';
@@ -14,6 +16,9 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('HELLO TEAM LADA!!!');
 });
+
+app.use('/api', registerRoute);
+app.use('/api', loginRoute);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
