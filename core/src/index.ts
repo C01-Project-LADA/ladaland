@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import visaRequirementsRoute from './routes/visa-requirements';
 dotenv.config();
 
 import express from 'express';
@@ -11,9 +12,7 @@ const prisma = new PrismaClient();
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('HELLO TEAM LADA!!!');
-});
+app.use('/api', visaRequirementsRoute);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {

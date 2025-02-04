@@ -7,9 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// PLACEHOLDER
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+model VisaRequirement {
+  id          Int    @id @default(autoincrement())
+  passport    String
+  destination String
+  requirement String
+
+  @@unique([passport, destination])
 }
+
