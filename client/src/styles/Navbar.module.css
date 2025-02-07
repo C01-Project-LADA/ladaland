@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  position: sticky;
+  top: 0;
+  padding: 10px clamp(25px, 10%, 150px);
+  justify-content: space-between;
+}
+
+.logo_container {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  font-weight: 800;
+  font-size: 2rem;
+  pointer-events: all;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.logo_text {
+  letter-spacing: -0.5px;
+}
