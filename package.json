@@ -11,6 +11,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/express-session": "^1.18.1",
     "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "express-session": "^1.18.1"
   }
 }
