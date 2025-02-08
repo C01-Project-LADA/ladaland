@@ -32,8 +32,8 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # Environment variable files (exclude all .env files)
-.env*
-**/.env*
+.env
+**/.env
 
 # Vercel deployment files
 .vercel/
