@@ -46,7 +46,7 @@ router.post(
         return;
       }
 
-      (req.session as any).user = {
+      req.session.user = {
         id: user.id,
         username: user.username,
         email: user.email,
