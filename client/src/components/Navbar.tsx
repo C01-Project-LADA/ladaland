@@ -1,5 +1,6 @@
 import styles from '@/styles/Navbar.module.css';
 import Image from 'next/image';
+import { Button } from '@/components/ui/button';
 
 export default function Navbar() {
   return (
@@ -8,6 +9,8 @@ export default function Navbar() {
         <Image src="/logo.svg" alt="LADA LAND" width={50} height={50} />
         <p className={styles.logo_text}>lada land</p>
       </div>
+
+      <Button>GET STARTED</Button>
     </div>
   );
 }
