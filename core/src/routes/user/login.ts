@@ -2,7 +2,6 @@ import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { body, validationResult } from 'express-validator';
-import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -47,13 +46,13 @@ router.post(
         return;
       }
 
-      const token = jwt.sign(
-        { userId: user.id, username: user.username },
-        process.env.JWT_SECRET || 'your_jwt_secret',
-        { expiresIn: '1h' }
-      );
+      req.session.user = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      };
 
-      res.status(200).json({ message: 'Login successful', token });
+      res.status(200).json({ message: 'Login successful' });
     } catch (error) {
       console.error('Login error:', error);
       res.status(500).json({ error: 'Internal Server Error' });
