@@ -2,14 +2,14 @@
   position: fixed;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: safe center;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
   background-color: var(--lada-bg);
   z-index: 10;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .header {
