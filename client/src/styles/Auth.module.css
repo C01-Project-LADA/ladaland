@@ -1,0 +1,42 @@
+.container {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: safe center;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--lada-bg);
+  z-index: 10;
+  overflow: auto;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.form_title {
+  font-size: 1.7rem;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.form_subtitle {
+  color: gray;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.form_container {
+  width: clamp(100px, 30%, 400px);
+}
