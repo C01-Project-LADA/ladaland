@@ -10,7 +10,9 @@ export default function Navbar() {
         <p className={styles.logo_text}>lada land</p>
       </div>
 
-      <Button>GET STARTED</Button>
+      <Button style={{ fontWeight: 'bold', paddingLeft: 25, paddingRight: 25 }}>
+        GET STARTED
+      </Button>
     </div>
   );
 }

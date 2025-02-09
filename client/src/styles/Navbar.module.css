@@ -2,8 +2,10 @@
   display: flex;
   position: sticky;
   top: 0;
-  padding: 10px clamp(25px, 10%, 150px);
+  padding: 15px clamp(25px, 10%, 300px);
   justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #e9e9e9;
 }
 
 .logo_container {
@@ -13,7 +15,7 @@
   font-weight: 800;
   font-size: 2rem;
   pointer-events: all;
-  color: var(--primary);
+  color: var(--lada-primary);
   cursor: pointer;
 }
 
