@@ -34,13 +34,14 @@ const exampleUsernames = [
   'ladalandnumberone',
   'travelguru',
   'wanderlust',
-  'exploremore',
+  'alwaysexploring',
   'travelbug',
   'adventureseeker',
   'globetrotter',
   'traveladdict',
 ];
 
+// This component renders a GET STARTED button in the navbar that opens a form to sign up or log in
 export default function Auth() {
   const [formOpen, setFormOpen] = useState(false);
   const [isSignUp, setIsSignUp] = useState(true);
@@ -216,7 +217,7 @@ export default function Auth() {
                                 type="button"
                                 size="icon"
                                 elevated={false}
-                                variant="outline"
+                                variant="ghost"
                                 onClick={() => setShowPassword((prev) => !prev)}
                               >
                                 {showPassword ? <EyeOff /> : <Eye />}
@@ -282,7 +283,7 @@ export default function Auth() {
                                 type="button"
                                 size="icon"
                                 elevated={false}
-                                variant="outline"
+                                variant="ghost"
                                 onClick={() => setShowPassword((prev) => !prev)}
                               >
                                 {showPassword ? <EyeOff /> : <Eye />}
