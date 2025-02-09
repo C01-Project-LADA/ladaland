@@ -19,6 +19,8 @@ const buttonVariants = cva(
           'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
+        accent:
+          'bg-secondaryaccent text-primary-foreground hover:brightness-105 transition-[filter] duration-150',
       },
       size: {
         default: 'h-10 px-4 py-2',
@@ -48,7 +50,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const Comp = asChild ? Slot : 'button';
     return elevated ? (
-      <div className="relative">
+      <div className="relative w-fit" style={{ width: props.style?.width }}>
         <Comp
           className={cn(
             buttonVariants({ variant, size, className }),
