@@ -18,11 +18,17 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-const registerSchema = z.object({
-  username: z.string().nonempty(),
-  email: z.string().email(),
-  password: z.string().min(8),
-});
+const registerSchema = z
+  .object({
+    username: z.string().nonempty(),
+    email: z.string().email(),
+    password: z.string().min(8),
+    confirm: z.string().min(8),
+  })
+  .refine((data) => data.password === data.confirm, {
+    message: 'Passwords do not match',
+    path: ['confirm'],
+  });
 
 const loginSchema = z.object({
   usernameOrEmail: z.string().nonempty(),
@@ -46,6 +52,7 @@ export default function Auth() {
   const [formOpen, setFormOpen] = useState(false);
   const [isSignUp, setIsSignUp] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [exampleUsername, setExampleUsername] = useState('thebesttraveller');
 
   // Display new example username when opening form
@@ -63,6 +70,7 @@ export default function Auth() {
       username: '',
       email: '',
       password: '',
+      confirm: '',
     },
   });
 
@@ -87,6 +95,7 @@ export default function Auth() {
   function handleClose() {
     setFormOpen(false);
     setShowPassword(false);
+    setShowConfirm(false);
   }
 
   function handleSwitchForm() {
@@ -94,6 +103,7 @@ export default function Auth() {
     registerForm.reset();
     loginForm.reset();
     setShowPassword(false);
+    setShowConfirm(false);
   }
 
   return (
@@ -199,7 +209,7 @@ export default function Auth() {
                     />
                   </div>
 
-                  <div style={{ marginBottom: 30 }}>
+                  <div style={{ marginBottom: 10 }}>
                     <FormField
                       control={registerForm.control}
                       name="password"
@@ -221,6 +231,37 @@ export default function Auth() {
                                 onClick={() => setShowPassword((prev) => !prev)}
                               >
                                 {showPassword ? <EyeOff /> : <Eye />}
+                              </Button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: 30 }}>
+                    <FormField
+                      control={registerForm.control}
+                      name="confirm"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirm Password</FormLabel>
+                          <FormControl>
+                            <div className="flex w-full items-center space-x-2">
+                              <Input
+                                type={showConfirm ? 'text' : 'password'}
+                                placeholder="Confirm Password"
+                                {...field}
+                              />
+                              <Button
+                                type="button"
+                                size="icon"
+                                elevated={false}
+                                variant="ghost"
+                                onClick={() => setShowConfirm((prev) => !prev)}
+                              >
+                                {showConfirm ? <EyeOff /> : <Eye />}
                               </Button>
                             </div>
                           </FormControl>
