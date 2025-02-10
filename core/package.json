@@ -19,7 +19,8 @@
     "express-session": "^1.17.0",
     "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.13.1"
+    "pg": "^8.13.1",
+    "term-group-project-lada": "file:.."
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
