@@ -86,17 +86,22 @@ export default function Auth() {
 
   async function onRegisterSubmit(values: z.infer<typeof registerSchema>) {
     try {
-      const response = await axios.post('http://localhost:4000/api/register', values, {
-        withCredentials: true,
-      });
-  
+      const response = await axios.post(
+        'http://localhost:4000/api/register',
+        values,
+        {
+          withCredentials: true,
+        }
+      );
+
       if (response.status === 201) {
         alert('User registered and logged in successfully!');
-        router.push('/');       // TODO: Take user to main screen after login
+        router.push('/'); // TODO: Take user to main screen after login
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.error || 'An unexpected error occurred';
+        const errorMessage =
+          error.response?.data?.error || 'An unexpected error occurred';
         alert(errorMessage);
       } else {
         alert('An unexpected error occurred.');
@@ -189,6 +194,7 @@ export default function Auth() {
                 <form
                   onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
                   className={styles.form_container}
+                  key={1}
                 >
                   <h2 className={styles.form_title}>Sign Up</h2>
                   <h3 className={styles.form_subtitle}>
@@ -302,6 +308,7 @@ export default function Auth() {
                 <form
                   onSubmit={loginForm.handleSubmit(onLoginSubmit)}
                   className={styles.form_container}
+                  key={2}
                 >
                   <h2 className={styles.form_title}>Log In</h2>
                   <h3 className={styles.form_subtitle}>
