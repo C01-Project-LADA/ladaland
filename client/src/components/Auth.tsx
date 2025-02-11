@@ -1,5 +1,6 @@
 'use client';
-
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import styles from '@/styles/Auth.module.css';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
@@ -54,6 +55,7 @@ export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [exampleUsername, setExampleUsername] = useState('thebesttraveller');
+  const router = useRouter();
 
   // Display new example username when opening form
   useEffect(() => {
@@ -82,9 +84,24 @@ export default function Auth() {
     },
   });
 
-  // TODO: Implement registration logic
-  function onRegisterSubmit(values: z.infer<typeof registerSchema>) {
-    console.log(values);
+  async function onRegisterSubmit(values: z.infer<typeof registerSchema>) {
+    try {
+      const response = await axios.post('http://localhost:4000/api/register', values, {
+        withCredentials: true,
+      });
+  
+      if (response.status === 201) {
+        alert('User registered and logged in successfully!');
+        router.push('/');       // TODO: Take user to main screen after login
+      }
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.error || 'An unexpected error occurred';
+        alert(errorMessage);
+      } else {
+        alert('An unexpected error occurred.');
+      }
+    }
   }
 
   // TODO: Implement login logic
