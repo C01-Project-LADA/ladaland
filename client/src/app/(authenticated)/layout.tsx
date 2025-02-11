@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Nunito_Sans } from 'next/font/google';
 import SideNavigation from '@/components/SideNavigation';
-import './globals.css';
+import '@/app/globals.css';
 
 const nunito_sans = Nunito_Sans({
   // variable: '--font-nunito_sans',

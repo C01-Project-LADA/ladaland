@@ -35,18 +35,6 @@ export default function SideNavigation() {
       </Link>
 
       <ul className={styles.links}>
-        {/* <Link href="/home" className={styles.link}>
-          Home
-        </Link>
-
-        <Link href="/leaderboard" className={styles.link}>
-          Leaderboard
-        </Link>
-
-        <Link href="/profile" className={styles.link}>
-          Profile
-        </Link> */}
-
         {links.map(({ href, text, icon }) => (
           <Link key={href} href={href}>
             <li className={pathname === href ? styles.active : styles.link}>
