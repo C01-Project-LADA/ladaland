@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Nunito_Sans } from 'next/font/google';
 import SideNavigation from '@/components/SideNavigation';
+import Dashboard from '@/components/Dashboard';
 import '@/app/globals.css';
 
 const nunito_sans = Nunito_Sans({
@@ -24,7 +25,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${nunito_sans.className} antialiased flex`}>
         <SideNavigation />
-        {children}
+        <div className="mr-auto ml-auto flex gap-[50px]">
+          {children}
+          <Dashboard />
+        </div>
       </body>
     </html>
   );
