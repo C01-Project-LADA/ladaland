@@ -1,15 +1,8 @@
 import type { Metadata } from 'next';
-import { Nunito_Sans } from 'next/font/google';
-import './globals.css';
-
-const nunito_sans = Nunito_Sans({
-  // variable: '--font-nunito_sans',
-  subsets: ['latin'],
-  display: 'swap',
-});
+import Navbar from '@/components/Navbar';
 
 export const metadata: Metadata = {
-  title: 'Lada Land',
+  title: 'Lada Land - Travel to the next level',
   description:
     'Lada Land takes your travels to the next level, combining trip planning with a global travel leaderboard to compete with others.',
 };
@@ -20,8 +13,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${nunito_sans.className} antialiased`}>{children}</body>
-    </html>
+    <>
+      <Navbar />
+      {children}
+    </>
   );
 }

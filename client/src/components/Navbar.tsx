@@ -5,9 +5,9 @@ import Auth from '@/components/Auth';
 
 export default function Navbar() {
   return (
-    <div className={styles.container}>
-      <div className={styles.logo_container}>
-        <Link href="/">
+    <header className={styles.container}>
+      <Link href="/">
+        <div className={styles.logo_container}>
           <Image
             src="/logo.svg"
             alt="LADA LAND"
@@ -15,11 +15,11 @@ export default function Navbar() {
             height={50}
             priority
           />
-        </Link>
-        <p className={styles.logo_text}>lada land</p>
-      </div>
+          <p className={styles.logo_text}>lada land</p>
+        </div>
+      </Link>
 
       <Auth />
-    </div>
+    </header>
   );
 }
