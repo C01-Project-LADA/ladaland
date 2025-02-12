@@ -1,2 +1,34 @@
 .container {
+  width: 300px;
+
+  /* NOTE: if modifying this value, also modify the onscroll function in Dashboard.tsx */
+  padding-top: 30px;
+}
+
+.content {
+  /* NOTE: width here should match width of container */
+  width: 300px;
+}
+
+.profile_container {
+  /* TEMP */
+  border-radius: 10px;
+  border: 1px solid black;
+}
+
+.top_stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.bottom_stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stats {
+  display: flex;
+  gap: 5px;
 }
