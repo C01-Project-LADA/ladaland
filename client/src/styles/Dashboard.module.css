@@ -14,7 +14,7 @@
   padding: 8px 15px;
   /* TEMP */
   border-radius: 10px;
-  border: 1px solid black;
+  border: 1px solid lightgray;
 }
 
 .top_stats {
@@ -42,7 +42,7 @@
   margin-top: 3px;
 }
 .level_title {
-  color: gray;
+  font-weight: 600;
 }
 .level_current {
   font-size: 0.8rem;
