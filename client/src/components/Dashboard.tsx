@@ -1,10 +1,15 @@
 'use client';
 
 import styles from '@/styles/Dashboard.module.css';
-import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
+
+const mockData = {
+  xp: 1531,
+  startxp: 1000,
+  endxp: 5000,
+};
 
 export default function Dashboard() {
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -40,30 +45,47 @@ export default function Dashboard() {
   return (
     <div className={styles.container} ref={sidebarRef}>
       <div className={styles.content} ref={contentRef}>
-        <Link href="/profile">
-          <div className={styles.profile_container}>
-            <div className={styles.top_stats}>
-              <div className={styles.levels}>
-                <p>1531 / 5000</p>
-                <Progress value={20} />
-                <p>Lv. 5 Explorer</p>
+        <div className={styles.profile_container}>
+          <div className={styles.top_stats}>
+            <div className={styles.levels}>
+              <div className="flex items-end justify-between w-full mb-[4px]">
+                <p className={styles.level_title}>Level 5, Explorer</p>
+                <p className={styles.level_current}>
+                  {mockData.xp.toLocaleString('en', { useGrouping: true })} xp
+                </p>
               </div>
-              <Avatar>
-                <AvatarImage
-                  src="https://github.com/shadcn.png"
-                  alt="@shadcn"
-                />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
+              <Progress value={20} />
+              <div className="flex justify-between w-full">
+                <p className={styles.level_num}>
+                  {mockData.startxp.toLocaleString('en', { useGrouping: true })}
+                </p>
+                <p className={styles.level_num}>
+                  {mockData.endxp.toLocaleString('en', { useGrouping: true })}
+                </p>
+              </div>
             </div>
 
-            <div className={styles.bottom_stats}>
-              <div className={styles.stat}></div>
-              <div className={styles.stat}></div>
-              <div className={styles.stat}></div>
+            <Avatar>
+              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </div>
+
+          <div className={styles.bottom_stats}>
+            <div className={styles.stats}>
+              <div className="w-10 h-5 bg-gray-300"></div>
+              <p>5</p>
+            </div>
+            <div className={styles.stats}>
+              <div className="w-10 h-5 bg-gray-300"></div>
+              <p>5</p>
+            </div>
+            <div className={styles.stats}>
+              <div className="w-10 h-5 bg-gray-300"></div>
+              <p>5</p>
             </div>
           </div>
-        </Link>
+        </div>
       </div>
     </div>
   );

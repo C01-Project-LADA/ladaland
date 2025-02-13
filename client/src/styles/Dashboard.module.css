@@ -1,5 +1,5 @@
 .container {
-  width: 300px;
+  width: 350px;
 
   /* NOTE: if modifying this value, also modify the onscroll function in Dashboard.tsx */
   padding-top: 30px;
@@ -7,10 +7,11 @@
 
 .content {
   /* NOTE: width here should match width of container */
-  width: 300px;
+  width: 350px;
 }
 
 .profile_container {
+  padding: 8px 15px;
   /* TEMP */
   border-radius: 10px;
   border: 1px solid black;
@@ -20,15 +21,35 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
+  gap: 15px;
 }
 
 .bottom_stats {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 10px;
+  margin-bottom: 3px;
 }
 
 .stats {
   display: flex;
-  gap: 5px;
+  gap: 7px;
+}
+
+.levels {
+  flex: 1;
+  margin-top: 3px;
+}
+.level_title {
+  color: gray;
+}
+.level_current {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.level_num {
+  font-size: 0.8rem;
+  color: gray;
+  margin-top: 2px;
 }
