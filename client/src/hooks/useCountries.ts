@@ -34,7 +34,7 @@ export default function useCountries({ filter, page = 1 }: UseCountryParams) {
     setLoading(true);
     const timeout = setTimeout(() => {
       fetchCountries();
-    }, 50);
+    }, 100);
 
     return () => clearTimeout(timeout);
   }, [fetchCountries]);

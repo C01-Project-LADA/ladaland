@@ -20,13 +20,92 @@ import { useEffect, useState } from 'react';
 import useCountries from '@/hooks/useCountries';
 import Image from 'next/image';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-// import SectionHeading from '@/components/SectionHeading';
+import SectionHeading from '@/components/SectionHeading';
+
+// const mockCountries = [
+//   {
+//     name: 'Benin',
+//     code: 'BJ',
+//   },
+//   {
+//     name: 'Bermuda',
+//     code: 'BM',
+//   },
+//   {
+//     name: 'Bhutan',
+//     code: 'BT',
+//   },
+//   {
+//     name: 'Bolivia',
+//     code: 'BO',
+//   },
+//   {
+//     name: 'Bonaire, Sint Eustatius and Saba',
+//     code: 'BQ',
+//   },
+//   {
+//     name: 'Bosnia and Herzegovina',
+//     code: 'BA',
+//   },
+//   {
+//     name: 'Botswana',
+//     code: 'BW',
+//   },
+//   {
+//     name: 'Bouvet Island',
+//     code: 'BV',
+//   },
+//   {
+//     name: 'Brazil',
+//     code: 'BR',
+//   },
+//   {
+//     name: 'British Indian Ocean Territory',
+//     code: 'IO',
+//   },
+//   {
+//     name: 'Brunei Darussalam',
+//     code: 'BN',
+//   },
+//   {
+//     name: 'Bulgaria',
+//     code: 'BG',
+//   },
+//   {
+//     name: 'Burkina Faso',
+//     code: 'BF',
+//   },
+//   {
+//     name: 'Burundi',
+//     code: 'BI',
+//   },
+//   {
+//     name: 'Cambodia',
+//     code: 'KH',
+//   },
+//   {
+//     name: 'Cameroon',
+//     code: 'CM',
+//   },
+//   {
+//     name: 'Canada',
+//     code: 'CA',
+//   },
+//   {
+//     name: 'Cape Verde',
+//     code: 'CV',
+//   },
+//   {
+//     name: 'Cayman Islands',
+//     code: 'KY',
+//   },
+// ];
+const mockCountries = [
+  {
+    code: 'CA',
+    name: 'Canada',
+  },
+];
 
 export default function PassportChecker() {
   const [search, setSearch] = useState('');
@@ -37,7 +116,8 @@ export default function PassportChecker() {
 
   // Reset page when search changes
   useEffect(() => {
-    setPage(1);
+    if (page !== 1) setPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
   const { countries, pageCount } = useCountries({
@@ -72,12 +152,14 @@ export default function PassportChecker() {
   }
 
   return (
-    <>
+    <div className="max-w-full">
       <AlertDialog open={passportSearchOpen} onOpenChange={handleOpenChange}>
         <AlertDialogTrigger asChild>
-          <Button variant="secondary" style={{ fontWeight: 500 }}>
-            <Plus /> ADD PASSPORT
-          </Button>
+          <div className="mb-5">
+            <Button variant="secondary" className="font-medium">
+              <Plus /> ADD PASSPORT
+            </Button>
+          </div>
         </AlertDialogTrigger>
         <AlertDialogContent className={styles.modal_container}>
           <AlertDialogHeader>
@@ -116,6 +198,7 @@ export default function PassportChecker() {
                   elevated={false}
                   className="w-full h-[120px] relative"
                   title={country.name}
+                  disabled={!!hasPassport[country.code]}
                   onClick={() => addPassport(country)}
                 >
                   <div className={styles.country_container}>
@@ -145,7 +228,7 @@ export default function PassportChecker() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <div className="mt-5">
+      <div>
         {Object.values(hasPassport).map((country) => (
           <div key={country.code} className="flex items-center justify-between">
             <div className="flex items-center gap-4 mb-2.5">
@@ -175,28 +258,110 @@ export default function PassportChecker() {
       </div>
 
       <div className="mt-6">
-        <Accordion
-          type="multiple"
-          defaultValue={['visa-free']}
-          orientation="horizontal"
-        >
-          <AccordionItem value="visa-free">
-            <AccordionTrigger>
-              <div>
-                <h2 className="font-semibold text-lg">Visa-free access</h2>
-                <h3 className="text-left text-sm text-gray-500 mt-1">
-                  194 countries
-                </h3>
+        <SectionHeading title="Visa-free access" />
+        <div className={styles.country_results}>
+          {mockCountries.map((country) => (
+            <div key={country.code} className="flex items-center gap-1.5">
+              <div className="w-[35px]">
+                <AspectRatio ratio={4 / 3}>
+                  <Image
+                    loading="lazy"
+                    src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
+                    fill
+                    alt={country.name}
+                    className="h-full w-full rounded-md object-contain"
+                  />
+                </AspectRatio>
               </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <div>
-                <p>hello</p>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+              <p className="text-gray-600 text-sm">{country.name}</p>
+            </div>
+          ))}
+        </div>
       </div>
-    </>
+      <div className="mt-10">
+        <SectionHeading title="Visa on arrival" />
+        <div className={styles.country_results}>
+          {mockCountries.map((country) => (
+            <div key={country.code} className="flex items-center gap-1.5">
+              <div className="w-[35px]">
+                <AspectRatio ratio={4 / 3}>
+                  <Image
+                    loading="lazy"
+                    src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
+                    fill
+                    alt={country.name}
+                    className="h-full w-full rounded-md object-contain"
+                  />
+                </AspectRatio>
+              </div>
+              <p className="text-gray-600 text-sm">{country.name}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="mt-10">
+        <SectionHeading title="eTA" />
+        <div className={styles.country_results}>
+          {mockCountries.map((country) => (
+            <div key={country.code} className="flex items-center gap-1.5">
+              <div className="w-[35px]">
+                <AspectRatio ratio={4 / 3}>
+                  <Image
+                    loading="lazy"
+                    src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
+                    fill
+                    alt={country.name}
+                    className="h-full w-full rounded-md object-contain"
+                  />
+                </AspectRatio>
+              </div>
+              <p className="text-gray-600 text-sm">{country.name}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="mt-10">
+        <SectionHeading title="e-Visa" />
+        <div className={styles.country_results}>
+          {mockCountries.map((country) => (
+            <div key={country.code} className="flex items-center gap-1.5">
+              <div className="w-[35px]">
+                <AspectRatio ratio={4 / 3}>
+                  <Image
+                    loading="lazy"
+                    src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
+                    fill
+                    alt={country.name}
+                    className="h-full w-full rounded-md object-contain"
+                  />
+                </AspectRatio>
+              </div>
+              <p className="text-gray-600 text-sm">{country.name}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="mt-10 mb-10">
+        <SectionHeading title="Visa required" />
+        <div className={styles.country_results}>
+          {mockCountries.map((country) => (
+            <div key={country.code} className="flex items-center gap-1.5">
+              <div className="w-[35px]">
+                <AspectRatio ratio={4 / 3}>
+                  <Image
+                    loading="lazy"
+                    src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
+                    fill
+                    alt={country.name}
+                    className="h-full w-full rounded-md object-contain"
+                  />
+                </AspectRatio>
+              </div>
+              <p className="text-gray-600 text-sm">{country.name}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

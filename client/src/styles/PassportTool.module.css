@@ -1,4 +1,6 @@
 .container {
+  width: clamp(200px, 50vw, 500px);
+  padding-left: 20px;
   padding-top: 30px;
 }
 
@@ -11,9 +13,7 @@
   border-radius: 15px;
   padding: 12px 18px 17px 18px;
   color: white;
-
-  /* TEMP */
-  width: 400px;
+  width: 100%;
 }
 .header_block h2 {
   font-size: 0.8rem;

@@ -50,3 +50,25 @@
   align-items: center;
   justify-content: center;
 }
+
+.country_results {
+  max-width: 100%;
+  max-height: 180px;
+  overflow-y: auto;
+  margin-top: 15px;
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.country_results::-webkit-scrollbar {
+  width: 8px;
+}
+.country_results::-webkit-scrollbar-track {
+  background-color: lightgray;
+  border-radius: 10px;
+}
+.country_results::-webkit-scrollbar-thumb {
+  background-color: #14c60092;
+  border-radius: 10px;
+}
