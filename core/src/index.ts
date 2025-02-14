@@ -3,6 +3,7 @@ import registerRoute from './routes/user/register';
 import loginRoute from './routes/user/login';
 import visaRequirementsRoute from './routes/visa-requirements';
 import visitedCountriesPercentRoute from './routes/visitedCountriesPercent';
+import travelSuggestionsRoute from './routes/travel-suggestions';
 import markVistedCountriesRoute from './routes/markVistedCountries';
 import session from 'express-session';
 import express from 'express';
@@ -38,6 +39,7 @@ app.use('/api', registerRoute);
 app.use('/api', loginRoute);
 app.use('/api', visaRequirementsRoute);
 app.use('/api', visitedCountriesPercentRoute);
+app.use('/api', travelSuggestionsRoute);
 app.use('/api', markVistedCountriesRoute); 
 
 const port = process.env.PORT || 4000;
