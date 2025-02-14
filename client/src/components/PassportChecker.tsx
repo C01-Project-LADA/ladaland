@@ -20,6 +20,13 @@ import { useEffect, useState } from 'react';
 import useCountries from '@/hooks/useCountries';
 import Image from 'next/image';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+// import SectionHeading from '@/components/SectionHeading';
 
 export default function PassportChecker() {
   const [search, setSearch] = useState('');
@@ -167,7 +174,29 @@ export default function PassportChecker() {
         ))}
       </div>
 
-      <div className="mt-4"></div>
+      <div className="mt-6">
+        <Accordion
+          type="multiple"
+          defaultValue={['visa-free']}
+          orientation="horizontal"
+        >
+          <AccordionItem value="visa-free">
+            <AccordionTrigger>
+              <div>
+                <h2 className="font-semibold text-lg">Visa-free access</h2>
+                <h3 className="text-left text-sm text-gray-500 mt-1">
+                  194 countries
+                </h3>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div>
+                <p>hello</p>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
     </>
   );
 }
