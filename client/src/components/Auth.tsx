@@ -109,11 +109,31 @@ export default function Auth() {
     }
   }
 
-  // TODO: Implement login logic
-  function onLoginSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values);
+  async function onLoginSubmit(values: z.infer<typeof loginSchema>) {
+    try {
+      const response = await axios.post(
+        'http://localhost:4000/api/login',
+        values,
+        {
+          withCredentials: true,
+        }
+      );
+  
+      if (response.status === 200) {
+        alert('Login successful!');
+        router.push('/'); // TODO: Take user to main screen after login
+      }
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.error || 'An unexpected error occurred';
+        alert(errorMessage);
+      } else {
+        alert('An unexpected error occurred.');
+      }
+    }
   }
-
+  
   function handleClose() {
     setFormOpen(false);
     setShowPassword(false);
