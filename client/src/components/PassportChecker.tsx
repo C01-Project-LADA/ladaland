@@ -26,7 +26,7 @@ export default function PassportChecker() {
   const [page, setPage] = useState(1);
   const [passportSearchOpen, setPassportSearchOpen] = useState(false);
 
-  const [hasPassport, setHasPassport] = useState<Record<string, boolean>>({});
+  const [hasPassport, setHasPassport] = useState<Record<string, Country>>({});
 
   // Reset page when search changes
   useEffect(() => {
@@ -46,18 +46,20 @@ export default function PassportChecker() {
     }
   }
 
-  function addPassport(code: string) {
+  function addPassport(country: Country) {
     setPassportSearchOpen(false);
     setHasPassport((prev) => ({
       ...prev,
-      [code]: true,
+      [country.code]: country,
     }));
+    setSearch('');
+    setPage(1);
   }
 
-  function removePassport(code: string) {
+  function removePassport(country: Country) {
     setHasPassport((prev) => {
       const newPassports = { ...prev };
-      delete newPassports[code];
+      delete newPassports[country.code];
       return newPassports;
     });
   }
@@ -107,7 +109,7 @@ export default function PassportChecker() {
                   elevated={false}
                   className="w-full h-[120px] relative"
                   title={country.name}
-                  onClick={() => addPassport(country.code)}
+                  onClick={() => addPassport(country)}
                 >
                   <div className={styles.country_container}>
                     {hasPassport[country.code] && (
@@ -135,6 +137,37 @@ export default function PassportChecker() {
           </div>
         </AlertDialogContent>
       </AlertDialog>
+
+      <div className="mt-5">
+        {Object.values(hasPassport).map((country) => (
+          <div key={country.code} className="flex items-center justify-between">
+            <div className="flex items-center gap-4 mb-2.5">
+              <div className="w-[50px]">
+                <AspectRatio ratio={4 / 3} className="bg-muted">
+                  <Image
+                    src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
+                    fill
+                    alt={country.name}
+                    className="h-full w-full rounded-md object-contain"
+                  />
+                </AspectRatio>
+              </div>
+              <p className="text-gray-600 font-medium">{country.name}</p>
+            </div>
+
+            <Button
+              variant="ghost"
+              elevated={false}
+              size="icon"
+              onClick={() => removePassport(country)}
+            >
+              <X />
+            </Button>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4"></div>
     </>
   );
 }
