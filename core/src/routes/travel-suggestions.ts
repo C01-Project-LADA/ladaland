@@ -1,9 +1,22 @@
 import express, { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { OpenAI } from 'openai';
+import { rateLimit } from 'express-rate-limit';
 
 const router = express.Router();
 const MIN_BUDGET = 200;
+const windowMsEnv = process.env.RATE_LIMIT_WINDOW_MS || '900000'; // Default: 15 mins
+const maxRequestsEnv = process.env.RATE_LIMIT_MAX || '100';       // Default: 100 requests
+
+export const travelSuggestionsLimiter = rateLimit({
+  windowMs: parseInt(windowMsEnv, 10),
+  max: parseInt(maxRequestsEnv, 10),
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: 'Too many requests. Please try again later.'
+  },
+});
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -12,6 +25,8 @@ const openai = new OpenAI({
 router.post(
   '/travel-suggestions',
   [
+    travelSuggestionsLimiter,
+    
     body('budget')
       .notEmpty()
       .withMessage('Budget is required')
