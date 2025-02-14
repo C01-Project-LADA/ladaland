@@ -20,16 +20,16 @@ export default function Pagination({
         disabled={page === 1}
         onClick={() => setPage(page - 1)}
       >
-        <ChevronLeft strokeWidth={3} color="darkgreen" />
+        <ChevronLeft strokeWidth={3} />
       </Button>
       <p className="text-lg font-semibold">{page}</p>
       <Button
         variant="outline"
         size="icon"
-        disabled={page === pageCount}
+        disabled={page >= pageCount}
         onClick={() => setPage(page + 1)}
       >
-        <ChevronRight strokeWidth={3} color="darkgreen" />
+        <ChevronRight strokeWidth={3} />
       </Button>
     </div>
   );
