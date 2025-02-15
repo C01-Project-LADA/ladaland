@@ -23,6 +23,7 @@ import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Skeleton } from '@/components/ui/skeleton';
 import SectionHeading from '@/components/SectionHeading';
 import useVisaRequirements from '@/hooks/useVisaRequirements';
+import { Badge } from '@/components/ui/badge';
 import ct from 'i18n-iso-countries';
 import en from 'i18n-iso-countries/langs/en.json';
 
@@ -252,27 +253,41 @@ export default function PassportChecker() {
             <div className={styles.country_results}>
               {visaReqsLoading
                 ? countrySkeletons
-                : visaFreeCountries.map((req) => (
-                    <div
-                      key={req.destination}
-                      className="flex items-center gap-1.5"
-                    >
-                      <div className="w-[35px]">
-                        <AspectRatio ratio={4 / 3}>
-                          <Image
-                            loading="lazy"
-                            src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                            fill
-                            alt={ct.getName(req.destination, 'en') || ''}
-                            className="h-full w-full rounded-md object-contain"
-                          />
-                        </AspectRatio>
+                : visaFreeCountries
+                    .sort(({ requirement: reqA }, { requirement: reqB }) => {
+                      const numA = parseInt(reqA);
+                      const numB = parseInt(reqB);
+                      const isNumA = !isNaN(numA);
+                      const isNumB = !isNaN(numB);
+
+                      if (!isNumA && !isNumB) return reqA.localeCompare(reqB);
+                      if (!isNumA) return -1;
+                      if (!isNumB) return 1;
+
+                      return numB - numA;
+                    })
+                    .map((req) => (
+                      <div
+                        key={req.destination}
+                        className="flex items-center gap-1.5"
+                      >
+                        <div className="w-[35px]">
+                          <AspectRatio ratio={4 / 3}>
+                            <Image
+                              loading="lazy"
+                              src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
+                              fill
+                              alt={ct.getName(req.destination, 'en') || ''}
+                              className="h-full w-full rounded-md object-contain"
+                            />
+                          </AspectRatio>
+                        </div>
+                        <p className="text-gray-600 text-sm">
+                          {ct.getName(req.destination, 'en')}
+                        </p>
+                        <Badge>{req.requirement}</Badge>
                       </div>
-                      <p className="text-gray-600 text-sm">
-                        {ct.getName(req.destination, 'en')}
-                      </p>
-                    </div>
-                  ))}
+                    ))}
             </div>
           </div>
           <div className="mt-10">
