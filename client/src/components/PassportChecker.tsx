@@ -16,96 +16,16 @@ import {
 } from '@/components/ui/alert-dialog';
 import Pagination from '@/components/Pagination';
 import { Input } from '@/components/ui/input';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useCountries from '@/hooks/useCountries';
 import Image from 'next/image';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import SectionHeading from '@/components/SectionHeading';
+import useVisaRequirements from '@/hooks/useVisaRequirements';
+import ct from 'i18n-iso-countries';
+import en from 'i18n-iso-countries/langs/en.json';
 
-// const mockCountries = [
-//   {
-//     name: 'Benin',
-//     code: 'BJ',
-//   },
-//   {
-//     name: 'Bermuda',
-//     code: 'BM',
-//   },
-//   {
-//     name: 'Bhutan',
-//     code: 'BT',
-//   },
-//   {
-//     name: 'Bolivia',
-//     code: 'BO',
-//   },
-//   {
-//     name: 'Bonaire, Sint Eustatius and Saba',
-//     code: 'BQ',
-//   },
-//   {
-//     name: 'Bosnia and Herzegovina',
-//     code: 'BA',
-//   },
-//   {
-//     name: 'Botswana',
-//     code: 'BW',
-//   },
-//   {
-//     name: 'Bouvet Island',
-//     code: 'BV',
-//   },
-//   {
-//     name: 'Brazil',
-//     code: 'BR',
-//   },
-//   {
-//     name: 'British Indian Ocean Territory',
-//     code: 'IO',
-//   },
-//   {
-//     name: 'Brunei Darussalam',
-//     code: 'BN',
-//   },
-//   {
-//     name: 'Bulgaria',
-//     code: 'BG',
-//   },
-//   {
-//     name: 'Burkina Faso',
-//     code: 'BF',
-//   },
-//   {
-//     name: 'Burundi',
-//     code: 'BI',
-//   },
-//   {
-//     name: 'Cambodia',
-//     code: 'KH',
-//   },
-//   {
-//     name: 'Cameroon',
-//     code: 'CM',
-//   },
-//   {
-//     name: 'Canada',
-//     code: 'CA',
-//   },
-//   {
-//     name: 'Cape Verde',
-//     code: 'CV',
-//   },
-//   {
-//     name: 'Cayman Islands',
-//     code: 'KY',
-//   },
-// ];
-const mockCountries = [
-  {
-    code: 'CA',
-    name: 'Canada',
-  },
-];
+ct.registerLocale(en);
 
 export default function PassportChecker() {
   const [search, setSearch] = useState('');
@@ -124,6 +44,50 @@ export default function PassportChecker() {
     filter: search,
     page,
   });
+  const passports = useMemo(() => Object.keys(hasPassport), [hasPassport]);
+
+  const visaRequirements = useVisaRequirements({
+    passports,
+  });
+  const visaFreeCountries = useMemo(
+    () =>
+      visaRequirements?.filter(
+        (req) =>
+          req.requirement !== 'visa on arrival' &&
+          req.requirement !== 'eta' &&
+          req.requirement !== 'e-visa' &&
+          req.requirement !== 'visa required' &&
+          req.requirement !== 'no admission'
+      ) || [],
+    [visaRequirements]
+  );
+  const visaOnArrivalCountries = useMemo(
+    () =>
+      visaRequirements?.filter(
+        (req) => req.requirement === 'visa on arrival'
+      ) || [],
+    [visaRequirements]
+  );
+  const etaCountries = useMemo(
+    () => visaRequirements?.filter((req) => req.requirement === 'eta') || [],
+    [visaRequirements]
+  );
+  const eVisaCountries = useMemo(
+    () => visaRequirements?.filter((req) => req.requirement === 'e-visa') || [],
+    [visaRequirements]
+  );
+  const visaRequiredCountries = useMemo(
+    () =>
+      visaRequirements?.filter((req) => req.requirement === 'visa required') ||
+      [],
+    [visaRequirements]
+  );
+  // const noAdmissionCountries = useMemo(
+  //   () =>
+  //     visaRequirements?.filter((req) => req.requirement === 'no admission') ||
+  //     [],
+  //   [visaRequirements]
+  // );
 
   function handleOpenChange(open: boolean) {
     setPassportSearchOpen(open);
@@ -260,20 +224,22 @@ export default function PassportChecker() {
       <div className="mt-6">
         <SectionHeading title="Visa-free access" />
         <div className={styles.country_results}>
-          {mockCountries.map((country) => (
-            <div key={country.code} className="flex items-center gap-1.5">
+          {visaFreeCountries.map((req) => (
+            <div key={req.destination} className="flex items-center gap-1.5">
               <div className="w-[35px]">
                 <AspectRatio ratio={4 / 3}>
                   <Image
                     loading="lazy"
-                    src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
+                    src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
                     fill
-                    alt={country.name}
+                    alt={ct.getName(req.destination, 'en') || ''}
                     className="h-full w-full rounded-md object-contain"
                   />
                 </AspectRatio>
               </div>
-              <p className="text-gray-600 text-sm">{country.name}</p>
+              <p className="text-gray-600 text-sm">
+                {ct.getName(req.destination, 'en')}
+              </p>
             </div>
           ))}
         </div>
@@ -281,20 +247,22 @@ export default function PassportChecker() {
       <div className="mt-10">
         <SectionHeading title="Visa on arrival" />
         <div className={styles.country_results}>
-          {mockCountries.map((country) => (
-            <div key={country.code} className="flex items-center gap-1.5">
+          {visaOnArrivalCountries.map((req) => (
+            <div key={req.destination} className="flex items-center gap-1.5">
               <div className="w-[35px]">
                 <AspectRatio ratio={4 / 3}>
                   <Image
                     loading="lazy"
-                    src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
+                    src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
                     fill
-                    alt={country.name}
+                    alt={ct.getName(req.destination, 'en') || ''}
                     className="h-full w-full rounded-md object-contain"
                   />
                 </AspectRatio>
               </div>
-              <p className="text-gray-600 text-sm">{country.name}</p>
+              <p className="text-gray-600 text-sm">
+                {ct.getName(req.destination, 'en')}
+              </p>
             </div>
           ))}
         </div>
@@ -302,20 +270,22 @@ export default function PassportChecker() {
       <div className="mt-10">
         <SectionHeading title="eTA" />
         <div className={styles.country_results}>
-          {mockCountries.map((country) => (
-            <div key={country.code} className="flex items-center gap-1.5">
+          {etaCountries.map((req) => (
+            <div key={req.destination} className="flex items-center gap-1.5">
               <div className="w-[35px]">
                 <AspectRatio ratio={4 / 3}>
                   <Image
                     loading="lazy"
-                    src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
+                    src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
                     fill
-                    alt={country.name}
+                    alt={ct.getName(req.destination, 'en') || ''}
                     className="h-full w-full rounded-md object-contain"
                   />
                 </AspectRatio>
               </div>
-              <p className="text-gray-600 text-sm">{country.name}</p>
+              <p className="text-gray-600 text-sm">
+                {ct.getName(req.destination, 'en')}
+              </p>
             </div>
           ))}
         </div>
@@ -323,20 +293,22 @@ export default function PassportChecker() {
       <div className="mt-10">
         <SectionHeading title="e-Visa" />
         <div className={styles.country_results}>
-          {mockCountries.map((country) => (
-            <div key={country.code} className="flex items-center gap-1.5">
+          {eVisaCountries.map((req) => (
+            <div key={req.destination} className="flex items-center gap-1.5">
               <div className="w-[35px]">
                 <AspectRatio ratio={4 / 3}>
                   <Image
                     loading="lazy"
-                    src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
+                    src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
                     fill
-                    alt={country.name}
+                    alt={ct.getName(req.destination, 'en') || ''}
                     className="h-full w-full rounded-md object-contain"
                   />
                 </AspectRatio>
               </div>
-              <p className="text-gray-600 text-sm">{country.name}</p>
+              <p className="text-gray-600 text-sm">
+                {ct.getName(req.destination, 'en')}
+              </p>
             </div>
           ))}
         </div>
@@ -344,20 +316,22 @@ export default function PassportChecker() {
       <div className="mt-10 mb-10">
         <SectionHeading title="Visa required" />
         <div className={styles.country_results}>
-          {mockCountries.map((country) => (
-            <div key={country.code} className="flex items-center gap-1.5">
+          {visaRequiredCountries.map((req) => (
+            <div key={req.destination} className="flex items-center gap-1.5">
               <div className="w-[35px]">
                 <AspectRatio ratio={4 / 3}>
                   <Image
                     loading="lazy"
-                    src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
+                    src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
                     fill
-                    alt={country.name}
+                    alt={ct.getName(req.destination, 'en') || ''}
                     className="h-full w-full rounded-md object-contain"
                   />
                 </AspectRatio>
               </div>
-              <p className="text-gray-600 text-sm">{country.name}</p>
+              <p className="text-gray-600 text-sm">
+                {ct.getName(req.destination, 'en')}
+              </p>
             </div>
           ))}
         </div>
