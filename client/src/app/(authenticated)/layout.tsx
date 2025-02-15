@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { Nunito_Sans } from 'next/font/google';
-import Navbar from '@/components/Navbar';
-import './globals.css';
+import SideNavigation from '@/components/SideNavigation';
+import Dashboard from '@/components/Dashboard';
+import '@/app/globals.css';
 
 const nunito_sans = Nunito_Sans({
   // variable: '--font-nunito_sans',
@@ -22,9 +23,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${nunito_sans.className} antialiased`}>
-        <Navbar />
-        {children}
+      <body className={`${nunito_sans.className} antialiased flex`}>
+        <SideNavigation />
+        <div className="mr-auto ml-auto flex gap-[50px]">
+          {children}
+          <Dashboard />
+        </div>
       </body>
     </html>
   );
