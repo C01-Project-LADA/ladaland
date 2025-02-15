@@ -34,7 +34,9 @@ export default function PassportChecker() {
   const [page, setPage] = useState(1);
   const [passportSearchOpen, setPassportSearchOpen] = useState(false);
 
-  const [hasPassport, setHasPassport] = useState<Record<string, Country>>({});
+  const [hasPassport, setHasPassport] = useState<
+    Record<string, Country & { index: number }>
+  >({});
 
   // Reset page when search changes
   useEffect(() => {
@@ -109,7 +111,7 @@ export default function PassportChecker() {
     setPassportSearchOpen(false);
     setHasPassport((prev) => ({
       ...prev,
-      [country.code]: country,
+      [country.code]: { ...country, index: Object.keys(prev).length + 1 },
     }));
     setSearch('');
     setPage(1);
@@ -248,7 +250,9 @@ export default function PassportChecker() {
           <div className="mt-6">
             <SectionHeading
               title="Visa-free access"
-              subtitle={`${visaFreeCountries.length} countries`}
+              subtitle={`${visaFreeCountries.length} countr${
+                visaFreeCountries.length === 1 ? 'y' : 'ies'
+              }`}
             />
             <div className={styles.country_results}>
               {visaReqsLoading
@@ -293,7 +297,9 @@ export default function PassportChecker() {
           <div className="mt-10">
             <SectionHeading
               title="Visa on arrival"
-              subtitle={`${visaOnArrivalCountries.length} countries`}
+              subtitle={`${visaOnArrivalCountries.length} countr${
+                visaOnArrivalCountries.length === 1 ? 'y' : 'ies'
+              }`}
             />
             <div className={styles.country_results}>
               {visaReqsLoading
@@ -324,7 +330,9 @@ export default function PassportChecker() {
           <div className="mt-10">
             <SectionHeading
               title="eTA"
-              subtitle={`${etaCountries.length} countries`}
+              subtitle={`${etaCountries.length} countr${
+                etaCountries.length === 1 ? 'y' : 'ies'
+              }`}
             />
             <div className={styles.country_results}>
               {visaReqsLoading
@@ -355,7 +363,9 @@ export default function PassportChecker() {
           <div className="mt-10">
             <SectionHeading
               title="e-Visa"
-              subtitle={`${eVisaCountries.length} countries`}
+              subtitle={`${eVisaCountries.length} countr${
+                eVisaCountries.length === 1 ? 'y' : 'ies'
+              }`}
             />
             <div className={styles.country_results}>
               {visaReqsLoading
@@ -386,7 +396,9 @@ export default function PassportChecker() {
           <div className="mt-10 mb-10">
             <SectionHeading
               title="Visa required"
-              subtitle={`${visaRequiredCountries.length} countries`}
+              subtitle={`${visaRequiredCountries.length} countr${
+                visaRequiredCountries.length === 1 ? 'y' : 'ies'
+              }`}
             />
             <div className={styles.country_results}>
               {visaReqsLoading
