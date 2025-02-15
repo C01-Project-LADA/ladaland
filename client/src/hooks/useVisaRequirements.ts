@@ -6,12 +6,15 @@ export default function useVisaRequirements({
   passports: string[];
 }) {
   const [visaRequirements, setVisaRequirements] = useState<Requirement[]>();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!passports || passports.length === 0) {
       setVisaRequirements([]);
       return;
     }
+
+    setLoading(true);
 
     fetch('http://localhost:4000/api/visa-requirements', {
       method: 'POST',
@@ -21,8 +24,11 @@ export default function useVisaRequirements({
       body: JSON.stringify({ passports }),
     })
       .then((response) => response.json())
-      .then((data: Requirement[]) => setVisaRequirements(data));
+      .then((data: Requirement[]) => {
+        setLoading(false);
+        setVisaRequirements(data);
+      });
   }, [passports]);
 
-  return visaRequirements;
+  return { visaRequirements, loading };
 }

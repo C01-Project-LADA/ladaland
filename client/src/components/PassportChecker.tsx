@@ -20,6 +20,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import useCountries from '@/hooks/useCountries';
 import Image from 'next/image';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Skeleton } from '@/components/ui/skeleton';
 import SectionHeading from '@/components/SectionHeading';
 import useVisaRequirements from '@/hooks/useVisaRequirements';
 import ct from 'i18n-iso-countries';
@@ -46,7 +47,7 @@ export default function PassportChecker() {
   });
   const passports = useMemo(() => Object.keys(hasPassport), [hasPassport]);
 
-  const visaRequirements = useVisaRequirements({
+  const { visaRequirements, loading: visaReqsLoading } = useVisaRequirements({
     passports,
   });
   const visaFreeCountries = useMemo(
@@ -121,11 +122,21 @@ export default function PassportChecker() {
     });
   }
 
+  const countrySkeletons = Array.from({ length: 6 }, (_, i) => i).map(
+    (_, i) => (
+      <div key={i} className="flex items-center gap-1.5">
+        <Skeleton className="w-[35px] h-[26.25px] rounded-md" />
+
+        <Skeleton className="w-[80px] h-4 rounded-md" />
+      </div>
+    )
+  );
+
   return (
     <div className="max-w-full">
       <AlertDialog open={passportSearchOpen} onOpenChange={handleOpenChange}>
         <AlertDialogTrigger asChild>
-          <div className="mb-5">
+          <div className="mb-5 w-fit">
             <Button variant="secondary" className="font-medium">
               <Plus /> ADD PASSPORT
             </Button>
@@ -199,67 +210,69 @@ export default function PassportChecker() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <div className="border-gray-300 border pt-2 pb-2 pl-4 pr-4 rounded-md">
-        {Object.values(hasPassport).map((country) => (
-          <div
-            key={country.code}
-            className="flex items-center justify-between mb-3"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-[50px]">
-                <AspectRatio ratio={4 / 3} className="bg-muted">
-                  <Image
-                    src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
-                    fill
-                    alt={country.name}
-                    className="h-full w-full rounded-md object-contain"
-                  />
-                </AspectRatio>
-              </div>
-              <p className="text-gray-600 font-medium">{country.name}</p>
-            </div>
-
-            <Button
-              variant="ghost"
-              elevated={false}
-              size="icon"
-              onClick={() => removePassport(country)}
-            >
-              <X />
-            </Button>
-          </div>
-        ))}
-      </div>
-
-      {Object.keys(hasPassport).length !== 0 && (
+      {Object.values(hasPassport).length !== 0 && (
         <>
+          <div className="border-gray-300 border pt-2 pl-4 pr-4 rounded-md">
+            {Object.values(hasPassport).map((country) => (
+              <div
+                key={country.code}
+                className="flex items-center justify-between mb-3"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-[50px]">
+                    <AspectRatio ratio={4 / 3} className="bg-muted">
+                      <Image
+                        src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
+                        fill
+                        alt={country.name}
+                        className="h-full w-full rounded-md object-contain"
+                      />
+                    </AspectRatio>
+                  </div>
+                  <p className="text-gray-600 font-medium">{country.name}</p>
+                </div>
+
+                <Button
+                  variant="ghost"
+                  elevated={false}
+                  size="icon"
+                  onClick={() => removePassport(country)}
+                >
+                  <X />
+                </Button>
+              </div>
+            ))}
+          </div>
+
           <div className="mt-6">
             <SectionHeading
               title="Visa-free access"
               subtitle={`${visaFreeCountries.length} countries`}
             />
             <div className={styles.country_results}>
-              {visaFreeCountries.map((req) => (
-                <div
-                  key={req.destination}
-                  className="flex items-center gap-1.5"
-                >
-                  <div className="w-[35px]">
-                    <AspectRatio ratio={4 / 3}>
-                      <Image
-                        loading="lazy"
-                        src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                        fill
-                        alt={ct.getName(req.destination, 'en') || ''}
-                        className="h-full w-full rounded-md object-contain"
-                      />
-                    </AspectRatio>
-                  </div>
-                  <p className="text-gray-600 text-sm">
-                    {ct.getName(req.destination, 'en')}
-                  </p>
-                </div>
-              ))}
+              {visaReqsLoading
+                ? countrySkeletons
+                : visaFreeCountries.map((req) => (
+                    <div
+                      key={req.destination}
+                      className="flex items-center gap-1.5"
+                    >
+                      <div className="w-[35px]">
+                        <AspectRatio ratio={4 / 3}>
+                          <Image
+                            loading="lazy"
+                            src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
+                            fill
+                            alt={ct.getName(req.destination, 'en') || ''}
+                            className="h-full w-full rounded-md object-contain"
+                          />
+                        </AspectRatio>
+                      </div>
+                      <p className="text-gray-600 text-sm">
+                        {ct.getName(req.destination, 'en')}
+                      </p>
+                    </div>
+                  ))}
             </div>
           </div>
           <div className="mt-10">
@@ -268,27 +281,29 @@ export default function PassportChecker() {
               subtitle={`${visaOnArrivalCountries.length} countries`}
             />
             <div className={styles.country_results}>
-              {visaOnArrivalCountries.map((req) => (
-                <div
-                  key={req.destination}
-                  className="flex items-center gap-1.5"
-                >
-                  <div className="w-[35px]">
-                    <AspectRatio ratio={4 / 3}>
-                      <Image
-                        loading="lazy"
-                        src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                        fill
-                        alt={ct.getName(req.destination, 'en') || ''}
-                        className="h-full w-full rounded-md object-contain"
-                      />
-                    </AspectRatio>
-                  </div>
-                  <p className="text-gray-600 text-sm">
-                    {ct.getName(req.destination, 'en')}
-                  </p>
-                </div>
-              ))}
+              {visaReqsLoading
+                ? countrySkeletons
+                : visaOnArrivalCountries.map((req) => (
+                    <div
+                      key={req.destination}
+                      className="flex items-center gap-1.5"
+                    >
+                      <div className="w-[35px]">
+                        <AspectRatio ratio={4 / 3}>
+                          <Image
+                            loading="lazy"
+                            src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
+                            fill
+                            alt={ct.getName(req.destination, 'en') || ''}
+                            className="h-full w-full rounded-md object-contain"
+                          />
+                        </AspectRatio>
+                      </div>
+                      <p className="text-gray-600 text-sm">
+                        {ct.getName(req.destination, 'en')}
+                      </p>
+                    </div>
+                  ))}
             </div>
           </div>
           <div className="mt-10">
@@ -297,27 +312,29 @@ export default function PassportChecker() {
               subtitle={`${etaCountries.length} countries`}
             />
             <div className={styles.country_results}>
-              {etaCountries.map((req) => (
-                <div
-                  key={req.destination}
-                  className="flex items-center gap-1.5"
-                >
-                  <div className="w-[35px]">
-                    <AspectRatio ratio={4 / 3}>
-                      <Image
-                        loading="lazy"
-                        src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                        fill
-                        alt={ct.getName(req.destination, 'en') || ''}
-                        className="h-full w-full rounded-md object-contain"
-                      />
-                    </AspectRatio>
-                  </div>
-                  <p className="text-gray-600 text-sm">
-                    {ct.getName(req.destination, 'en')}
-                  </p>
-                </div>
-              ))}
+              {visaReqsLoading
+                ? countrySkeletons
+                : etaCountries.map((req) => (
+                    <div
+                      key={req.destination}
+                      className="flex items-center gap-1.5"
+                    >
+                      <div className="w-[35px]">
+                        <AspectRatio ratio={4 / 3}>
+                          <Image
+                            loading="lazy"
+                            src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
+                            fill
+                            alt={ct.getName(req.destination, 'en') || ''}
+                            className="h-full w-full rounded-md object-contain"
+                          />
+                        </AspectRatio>
+                      </div>
+                      <p className="text-gray-600 text-sm">
+                        {ct.getName(req.destination, 'en')}
+                      </p>
+                    </div>
+                  ))}
             </div>
           </div>
           <div className="mt-10">
@@ -326,27 +343,29 @@ export default function PassportChecker() {
               subtitle={`${eVisaCountries.length} countries`}
             />
             <div className={styles.country_results}>
-              {eVisaCountries.map((req) => (
-                <div
-                  key={req.destination}
-                  className="flex items-center gap-1.5"
-                >
-                  <div className="w-[35px]">
-                    <AspectRatio ratio={4 / 3}>
-                      <Image
-                        loading="lazy"
-                        src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                        fill
-                        alt={ct.getName(req.destination, 'en') || ''}
-                        className="h-full w-full rounded-md object-contain"
-                      />
-                    </AspectRatio>
-                  </div>
-                  <p className="text-gray-600 text-sm">
-                    {ct.getName(req.destination, 'en')}
-                  </p>
-                </div>
-              ))}
+              {visaReqsLoading
+                ? countrySkeletons
+                : eVisaCountries.map((req) => (
+                    <div
+                      key={req.destination}
+                      className="flex items-center gap-1.5"
+                    >
+                      <div className="w-[35px]">
+                        <AspectRatio ratio={4 / 3}>
+                          <Image
+                            loading="lazy"
+                            src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
+                            fill
+                            alt={ct.getName(req.destination, 'en') || ''}
+                            className="h-full w-full rounded-md object-contain"
+                          />
+                        </AspectRatio>
+                      </div>
+                      <p className="text-gray-600 text-sm">
+                        {ct.getName(req.destination, 'en')}
+                      </p>
+                    </div>
+                  ))}
             </div>
           </div>
           <div className="mt-10 mb-10">
@@ -355,27 +374,29 @@ export default function PassportChecker() {
               subtitle={`${visaRequiredCountries.length} countries`}
             />
             <div className={styles.country_results}>
-              {visaRequiredCountries.map((req) => (
-                <div
-                  key={req.destination}
-                  className="flex items-center gap-1.5"
-                >
-                  <div className="w-[35px]">
-                    <AspectRatio ratio={4 / 3}>
-                      <Image
-                        loading="lazy"
-                        src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                        fill
-                        alt={ct.getName(req.destination, 'en') || ''}
-                        className="h-full w-full rounded-md object-contain"
-                      />
-                    </AspectRatio>
-                  </div>
-                  <p className="text-gray-600 text-sm">
-                    {ct.getName(req.destination, 'en')}
-                  </p>
-                </div>
-              ))}
+              {visaReqsLoading
+                ? countrySkeletons
+                : visaRequiredCountries.map((req) => (
+                    <div
+                      key={req.destination}
+                      className="flex items-center gap-1.5"
+                    >
+                      <div className="w-[35px]">
+                        <AspectRatio ratio={4 / 3}>
+                          <Image
+                            loading="lazy"
+                            src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
+                            fill
+                            alt={ct.getName(req.destination, 'en') || ''}
+                            className="h-full w-full rounded-md object-contain"
+                          />
+                        </AspectRatio>
+                      </div>
+                      <p className="text-gray-600 text-sm">
+                        {ct.getName(req.destination, 'en')}
+                      </p>
+                    </div>
+                  ))}
             </div>
           </div>
         </>
