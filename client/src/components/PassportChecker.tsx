@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import Pagination from '@/components/Pagination';
 import { Input } from '@/components/ui/input';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import useCountries from '@/hooks/useCountries';
 import Image from 'next/image';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
@@ -89,11 +89,17 @@ export default function PassportChecker() {
   //   [visaRequirements]
   // );
 
+  const modalInputRef = useRef<HTMLInputElement>(null);
+
   function handleOpenChange(open: boolean) {
     setPassportSearchOpen(open);
     if (!open) {
       setSearch('');
       setPage(1);
+    } else {
+      setTimeout(() => {
+        modalInputRef.current?.focus();
+      }, 200);
     }
   }
 
@@ -150,6 +156,7 @@ export default function PassportChecker() {
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              ref={modalInputRef}
               startIcon={Search}
               placeholder="Search for a country..."
             />
@@ -221,121 +228,155 @@ export default function PassportChecker() {
         ))}
       </div>
 
-      <div className="mt-6">
-        <SectionHeading title="Visa-free access" />
-        <div className={styles.country_results}>
-          {visaFreeCountries.map((req) => (
-            <div key={req.destination} className="flex items-center gap-1.5">
-              <div className="w-[35px]">
-                <AspectRatio ratio={4 / 3}>
-                  <Image
-                    loading="lazy"
-                    src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                    fill
-                    alt={ct.getName(req.destination, 'en') || ''}
-                    className="h-full w-full rounded-md object-contain"
-                  />
-                </AspectRatio>
-              </div>
-              <p className="text-gray-600 text-sm">
-                {ct.getName(req.destination, 'en')}
-              </p>
+      {Object.keys(hasPassport).length !== 0 && (
+        <>
+          <div className="mt-6">
+            <SectionHeading
+              title="Visa-free access"
+              subtitle={`${visaFreeCountries.length} countries`}
+            />
+            <div className={styles.country_results}>
+              {visaFreeCountries.map((req) => (
+                <div
+                  key={req.destination}
+                  className="flex items-center gap-1.5"
+                >
+                  <div className="w-[35px]">
+                    <AspectRatio ratio={4 / 3}>
+                      <Image
+                        loading="lazy"
+                        src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
+                        fill
+                        alt={ct.getName(req.destination, 'en') || ''}
+                        className="h-full w-full rounded-md object-contain"
+                      />
+                    </AspectRatio>
+                  </div>
+                  <p className="text-gray-600 text-sm">
+                    {ct.getName(req.destination, 'en')}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-      <div className="mt-10">
-        <SectionHeading title="Visa on arrival" />
-        <div className={styles.country_results}>
-          {visaOnArrivalCountries.map((req) => (
-            <div key={req.destination} className="flex items-center gap-1.5">
-              <div className="w-[35px]">
-                <AspectRatio ratio={4 / 3}>
-                  <Image
-                    loading="lazy"
-                    src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                    fill
-                    alt={ct.getName(req.destination, 'en') || ''}
-                    className="h-full w-full rounded-md object-contain"
-                  />
-                </AspectRatio>
-              </div>
-              <p className="text-gray-600 text-sm">
-                {ct.getName(req.destination, 'en')}
-              </p>
+          </div>
+          <div className="mt-10">
+            <SectionHeading
+              title="Visa on arrival"
+              subtitle={`${visaOnArrivalCountries.length} countries`}
+            />
+            <div className={styles.country_results}>
+              {visaOnArrivalCountries.map((req) => (
+                <div
+                  key={req.destination}
+                  className="flex items-center gap-1.5"
+                >
+                  <div className="w-[35px]">
+                    <AspectRatio ratio={4 / 3}>
+                      <Image
+                        loading="lazy"
+                        src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
+                        fill
+                        alt={ct.getName(req.destination, 'en') || ''}
+                        className="h-full w-full rounded-md object-contain"
+                      />
+                    </AspectRatio>
+                  </div>
+                  <p className="text-gray-600 text-sm">
+                    {ct.getName(req.destination, 'en')}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-      <div className="mt-10">
-        <SectionHeading title="eTA" />
-        <div className={styles.country_results}>
-          {etaCountries.map((req) => (
-            <div key={req.destination} className="flex items-center gap-1.5">
-              <div className="w-[35px]">
-                <AspectRatio ratio={4 / 3}>
-                  <Image
-                    loading="lazy"
-                    src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                    fill
-                    alt={ct.getName(req.destination, 'en') || ''}
-                    className="h-full w-full rounded-md object-contain"
-                  />
-                </AspectRatio>
-              </div>
-              <p className="text-gray-600 text-sm">
-                {ct.getName(req.destination, 'en')}
-              </p>
+          </div>
+          <div className="mt-10">
+            <SectionHeading
+              title="eTA"
+              subtitle={`${etaCountries.length} countries`}
+            />
+            <div className={styles.country_results}>
+              {etaCountries.map((req) => (
+                <div
+                  key={req.destination}
+                  className="flex items-center gap-1.5"
+                >
+                  <div className="w-[35px]">
+                    <AspectRatio ratio={4 / 3}>
+                      <Image
+                        loading="lazy"
+                        src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
+                        fill
+                        alt={ct.getName(req.destination, 'en') || ''}
+                        className="h-full w-full rounded-md object-contain"
+                      />
+                    </AspectRatio>
+                  </div>
+                  <p className="text-gray-600 text-sm">
+                    {ct.getName(req.destination, 'en')}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-      <div className="mt-10">
-        <SectionHeading title="e-Visa" />
-        <div className={styles.country_results}>
-          {eVisaCountries.map((req) => (
-            <div key={req.destination} className="flex items-center gap-1.5">
-              <div className="w-[35px]">
-                <AspectRatio ratio={4 / 3}>
-                  <Image
-                    loading="lazy"
-                    src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                    fill
-                    alt={ct.getName(req.destination, 'en') || ''}
-                    className="h-full w-full rounded-md object-contain"
-                  />
-                </AspectRatio>
-              </div>
-              <p className="text-gray-600 text-sm">
-                {ct.getName(req.destination, 'en')}
-              </p>
+          </div>
+          <div className="mt-10">
+            <SectionHeading
+              title="e-Visa"
+              subtitle={`${eVisaCountries.length} countries`}
+            />
+            <div className={styles.country_results}>
+              {eVisaCountries.map((req) => (
+                <div
+                  key={req.destination}
+                  className="flex items-center gap-1.5"
+                >
+                  <div className="w-[35px]">
+                    <AspectRatio ratio={4 / 3}>
+                      <Image
+                        loading="lazy"
+                        src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
+                        fill
+                        alt={ct.getName(req.destination, 'en') || ''}
+                        className="h-full w-full rounded-md object-contain"
+                      />
+                    </AspectRatio>
+                  </div>
+                  <p className="text-gray-600 text-sm">
+                    {ct.getName(req.destination, 'en')}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-      <div className="mt-10 mb-10">
-        <SectionHeading title="Visa required" />
-        <div className={styles.country_results}>
-          {visaRequiredCountries.map((req) => (
-            <div key={req.destination} className="flex items-center gap-1.5">
-              <div className="w-[35px]">
-                <AspectRatio ratio={4 / 3}>
-                  <Image
-                    loading="lazy"
-                    src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                    fill
-                    alt={ct.getName(req.destination, 'en') || ''}
-                    className="h-full w-full rounded-md object-contain"
-                  />
-                </AspectRatio>
-              </div>
-              <p className="text-gray-600 text-sm">
-                {ct.getName(req.destination, 'en')}
-              </p>
+          </div>
+          <div className="mt-10 mb-10">
+            <SectionHeading
+              title="Visa required"
+              subtitle={`${visaRequiredCountries.length} countries`}
+            />
+            <div className={styles.country_results}>
+              {visaRequiredCountries.map((req) => (
+                <div
+                  key={req.destination}
+                  className="flex items-center gap-1.5"
+                >
+                  <div className="w-[35px]">
+                    <AspectRatio ratio={4 / 3}>
+                      <Image
+                        loading="lazy"
+                        src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
+                        fill
+                        alt={ct.getName(req.destination, 'en') || ''}
+                        className="h-full w-full rounded-md object-contain"
+                      />
+                    </AspectRatio>
+                  </div>
+                  <p className="text-gray-600 text-sm">
+                    {ct.getName(req.destination, 'en')}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
