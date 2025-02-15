@@ -30,13 +30,19 @@ router.post(
         where: { username },
       });
       if (existingUser) {
-        res.status(400).json({error: 'Username is already taken. Please choose another one.' });
+        res
+          .status(400)
+          .json({
+            error: 'Username is already taken. Please choose another one.',
+          });
         return;
       }
 
       const existingEmail = await prisma.user.findUnique({ where: { email } });
       if (existingEmail) {
-        res.status(400).json({ error: 'Email is already registered. Please log in.' });
+        res
+          .status(400)
+          .json({ error: 'Email is already registered. Please log in.' });
         return;
       }
 
@@ -58,7 +64,9 @@ router.post(
         email: newUser.email,
       };
 
-      res.status(201).json({ message: 'User registered and logged in successfully.' });
+      res
+        .status(201)
+        .json({ message: 'User registered and logged in successfully.' });
     } catch (error) {
       res.status(500).json({ error: 'Internal Server Error' });
     }
