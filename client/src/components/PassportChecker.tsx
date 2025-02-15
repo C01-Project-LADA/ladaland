@@ -199,10 +199,13 @@ export default function PassportChecker() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <div>
+      <div className="border-gray-300 border pt-2 pb-2 pl-4 pr-4 rounded-md">
         {Object.values(hasPassport).map((country) => (
-          <div key={country.code} className="flex items-center justify-between">
-            <div className="flex items-center gap-4 mb-2.5">
+          <div
+            key={country.code}
+            className="flex items-center justify-between mb-3"
+          >
+            <div className="flex items-center gap-4">
               <div className="w-[50px]">
                 <AspectRatio ratio={4 / 3} className="bg-muted">
                   <Image
