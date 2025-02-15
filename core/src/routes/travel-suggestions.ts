@@ -6,7 +6,7 @@ import { rateLimit } from 'express-rate-limit';
 const router = express.Router();
 const MIN_BUDGET = 200;
 const windowMsEnv = process.env.RATE_LIMIT_WINDOW_MS || '900000'; // Default: 15 mins
-const maxRequestsEnv = process.env.RATE_LIMIT_MAX || '100';       // Default: 100 requests
+const maxRequestsEnv = process.env.RATE_LIMIT_MAX || '100'; // Default: 100 requests
 
 export const travelSuggestionsLimiter = rateLimit({
   windowMs: parseInt(windowMsEnv, 10),
@@ -14,7 +14,7 @@ export const travelSuggestionsLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: {
-    error: 'Too many requests. Please try again later.'
+    error: 'Too many requests. Please try again later.',
   },
 });
 
@@ -26,7 +26,7 @@ router.post(
   '/travel-suggestions',
   [
     travelSuggestionsLimiter,
-    
+
     body('budget')
       .notEmpty()
       .withMessage('Budget is required')
@@ -49,33 +49,38 @@ router.post(
     const budgetAmount = Number(budget);
 
     if (budgetAmount < MIN_BUDGET) {
-      res.status(200).json({ message: 'No destinations found within this budget.' });
+      res
+        .status(200)
+        .json({ message: 'No destinations found within this budget.' });
       return;
     }
 
     const prompt = `Suggest a list of travel destinations that can be explored on a budget of ${budgetAmount} CAD. For each destination, provide a brief description explaining why it is affordable and attractive. Format the answer as a bullet list.`;
 
     try {
-        const completion = await openai.chat.completions.create({
-            model: 'gpt-4o-mini',  // Use this model
-            messages: [
-                {
-                    role: 'system',
-                    content: 'You are a travel assistant that provides travel destination suggestions based on the user’s budget. Your suggestions must be affordable, concise, and practical.'
-                },
-                {
-                    role: 'user',
-                    content: `I have a budget of ${budgetAmount} CAD. Please suggest travel destinations that fit within this budget and explain briefly why each is a good option.`
-                }
-            ],
-            max_tokens: 500,
-            temperature: 0.7
-        });          
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4o-mini', // Use this model
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You are a travel assistant that provides travel destination suggestions based on the user’s budget. Your suggestions must be affordable, concise, and practical.',
+          },
+          {
+            role: 'user',
+            content: `I have a budget of ${budgetAmount} CAD. Please suggest travel destinations that fit within this budget and explain briefly why each is a good option.`,
+          },
+        ],
+        max_tokens: 500,
+        temperature: 0.7,
+      });
 
       const suggestions = completion.choices[0].message?.content;
 
       if (!suggestions || suggestions.trim() === '') {
-        res.status(200).json({ message: 'No destinations found within this budget.' });
+        res
+          .status(200)
+          .json({ message: 'No destinations found within this budget.' });
         return;
       }
 
