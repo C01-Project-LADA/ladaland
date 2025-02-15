@@ -1,13 +1,17 @@
 import dotenv from 'dotenv';
-import registerRoute from './routes/user/register';
-import loginRoute from './routes/user/login';
-import visaRequirementsRoute from './routes/visa-requirements';
-import visitedCountriesPercentRoute from './routes/visitedCountriesPercent';
-import markVistedCountriesRoute from './routes/markVistedCountries';
 import session from 'express-session';
 import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
+
+// Routes
+import registerRoute from './routes/user/register';
+import loginRoute from './routes/user/login';
+import visaRequirementsRoute from './routes/visa-requirements';
+import visitedCountriesPercentRoute from './routes/visitedCountriesPercent';
+import travelSuggestionsRoute from './routes/travel-suggestions';
+import markVistedCountriesRoute from './routes/markVistedCountries';
+import meRoute from './routes/user/me';
 
 dotenv.config();
 
@@ -38,7 +42,9 @@ app.use('/api', registerRoute);
 app.use('/api', loginRoute);
 app.use('/api', visaRequirementsRoute);
 app.use('/api', visitedCountriesPercentRoute);
-app.use('/api', markVistedCountriesRoute); 
+app.use('/api', travelSuggestionsRoute);
+app.use('/api', markVistedCountriesRoute);
+app.use('/api', meRoute);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
