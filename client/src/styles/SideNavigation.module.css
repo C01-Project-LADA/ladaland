@@ -1,8 +1,14 @@
 .container {
+  position: fixed;
   width: 270px;
   height: 100vh;
   padding: 25px 20px;
   border-right: 2px solid rgb(228, 228, 228);
+}
+
+.container_placeholder {
+  min-width: 270px;
+  height: 100vh;
 }
 
 .logo_image {
@@ -53,6 +59,11 @@
     flex-direction: column;
     align-items: center;
     width: fit-content;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .container_placeholder {
+    min-width: 90px;
   }
 
   .logo_image {

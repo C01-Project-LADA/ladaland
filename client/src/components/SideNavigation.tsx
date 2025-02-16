@@ -22,28 +22,32 @@ export default function SideNavigation() {
   console.log(pathname);
 
   return (
-    <nav className={styles.container}>
-      <Link href="/home">
-        <p className={styles.logo_text}>lada land</p>
-        <Image
-          src="/logo.svg"
-          alt="LADA LAND"
-          width={50}
-          height={50}
-          className={styles.logo_image}
-        />
-      </Link>
+    <>
+      <div className={styles.container_placeholder} />
 
-      <ul className={styles.links}>
-        {links.map(({ href, text, icon }) => (
-          <Link key={href} href={href}>
-            <li className={pathname === href ? styles.active : styles.link}>
-              {icon}
-              <p className={styles.link_text}>{text.toUpperCase()}</p>
-            </li>
-          </Link>
-        ))}
-      </ul>
-    </nav>
+      <nav className={styles.container}>
+        <Link href="/home">
+          <p className={styles.logo_text}>lada land</p>
+          <Image
+            src="/logo.svg"
+            alt="LADA LAND"
+            width={50}
+            height={50}
+            className={styles.logo_image}
+          />
+        </Link>
+
+        <ul className={styles.links}>
+          {links.map(({ href, text, icon }) => (
+            <Link key={href} href={href}>
+              <li className={pathname === href ? styles.active : styles.link}>
+                {icon}
+                <p className={styles.link_text}>{text.toUpperCase()}</p>
+              </li>
+            </Link>
+          ))}
+        </ul>
+      </nav>
+    </>
   );
 }
