@@ -54,14 +54,28 @@ export default function PassportChecker() {
   });
   const visaFreeCountries = useMemo(
     () =>
-      visaRequirements?.filter(
-        (req) =>
-          req.requirement !== 'visa on arrival' &&
-          req.requirement !== 'eta' &&
-          req.requirement !== 'e-visa' &&
-          req.requirement !== 'visa required' &&
-          req.requirement !== 'no admission'
-      ) || [],
+      visaRequirements
+        ?.filter(
+          (req) =>
+            req.requirement !== 'visa on arrival' &&
+            req.requirement !== 'eta' &&
+            req.requirement !== 'e-visa' &&
+            req.requirement !== 'visa required' &&
+            req.requirement !== 'no admission'
+        )
+        .sort(({ requirement: reqA }, { requirement: reqB }) => {
+          // Sort by # of days descending, then by unknown days
+          const numA = parseInt(reqA, 10);
+          const numB = parseInt(reqB, 10);
+          const isNumA = !isNaN(numA);
+          const isNumB = !isNaN(numB);
+
+          if (!isNumA && !isNumB) return reqA.localeCompare(reqB);
+          if (!isNumA) return 1;
+          if (!isNumB) return -1;
+
+          return numB - numA;
+        }) || [],
     [visaRequirements]
   );
   const visaOnArrivalCountries = useMemo(
@@ -261,52 +275,39 @@ export default function PassportChecker() {
             <div className={styles.country_results}>
               {visaReqsLoading
                 ? countrySkeletons
-                : visaFreeCountries
-                    .sort(({ requirement: reqA }, { requirement: reqB }) => {
-                      const numA = parseInt(reqA);
-                      const numB = parseInt(reqB);
-                      const isNumA = !isNaN(numA);
-                      const isNumB = !isNaN(numB);
-
-                      if (!isNumA && !isNumB) return reqA.localeCompare(reqB);
-                      if (!isNumA) return -1;
-                      if (!isNumB) return 1;
-
-                      return numB - numA;
-                    })
-                    .map((req) => (
-                      <div
-                        key={req.destination}
-                        className="flex items-center gap-1.5"
-                      >
-                        <div className="w-[35px]">
-                          <AspectRatio ratio={4 / 3}>
-                            <Image
-                              loading="lazy"
-                              src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                              fill
-                              alt={ct.getName(req.destination, 'en') || ''}
-                              className="h-full w-full rounded-md object-contain"
-                            />
-                          </AspectRatio>
-                        </div>
-                        <p className="text-gray-800 text-sm">
-                          {ct.getName(req.destination, 'en')}
-                        </p>
-                        {haveMultiplePassports && (
-                          <p
-                            className="text-gray-600 text-xs -ml-1 mb-[-10px] mr-1"
-                            title={`Use this passport to access ${ct.getName(
-                              req.destination,
-                              'en'
-                            )} visa-free`}
-                          >
-                            {req.passport}
-                          </p>
-                        )}
-                        <Badge>{req.requirement}</Badge>
+                : visaFreeCountries.map((req) => (
+                    <div
+                      key={req.destination}
+                      className="flex items-center gap-1.5"
+                    >
+                      <div className="w-[35px]">
+                        <AspectRatio ratio={4 / 3}>
+                          <Image
+                            loading="lazy"
+                            src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
+                            fill
+                            alt={ct.getName(req.destination, 'en') || ''}
+                            className="h-full w-full rounded-md object-contain"
+                          />
+                        </AspectRatio>
                       </div>
-                    ))}
+                      <p className="text-gray-800 text-sm">
+                        {ct.getName(req.destination, 'en')}
+                      </p>
+                      {haveMultiplePassports && (
+                        <p
+                          className="text-gray-600 text-xs -ml-1 mb-[-10px] mr-1"
+                          title={`Use this passport to access ${ct.getName(
+                            req.destination,
+                            'en'
+                          )} visa-free`}
+                        >
+                          {req.passport}
+                        </p>
+                      )}
+                      <Badge>{req.requirement}</Badge>
+                    </div>
+                  ))}
             </div>
           </div>
           <div className="mt-10">
