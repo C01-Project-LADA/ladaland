@@ -18,8 +18,6 @@ import Pagination from '@/components/Pagination';
 import { Input } from '@/components/ui/input';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import useCountries from '@/hooks/useCountries';
-import Image from 'next/image';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Skeleton } from '@/components/ui/skeleton';
 import SectionHeading from '@/components/SectionHeading';
 import useVisaRequirements from '@/hooks/useVisaRequirements';
@@ -205,16 +203,9 @@ export default function PassportChecker() {
                         <Check strokeWidth="3px" size="28px" />
                       </div>
                     )}
-                    <div className="w-4/5">
-                      <AspectRatio ratio={4 / 3} className="bg-muted">
-                        <Image
-                          src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
-                          fill
-                          alt={country.name}
-                          className="h-full w-full rounded-md object-contain"
-                        />
-                      </AspectRatio>
-                    </div>
+                    <span
+                      className={`fi !w-4/5 max-w-[80px] aspect-[4/3] fi-${country.code.toLowerCase()} bg-muted rounded-md`}
+                    />
                     <p>{country.name}</p>
                   </div>
                 </Button>
@@ -235,16 +226,9 @@ export default function PassportChecker() {
                 className="flex items-center justify-between mb-3"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-[50px]">
-                    <AspectRatio ratio={4 / 3} className="bg-muted">
-                      <Image
-                        src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
-                        fill
-                        alt={country.name}
-                        className="h-full w-full rounded-md object-contain"
-                      />
-                    </AspectRatio>
-                  </div>
+                  <span
+                    className={`fi !w-[50px] max-w-[80px] aspect-[4/3] fi-${country.code.toLowerCase()} bg-muted rounded-md`}
+                  />
                   <p className="text-gray-800 font-medium">{country.name}</p>
                   {haveMultiplePassports && (
                     <p className="text-gray-600 text-xs -ml-3 mb-[-10px]">
@@ -280,17 +264,9 @@ export default function PassportChecker() {
                       key={req.destination}
                       className="flex items-center gap-1.5"
                     >
-                      <div className="w-[35px]">
-                        <AspectRatio ratio={4 / 3}>
-                          <Image
-                            loading="lazy"
-                            src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                            fill
-                            alt={ct.getName(req.destination, 'en') || ''}
-                            className="h-full w-full rounded-md object-contain"
-                          />
-                        </AspectRatio>
-                      </div>
+                      <span
+                        className={`fi !w-[35px] max-w-[80px] aspect-[4/3] fi-${req.destination.toLowerCase()} bg-muted rounded-md`}
+                      />
                       <p className="text-gray-800 text-sm">
                         {ct.getName(req.destination, 'en')}
                       </p>
@@ -325,17 +301,9 @@ export default function PassportChecker() {
                       key={req.destination}
                       className="flex items-center gap-1.5"
                     >
-                      <div className="w-[35px]">
-                        <AspectRatio ratio={4 / 3}>
-                          <Image
-                            loading="lazy"
-                            src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                            fill
-                            alt={ct.getName(req.destination, 'en') || ''}
-                            className="h-full w-full rounded-md object-contain"
-                          />
-                        </AspectRatio>
-                      </div>
+                      <span
+                        className={`fi !w-[35px] max-w-[80px] aspect-[4/3] fi-${req.destination.toLowerCase()} bg-muted rounded-md`}
+                      />
                       <p className="text-gray-800 text-sm">
                         {ct.getName(req.destination, 'en')}
                       </p>
@@ -369,17 +337,9 @@ export default function PassportChecker() {
                       key={req.destination}
                       className="flex items-center gap-1.5"
                     >
-                      <div className="w-[35px]">
-                        <AspectRatio ratio={4 / 3}>
-                          <Image
-                            loading="lazy"
-                            src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                            fill
-                            alt={ct.getName(req.destination, 'en') || ''}
-                            className="h-full w-full rounded-md object-contain"
-                          />
-                        </AspectRatio>
-                      </div>
+                      <span
+                        className={`fi !w-[35px] max-w-[80px] aspect-[4/3] fi-${req.destination.toLowerCase()} bg-muted rounded-md`}
+                      />
                       <p className="text-gray-800 text-sm">
                         {ct.getName(req.destination, 'en')}
                       </p>
@@ -413,17 +373,9 @@ export default function PassportChecker() {
                       key={req.destination}
                       className="flex items-center gap-1.5"
                     >
-                      <div className="w-[35px]">
-                        <AspectRatio ratio={4 / 3}>
-                          <Image
-                            loading="lazy"
-                            src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                            fill
-                            alt={ct.getName(req.destination, 'en') || ''}
-                            className="h-full w-full rounded-md object-contain"
-                          />
-                        </AspectRatio>
-                      </div>
+                      <span
+                        className={`fi !w-[35px] max-w-[80px] aspect-[4/3] fi-${req.destination.toLowerCase()} bg-muted rounded-md`}
+                      />
                       <p className="text-gray-800 text-sm">
                         {ct.getName(req.destination, 'en')}
                       </p>
@@ -457,17 +409,9 @@ export default function PassportChecker() {
                       key={req.destination}
                       className="flex items-center gap-1.5"
                     >
-                      <div className="w-[35px]">
-                        <AspectRatio ratio={4 / 3}>
-                          <Image
-                            loading="lazy"
-                            src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                            fill
-                            alt={ct.getName(req.destination, 'en') || ''}
-                            className="h-full w-full rounded-md object-contain"
-                          />
-                        </AspectRatio>
-                      </div>
+                      <span
+                        className={`fi !w-[35px] max-w-[80px] aspect-[4/3] fi-${req.destination.toLowerCase()} bg-muted rounded-md`}
+                      />
                       <p className="text-gray-800 text-sm">
                         {ct.getName(req.destination, 'en')}
                       </p>
@@ -503,17 +447,9 @@ export default function PassportChecker() {
                         key={req.destination}
                         className="flex items-center gap-1.5"
                       >
-                        <div className="w-[35px]">
-                          <AspectRatio ratio={4 / 3}>
-                            <Image
-                              loading="lazy"
-                              src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
-                              fill
-                              alt={ct.getName(req.destination, 'en') || ''}
-                              className="h-full w-full rounded-md object-contain"
-                            />
-                          </AspectRatio>
-                        </div>
+                        <span
+                          className={`fi !w-[35px] max-w-[80px] aspect-[4/3] fi-${req.destination.toLowerCase()} bg-muted rounded-md`}
+                        />
                         <p className="text-gray-800 text-sm">
                           {ct.getName(req.destination, 'en')}
                         </p>
