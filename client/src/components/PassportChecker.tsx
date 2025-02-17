@@ -34,9 +34,7 @@ export default function PassportChecker() {
   const [page, setPage] = useState(1);
   const [passportSearchOpen, setPassportSearchOpen] = useState(false);
 
-  const [hasPassport, setHasPassport] = useState<
-    Record<string, Country & { index: number }>
-  >({});
+  const [hasPassport, setHasPassport] = useState<Record<string, Country>>({});
 
   // Reset page when search changes
   useEffect(() => {
@@ -49,6 +47,7 @@ export default function PassportChecker() {
     page,
   });
   const passports = useMemo(() => Object.keys(hasPassport), [hasPassport]);
+  const haveMultiplePassports = passports.length > 1;
 
   const { visaRequirements, loading: visaReqsLoading } = useVisaRequirements({
     passports,
@@ -111,7 +110,7 @@ export default function PassportChecker() {
     setPassportSearchOpen(false);
     setHasPassport((prev) => ({
       ...prev,
-      [country.code]: { ...country, index: Object.keys(prev).length + 1 },
+      [country.code]: country,
     }));
     setSearch('');
     setPage(1);
@@ -232,7 +231,12 @@ export default function PassportChecker() {
                       />
                     </AspectRatio>
                   </div>
-                  <p className="text-gray-600 font-medium">{country.name}</p>
+                  <p className="text-gray-800 font-medium">{country.name}</p>
+                  {haveMultiplePassports && (
+                    <p className="text-gray-600 text-xs -ml-3 mb-[-10px]">
+                      {country.code}
+                    </p>
+                  )}
                 </div>
 
                 <Button
@@ -286,9 +290,20 @@ export default function PassportChecker() {
                             />
                           </AspectRatio>
                         </div>
-                        <p className="text-gray-600 text-sm">
+                        <p className="text-gray-800 text-sm">
                           {ct.getName(req.destination, 'en')}
                         </p>
+                        {haveMultiplePassports && (
+                          <p
+                            className="text-gray-600 text-xs -ml-1 mb-[-10px] mr-1"
+                            title={`Use this passport to access ${ct.getName(
+                              req.destination,
+                              'en'
+                            )}`}
+                          >
+                            {req.passport}
+                          </p>
+                        )}
                         <Badge>{req.requirement}</Badge>
                       </div>
                     ))}
@@ -320,9 +335,20 @@ export default function PassportChecker() {
                           />
                         </AspectRatio>
                       </div>
-                      <p className="text-gray-600 text-sm">
+                      <p className="text-gray-800 text-sm">
                         {ct.getName(req.destination, 'en')}
                       </p>
+                      {haveMultiplePassports && (
+                        <p
+                          className="text-gray-600 text-xs -ml-1 mb-[-10px]"
+                          title={`Use this passport to access ${ct.getName(
+                            req.destination,
+                            'en'
+                          )}`}
+                        >
+                          {req.passport}
+                        </p>
+                      )}
                     </div>
                   ))}
             </div>
@@ -353,9 +379,20 @@ export default function PassportChecker() {
                           />
                         </AspectRatio>
                       </div>
-                      <p className="text-gray-600 text-sm">
+                      <p className="text-gray-800 text-sm">
                         {ct.getName(req.destination, 'en')}
                       </p>
+                      {haveMultiplePassports && (
+                        <p
+                          className="text-gray-600 text-xs -ml-1 mb-[-10px]"
+                          title={`Use this passport to access ${ct.getName(
+                            req.destination,
+                            'en'
+                          )}`}
+                        >
+                          {req.passport}
+                        </p>
+                      )}
                     </div>
                   ))}
             </div>
@@ -386,9 +423,20 @@ export default function PassportChecker() {
                           />
                         </AspectRatio>
                       </div>
-                      <p className="text-gray-600 text-sm">
+                      <p className="text-gray-800 text-sm">
                         {ct.getName(req.destination, 'en')}
                       </p>
+                      {haveMultiplePassports && (
+                        <p
+                          className="text-gray-600 text-xs -ml-1 mb-[-10px]"
+                          title={`Use this passport to access ${ct.getName(
+                            req.destination,
+                            'en'
+                          )}`}
+                        >
+                          {req.passport}
+                        </p>
+                      )}
                     </div>
                   ))}
             </div>
@@ -419,9 +467,20 @@ export default function PassportChecker() {
                           />
                         </AspectRatio>
                       </div>
-                      <p className="text-gray-600 text-sm">
+                      <p className="text-gray-800 text-sm">
                         {ct.getName(req.destination, 'en')}
                       </p>
+                      {haveMultiplePassports && (
+                        <p
+                          className="text-gray-600 text-xs -ml-1 mb-[-10px]"
+                          title={`Use this passport to access ${ct.getName(
+                            req.destination,
+                            'en'
+                          )}`}
+                        >
+                          {req.passport}
+                        </p>
+                      )}
                     </div>
                   ))}
             </div>
