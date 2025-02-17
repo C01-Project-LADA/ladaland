@@ -85,12 +85,12 @@ export default function PassportChecker() {
       [],
     [visaRequirements]
   );
-  // const noAdmissionCountries = useMemo(
-  //   () =>
-  //     visaRequirements?.filter((req) => req.requirement === 'no admission') ||
-  //     [],
-  //   [visaRequirements]
-  // );
+  const noAdmissionCountries = useMemo(
+    () =>
+      visaRequirements?.filter((req) => req.requirement === 'no admission') ||
+      [],
+    [visaRequirements]
+  );
 
   const modalInputRef = useRef<HTMLInputElement>(null);
 
@@ -485,6 +485,53 @@ export default function PassportChecker() {
                   ))}
             </div>
           </div>
+
+          {noAdmissionCountries.length !== 0 && (
+            <div className="mt-10 mb-10">
+              <SectionHeading
+                title="No admission"
+                subtitle={`${noAdmissionCountries.length} countr${
+                  noAdmissionCountries.length === 1 ? 'y' : 'ies'
+                }`}
+              />
+              <div className={styles.country_results}>
+                {visaReqsLoading
+                  ? countrySkeletons
+                  : noAdmissionCountries.map((req) => (
+                      <div
+                        key={req.destination}
+                        className="flex items-center gap-1.5"
+                      >
+                        <div className="w-[35px]">
+                          <AspectRatio ratio={4 / 3}>
+                            <Image
+                              loading="lazy"
+                              src={`https://flagcdn.com/${req.destination.toLowerCase()}.svg`}
+                              fill
+                              alt={ct.getName(req.destination, 'en') || ''}
+                              className="h-full w-full rounded-md object-contain"
+                            />
+                          </AspectRatio>
+                        </div>
+                        <p className="text-gray-800 text-sm">
+                          {ct.getName(req.destination, 'en')}
+                        </p>
+                        {haveMultiplePassports && (
+                          <p
+                            className="text-gray-600 text-xs -ml-1 mb-[-10px]"
+                            title={`This passport is not admitted in ${ct.getName(
+                              req.destination,
+                              'en'
+                            )}`}
+                          >
+                            {req.passport}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>
