@@ -1,11 +1,24 @@
 'use client';
 
 import styles from '@/styles/SideNavigation.module.css';
-import { House, Plane, MessageCircle, Trophy, BookText } from 'lucide-react';
+import {
+  House,
+  Plane,
+  MessageCircle,
+  Trophy,
+  BookText,
+  CircleUserRound,
+} from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { Separator } from '@/components/ui/separator';
 
 const links = [
   { href: '/home', text: 'Home', icon: <House /> },
@@ -13,25 +26,15 @@ const links = [
   { href: '/social', text: 'Social', icon: <MessageCircle /> },
   { href: '/leaderboard', text: 'Leaderboard', icon: <Trophy /> },
   { href: '/passport-tool', text: 'Passport Tool', icon: <BookText /> },
-  // TODO: Change profile to personal pfp
-  {
-    href: '/profile',
-    text: 'Profile',
-    icon: (
-      <Avatar className="w-8 h-8 -ml-1 -mr-1">
-        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-        <AvatarFallback className="font-semibold text-gray-600">
-          CN
-        </AvatarFallback>
-      </Avatar>
-    ),
-  },
 ];
 
 // TODO: Don't show if user unauthenticated
 export default function SideNavigation() {
   const pathname = usePathname();
-  console.log(pathname);
+
+  function handleLogOut() {
+    // TODO: Implement logout and redirect to "/"
+  }
 
   return (
     <>
@@ -58,6 +61,55 @@ export default function SideNavigation() {
               </li>
             </Link>
           ))}
+
+          <HoverCard openDelay={150} closeDelay={500}>
+            <HoverCardTrigger>
+              <li
+                className={
+                  pathname === '/profile' ? styles.active : styles.link
+                }
+              >
+                <Avatar className="w-8 h-8 -ml-1 -mr-1">
+                  <AvatarImage
+                    src="https://github.com/shadcn.png"
+                    alt="@shadcn"
+                  />
+                  <AvatarFallback className="font-semibold text-gray-600">
+                    CN
+                  </AvatarFallback>
+                </Avatar>
+                <p className={styles.link_text}>PROFILE</p>
+              </li>
+            </HoverCardTrigger>
+            <HoverCardContent
+              side="right"
+              sideOffset={15}
+              className="border border-2 border-[#e4e4e4]"
+            >
+              <Link href="/profile">
+                <li className={styles.link}>
+                  <CircleUserRound />
+                  <p>MY PROFILE</p>
+                </li>
+              </Link>
+
+              <Separator className="my-3" />
+
+              {/* TODO: decide if ABOUT needed or not */}
+              <Link href="/">
+                <li className={styles.link}>
+                  <p>ABOUT</p>
+                </li>
+              </Link>
+
+              <button
+                className={`${styles.link} w-full`}
+                onClick={handleLogOut}
+              >
+                <li>LOG OUT</li>
+              </button>
+            </HoverCardContent>
+          </HoverCard>
         </ul>
       </nav>
     </>
