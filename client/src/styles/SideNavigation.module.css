@@ -4,6 +4,8 @@
   height: 100vh;
   padding: 25px 20px;
   border-right: 2px solid rgb(228, 228, 228);
+  background-color: var(--lada-bg);
+  z-index: 10;
 }
 
 .container_placeholder {
