@@ -299,7 +299,7 @@ export default function PassportChecker() {
                             title={`Use this passport to access ${ct.getName(
                               req.destination,
                               'en'
-                            )}`}
+                            )} visa-free`}
                           >
                             {req.passport}
                           </p>
@@ -344,7 +344,7 @@ export default function PassportChecker() {
                           title={`Use this passport to access ${ct.getName(
                             req.destination,
                             'en'
-                          )}`}
+                          )} with visa on arrival`}
                         >
                           {req.passport}
                         </p>
@@ -388,7 +388,7 @@ export default function PassportChecker() {
                           title={`Use this passport to access ${ct.getName(
                             req.destination,
                             'en'
-                          )}`}
+                          )} with an eTA`}
                         >
                           {req.passport}
                         </p>
@@ -432,7 +432,7 @@ export default function PassportChecker() {
                           title={`Use this passport to access ${ct.getName(
                             req.destination,
                             'en'
-                          )}`}
+                          )} with an e-Visa`}
                         >
                           {req.passport}
                         </p>
@@ -473,7 +473,7 @@ export default function PassportChecker() {
                       {haveMultiplePassports && (
                         <p
                           className="text-gray-600 text-xs -ml-1 mb-[-10px]"
-                          title={`Use this passport to access ${ct.getName(
+                          title={`This passport requires visa to access ${ct.getName(
                             req.destination,
                             'en'
                           )}`}
