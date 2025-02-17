@@ -49,7 +49,6 @@ export default function PassportChecker() {
     page,
   });
   const passports = useMemo(() => Object.keys(hasPassport), [hasPassport]);
-  const haveMultiplePassports = passports.length > 1;
 
   const { visaRequirements, loading: visaReqsLoading } = useVisaRequirements({
     passports,
@@ -122,16 +121,7 @@ export default function PassportChecker() {
     setHasPassport((prev) => {
       const newPassports = { ...prev };
       delete newPassports[country.code];
-
-      const updatedPassports = Object.keys(newPassports).reduce(
-        (acc, code, index) => {
-          acc[code] = { ...newPassports[code], index: index + 1 };
-          return acc;
-        },
-        {} as Record<string, Country & { index: number }>
-      );
-
-      return updatedPassports;
+      return newPassports;
     });
   }
 
@@ -243,11 +233,6 @@ export default function PassportChecker() {
                     </AspectRatio>
                   </div>
                   <p className="text-gray-600 font-medium">{country.name}</p>
-                  {haveMultiplePassports && (
-                    <p className="text-gray-600 text-xs -ml-3 mb-[-10px]">
-                      {country.index}
-                    </p>
-                  )}
                 </div>
 
                 <Button
@@ -304,11 +289,6 @@ export default function PassportChecker() {
                         <p className="text-gray-600 text-sm">
                           {ct.getName(req.destination, 'en')}
                         </p>
-                        {haveMultiplePassports && (
-                          <p className="text-gray-600 text-xs -ml-1 mb-[-10px] mr-1">
-                            {hasPassport[req.passport]?.index}
-                          </p>
-                        )}
                         <Badge>{req.requirement}</Badge>
                       </div>
                     ))}
@@ -343,11 +323,6 @@ export default function PassportChecker() {
                       <p className="text-gray-600 text-sm">
                         {ct.getName(req.destination, 'en')}
                       </p>
-                      {haveMultiplePassports && (
-                        <p className="text-gray-600 text-xs -ml-1 mb-[-10px]">
-                          {hasPassport[req.passport]?.index}
-                        </p>
-                      )}
                     </div>
                   ))}
             </div>
@@ -381,11 +356,6 @@ export default function PassportChecker() {
                       <p className="text-gray-600 text-sm">
                         {ct.getName(req.destination, 'en')}
                       </p>
-                      {haveMultiplePassports && (
-                        <p className="text-gray-600 text-xs -ml-1 mb-[-10px]">
-                          {hasPassport[req.passport]?.index}
-                        </p>
-                      )}
                     </div>
                   ))}
             </div>
@@ -419,11 +389,6 @@ export default function PassportChecker() {
                       <p className="text-gray-600 text-sm">
                         {ct.getName(req.destination, 'en')}
                       </p>
-                      {haveMultiplePassports && (
-                        <p className="text-gray-600 text-xs -ml-1 mb-[-10px]">
-                          {hasPassport[req.passport]?.index}
-                        </p>
-                      )}
                     </div>
                   ))}
             </div>
@@ -457,11 +422,6 @@ export default function PassportChecker() {
                       <p className="text-gray-600 text-sm">
                         {ct.getName(req.destination, 'en')}
                       </p>
-                      {haveMultiplePassports && (
-                        <p className="text-gray-600 text-xs -ml-1 mb-[-10px]">
-                          {hasPassport[req.passport]?.index}
-                        </p>
-                      )}
                     </div>
                   ))}
             </div>
