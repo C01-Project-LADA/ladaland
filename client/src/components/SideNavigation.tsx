@@ -2,6 +2,7 @@
 
 import styles from '@/styles/SideNavigation.module.css';
 import { House, Plane, MessageCircle, Trophy, BookText } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -13,7 +14,18 @@ const links = [
   { href: '/leaderboard', text: 'Leaderboard', icon: <Trophy /> },
   { href: '/passport-tool', text: 'Passport Tool', icon: <BookText /> },
   // TODO: Change profile to personal pfp
-  { href: '/profile', text: 'Profile', icon: <BookText /> },
+  {
+    href: '/profile',
+    text: 'Profile',
+    icon: (
+      <Avatar className="w-8 h-8 -ml-1 -mr-1">
+        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+        <AvatarFallback className="font-semibold text-gray-600">
+          CN
+        </AvatarFallback>
+      </Avatar>
+    ),
+  },
 ];
 
 // TODO: Don't show if user unauthenticated
