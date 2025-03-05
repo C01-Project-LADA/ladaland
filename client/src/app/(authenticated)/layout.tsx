@@ -3,6 +3,7 @@ import { Nunito_Sans } from 'next/font/google';
 import SideNavigation from '@/components/SideNavigation';
 import Dashboard from '@/components/Dashboard';
 import '@/app/globals.css';
+import 'flag-icons/css/flag-icons.min.css';
 
 const nunito_sans = Nunito_Sans({
   // variable: '--font-nunito_sans',
