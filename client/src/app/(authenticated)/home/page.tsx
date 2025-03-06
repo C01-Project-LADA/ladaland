@@ -2,11 +2,7 @@
 
 import dynamic from 'next/dynamic';
 const Globe = dynamic(() => import('react-globe.gl'), { ssr: false });
-import {
-  useCallback,
-  // useCallback,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import countries from '@/lib/geocountries.json';
 import useScreenDimensions from '@/hooks/useScreenDimensions';
 
@@ -15,9 +11,15 @@ export default function Home() {
   const { height } = useScreenDimensions();
 
   const [hoverD, setHoverD] = useState<GlobeCountry>();
-  // const currentCountryCode = hoverD?.properties?.ISO_A2;
 
   const [visitedCountries, setVisitedCountries] = useState<string[]>([]);
+
+  // Fetch user visited countries and populate visitedCountries state
+  useEffect(() => {
+    // TODO: Fetch user visited countries and populate visitedCountries state
+    // ...
+  }, []);
+
   const getPolygonCapColor = useCallback(
     (d: GlobeCountry) => {
       if (visitedCountries.includes(d.properties.ISO_A2)) {
@@ -28,12 +30,17 @@ export default function Home() {
     [visitedCountries]
   );
 
+  /**
+   * Handle right click event for a country on the 3D globe
+   */
   const handleRightClick = useCallback(
     (d: GlobeCountry) => {
       const countryCode = d.properties.ISO_A2;
       if (visitedCountries.includes(countryCode)) {
+        // TODO: Remove country as visited in backend
         setVisitedCountries((prev) => prev.filter((c) => c !== countryCode));
       } else {
+        // TODO: Add country as visited in backend
         setVisitedCountries((prev) => [...prev, countryCode]);
       }
     },
@@ -50,7 +57,6 @@ export default function Home() {
         polygonsData={countries.features}
         polygonAltitude={(d) => (d === hoverD ? 0.03 : 0.01)}
         polygonStrokeColor={() => '#111'}
-        // TODO: Adjust color based on visited or not
         // @ts-expect-error: react-globe.gl has terrible ts support, SAD!
         polygonCapColor={getPolygonCapColor}
         polygonSideColor={() => '#14c600'}
@@ -89,7 +95,6 @@ export default function Home() {
                 ? 'Marked as visited'
                 : 'Right click to mark as visited!'}
             </p>
-            {/* <p>Visited 09/24/2024</p> */}
           </div>
         )}
         polygonsTransitionDuration={300}
