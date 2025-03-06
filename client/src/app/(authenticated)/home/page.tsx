@@ -13,25 +13,8 @@ import useScreenDimensions from '@/hooks/useScreenDimensions';
 export default function Home() {
   const { height } = useScreenDimensions();
 
-  const [hoverD, setHoverD] = useState();
-
-  // const getRandomColor = useCallback(() => {
-  //   // Base color: #14C600 (r: 20, g: 198, b: 0)
-  //   const base = { r: 20, g: 198, b: 0 };
-  //   const variation = 100; // Variation range for each channel
-
-  //   // Generate a random offset in the range [-variation, variation]
-  //   const randomOffset = () =>
-  //     Math.floor(Math.random() * (variation * 2 + 1)) - variation;
-
-  //   // Compute new RGB values and clamp them between 0 and 255
-  //   const r = Math.min(255, Math.max(0, base.r + randomOffset()));
-  //   const g = Math.min(255, Math.max(0, base.g + randomOffset()));
-  //   const b = Math.min(255, Math.max(0, base.b + randomOffset()));
-
-  //   // Convert the RGB values
-  //   return `rgba(${r}, ${g}, ${b}, 0.8)`;
-  // }, []);
+  const [hoverD, setHoverD] = useState<GlobeCountry>();
+  // const currentCountryCode = hoverD?.properties?.ISO_A2;
 
   return (
     <div id="globe">
@@ -43,6 +26,7 @@ export default function Home() {
         polygonsData={countries.features}
         polygonAltitude={(d) => (d === hoverD ? 0.03 : 0.01)}
         polygonStrokeColor={() => '#111'}
+        // TODO: Adjust color based on visited or not
         polygonCapColor={() => 'rgba(20, 198, 0, 0.7)'}
         polygonSideColor={() => '#14c600'}
         // @ts-expect-error: react-globe.gl has terrible ts support, SAD!
@@ -52,7 +36,27 @@ export default function Home() {
           console.log(polygon.properties.ISO_A2);
         }}
         // @ts-expect-error: react-globe.gl has terrible ts support, SAD!
-        polygonLabel={({ properties: d }) => d.ADMIN}
+        polygonLabel={({ properties: d }) => (
+          <div className="p-2 w-fit flex gap-2">
+            <div className="flex-[3]">
+              <p className="text-xl font-bold leading-none">{d.ADMIN}</p>
+              <p className="text-xs mt-1 font-light text-gray-300">
+                {(d.CONTINENT as string).toUpperCase()}
+              </p>
+              <p className="text-sm mt-2 font-light leading-none">
+                Click to plan your next plan trip here!
+              </p>
+              {/* <p>Visited 09/24/2024</p> */}
+            </div>
+            <div className="flex-1">
+              <span
+                className={`fi !w-full aspect-[4/3] fi-${(
+                  d.ISO_A2 as string
+                ).toLowerCase()} rounded-md`}
+              />
+            </div>
+          </div>
+        )}
         polygonsTransitionDuration={300}
       />
     </div>
