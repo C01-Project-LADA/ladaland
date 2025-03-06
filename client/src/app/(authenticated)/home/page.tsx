@@ -15,24 +15,31 @@ export default function Home() {
   const [hoverD, setHoverD] = useState<GlobeCountry>();
 
   const [visitedCountries, setVisitedCountries] = useState<string[]>([]);
+  const [visitedMessage, setVisitedMessage] = useState<string>('Loading...');
 
   // Fetch user visited countries and populate visitedCountries state
   useEffect(() => {
-    async function fetchVisitedCountries() {
+    async function fetchVisitedData() {
       try {
-        const response = await axios.get(
-          'http://localhost:4000/api/getVisitedCountries',
-          { withCredentials: true }
-        );
-        if (response.status === 200) {
-          setVisitedCountries(response.data.visitedCountries);
+        const [countriesResponse, percentResponse] = await Promise.all([
+          axios.get('http://localhost:4000/api/getVisitedCountries', { withCredentials: true }),
+          axios.get('http://localhost:4000/api/visitedCountriesPercent', { withCredentials: true }),
+        ]);
+
+        if (countriesResponse.status === 200) {
+          setVisitedCountries(countriesResponse.data.visitedCountries);
+        }
+
+        if (percentResponse.status === 200) {
+          setVisitedMessage(percentResponse.data.message);
         }
       } catch (error) {
         console.error('Error fetching visited countries:', error);
+        setVisitedMessage('Error loading travel progress.');
       }
     }
 
-    fetchVisitedCountries();
+    fetchVisitedData();
   }, []);
 
   const getPolygonCapColor = useCallback(
@@ -63,6 +70,11 @@ export default function Home() {
 
         if (response.status === 200) {
           setVisitedCountries(response.data.visitedCountries);
+
+          const percentResponse = await axios.get('http://localhost:4000/api/visitedCountriesPercent', { withCredentials: true });
+          if (percentResponse.status === 200) {
+            setVisitedMessage(percentResponse.data.message);
+          }
         }
       } catch (error) {
         console.error(`Error ${action}ing country ${countryCode}:`, error);
@@ -73,7 +85,7 @@ export default function Home() {
 
   return (
     <div id="globe">
-      <VisitedCountriesBanner />
+      <VisitedCountriesBanner visitedMessage={visitedMessage} />
       <Globe
         width={500}
         height={height}
