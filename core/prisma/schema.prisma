@@ -21,7 +21,21 @@ model User {
   username  String  @unique
   email     String  @unique
   password  String
-  phone     String? // Optional phone number
+  phone     String?
   createdAt DateTime @default(now())
   visitedCountries String?
+  posts     Post[]
+}
+
+model Post {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  country    String
+  content    String
+  images     Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId])
 }
