@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { body, param } from "express-validator";
 
 const router = Router();
@@ -71,17 +71,27 @@ router.delete(
 );
 
 router.get("/", async (req: Request, res: Response): Promise<void> => {
+  const { sortBy } = req.query;
+
   try {
+    const orderByClause =
+      sortBy === "mostRecent"
+        ? { createdAt: "desc" as Prisma.SortOrder }
+        : sortBy === "leastRecent"
+        ? { createdAt: "asc" as Prisma.SortOrder }
+        : undefined;
+
     const posts = await prisma.post.findMany({
       include: {
         user: { select: { username: true } },
         postVotes: true,
       },
+      orderBy: orderByClause,
     });
 
-    const formattedPosts = posts.map(post => {
-      const likes = post.postVotes.filter(vote => vote.type === "LIKE").length;
-      const dislikes = post.postVotes.filter(vote => vote.type === "DISLIKE").length;
+    let formattedPosts = posts.map((post) => {
+      const likes = post.postVotes.filter((vote) => vote.type === "LIKE").length;
+      const dislikes = post.postVotes.filter((vote) => vote.type === "DISLIKE").length;
 
       return {
         id: post.id,
@@ -96,6 +106,12 @@ router.get("/", async (req: Request, res: Response): Promise<void> => {
         dislikes,
       };
     });
+
+    if (sortBy === "mostLiked") {
+      formattedPosts.sort((a, b) => b.likes - a.likes);
+    } else if (sortBy === "leastLiked") {
+      formattedPosts.sort((a, b) => a.likes - b.likes);
+    }
 
     res.status(200).json(formattedPosts);
   } catch (error) {
