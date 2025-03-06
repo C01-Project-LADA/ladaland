@@ -1,5 +1,6 @@
 'use client';
 
+import VisitedCountriesBanner from '@/components/VisitedCountriesBanner';
 import dynamic from 'next/dynamic';
 const Globe = dynamic(() => import('react-globe.gl'), { ssr: false });
 import { useCallback, useEffect, useState } from 'react';
@@ -72,6 +73,7 @@ export default function Home() {
 
   return (
     <div id="globe">
+      <VisitedCountriesBanner />
       <Globe
         width={500}
         height={height}
