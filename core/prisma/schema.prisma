@@ -25,6 +25,7 @@ model User {
   createdAt DateTime @default(now())
   visitedCountries String?
   posts     Post[]
+  postVotes PostVote[]
 }
 
 model Post {
@@ -36,6 +37,21 @@ model Post {
   images     Json?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
   @@index([userId])
+  postVotes  PostVote[]
+}
+
+model PostVote {
+  id      String  @id @default(uuid())
+  userId  String
+  postId  String
+  type    VoteType
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post    Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@unique([userId, postId])
+}
+
+enum VoteType {
+  LIKE
+  DISLIKE
 }
