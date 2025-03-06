@@ -1,6 +1,6 @@
 'use client';
 
-import VisitedCountriesBanner from '@/components/VisitedCountriesBanner';
+import PageBanner from '@/components/PageBanner';
 import dynamic from 'next/dynamic';
 const Globe = dynamic(() => import('react-globe.gl'), { ssr: false });
 import { useCallback, useEffect, useState } from 'react';
@@ -91,8 +91,15 @@ export default function Home() {
   );
 
   return (
-    <div>
-      <VisitedCountriesBanner visitedMessage={visitedMessage} />
+    <div
+      className="pl-[20px] pt-[30px]"
+      style={{ width: 'clamp(200px, 50vw, 500px)' }}
+    >
+      <PageBanner
+        title="TRAVEL PROGRESS"
+        message={visitedMessage}
+        variant="blue"
+      />
       <div id="globe" className="-mt-10">
         <Globe
           width={500}
