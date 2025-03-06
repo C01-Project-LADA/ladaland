@@ -13,6 +13,7 @@ import travelSuggestionsRoute from './routes/travel-suggestions';
 import markVistedCountriesRoute from './routes/markVistedCountries';
 import meRoute from './routes/user/me';
 import postsRoute from './routes/posts';
+import commentsRoute from './routes/comments';
 
 dotenv.config();
 
@@ -47,6 +48,7 @@ app.use('/api', travelSuggestionsRoute);
 app.use('/api', markVistedCountriesRoute);
 app.use('/api', meRoute);
 app.use('/api/posts', postsRoute); 
+app.use('/api/comments', commentsRoute);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
