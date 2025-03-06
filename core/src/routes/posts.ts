@@ -73,9 +73,31 @@ router.delete(
 router.get("/", async (req: Request, res: Response): Promise<void> => {
   try {
     const posts = await prisma.post.findMany({
-      include: { user: { select: { username: true } } },
+      include: {
+        user: { select: { username: true } },
+        postVotes: true,
+      },
     });
-    res.status(200).json(posts);
+
+    const formattedPosts = posts.map(post => {
+      const likes = post.postVotes.filter(vote => vote.type === "LIKE").length;
+      const dislikes = post.postVotes.filter(vote => vote.type === "DISLIKE").length;
+
+      return {
+        id: post.id,
+        userId: post.userId,
+        country: post.country,
+        content: post.content,
+        images: post.images,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+        username: post.user.username,
+        likes,
+        dislikes,
+      };
+    });
+
+    res.status(200).json(formattedPosts);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }
