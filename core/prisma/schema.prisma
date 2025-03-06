@@ -26,6 +26,7 @@ model User {
   visitedCountries String?
   posts     Post[]
   comments  Comment[]
+  postVotes PostVote[]
 }
 
 model Post {
@@ -52,9 +53,25 @@ model Comment {
   dislikes  Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  postVotes  PostVote[]
 
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([postId])
+  @@index([postId, userId])
+}
+
+model PostVote {
+  id      String  @id @default(uuid())
+  userId  String
+  postId  String
+  type    VoteType
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post    Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@unique([userId, postId])
+}
+
+enum VoteType {
+  LIKE
+  DISLIKE
 }

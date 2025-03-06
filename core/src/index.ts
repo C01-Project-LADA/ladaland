@@ -14,6 +14,8 @@ import markVistedCountriesRoute from './routes/markVistedCountries';
 import meRoute from './routes/user/me';
 import postsRoute from './routes/posts';
 import commentsRoute from './routes/comments';
+import postVotesRoute from "./routes/post-votes";
+import logoutRoute from "./routes/user/logout";
 
 dotenv.config();
 
@@ -49,6 +51,8 @@ app.use('/api', markVistedCountriesRoute);
 app.use('/api', meRoute);
 app.use('/api/posts', postsRoute); 
 app.use('/api/comments', commentsRoute);
+app.use('/api/post-votes', postVotesRoute);
+app.use('/api', logoutRoute);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
