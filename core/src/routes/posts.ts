@@ -8,12 +8,9 @@ const prisma = new PrismaClient();
 router.post(
   '/',
   [
-    body('country')
-      .notEmpty()
-      .withMessage('Please select a country for this post before submitting.'),
-    body('content')
-      .notEmpty()
-      .withMessage('Please input content for this post before submitting.'),
+    body("country").notEmpty().withMessage("Please select a country for this post before submitting."),
+    body("content").notEmpty().withMessage("Please input content for this post before submitting."),
+    body("tags").optional().isArray().withMessage("Tags should be an array of strings."),
   ],
   async (req: Request, res: Response): Promise<void> => {
     if (!req.session || !req.session.user) {
@@ -22,11 +19,11 @@ router.post(
     }
 
     const userId = req.session.user.id;
-    const { country, content, images } = req.body;
+    const { country, content, images, tags } = req.body;
 
     try {
       const post = await prisma.post.create({
-        data: { userId, country, content, images },
+        data: { userId, country, content, images, tags: tags || [] },
       });
 
       res.status(201).json(post);
