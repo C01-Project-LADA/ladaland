@@ -1,12 +1,14 @@
-"use client";
-import React from "react";
-import styles from "@/styles/VisitedCountriesBanner.module.css";
+'use client';
+import React from 'react';
+import styles from '@/styles/VisitedCountriesBanner.module.css';
 
 interface VisitedCountriesBannerProps {
   visitedMessage: string;
 }
 
-export default function VisitedCountriesBanner({ visitedMessage }: VisitedCountriesBannerProps) {
+export default function VisitedCountriesBanner({
+  visitedMessage,
+}: VisitedCountriesBannerProps) {
   return (
     <div className={styles.container}>
       <div className={styles.header_block}>

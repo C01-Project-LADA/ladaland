@@ -118,7 +118,7 @@ export default function Auth() {
           withCredentials: true,
         }
       );
-  
+
       if (response.status === 200) {
         alert('Login successful!');
         router.push('/'); // TODO: Take user to main screen after login
@@ -133,7 +133,7 @@ export default function Auth() {
       }
     }
   }
-  
+
   function handleClose() {
     setFormOpen(false);
     setShowPassword(false);
