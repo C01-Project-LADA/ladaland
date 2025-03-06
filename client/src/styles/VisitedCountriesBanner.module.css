@@ -5,10 +5,13 @@
 }
 
 .header_block {
+  z-index: 10;
+  position: relative;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   background: linear-gradient(
     45deg,
-    var(--lada-primary) 0%,
-    var(--lada-secondary) 100%
+    var(--lada-dark-accent) 0%,
+    var(--lada-accent) 100%
   );
   border-radius: 15px;
   padding: 12px 18px 17px 18px;
