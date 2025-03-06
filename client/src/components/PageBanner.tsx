@@ -4,6 +4,7 @@ interface PageBannerProps {
   title: string;
   variant?: 'green' | 'blue';
   direction?: 'forwards' | 'backwards';
+  shadow?: boolean;
   message: string;
 }
 
@@ -24,6 +25,7 @@ export default function PageBanner({
   title,
   variant = 'green',
   direction = 'forwards',
+  shadow = false,
   message,
 }: PageBannerProps) {
   return (
@@ -34,6 +36,7 @@ export default function PageBanner({
     45deg,
     ${mapColorToGradient(variant, direction)}
   )`,
+        boxShadow: shadow ? 'rgba(0, 0, 0, 0.35) 0px 5px 15px' : 'none',
       }}
     >
       <h2>{title}</h2>

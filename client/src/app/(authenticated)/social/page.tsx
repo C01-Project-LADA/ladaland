@@ -1,5 +1,5 @@
 import PageBanner from '@/components/PageBanner';
-import React from 'react';
+import SocialPage from '@/components/Social';
 
 export default function Social() {
   return (
@@ -12,6 +12,8 @@ export default function Social() {
         message="See trending locations and posts from around the world!"
         variant="blue"
       />
+
+      <SocialPage />
     </div>
   );
 }

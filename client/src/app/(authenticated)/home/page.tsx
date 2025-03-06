@@ -99,6 +99,7 @@ export default function Home() {
         title="TRAVEL PROGRESS"
         message={visitedMessage}
         variant="blue"
+        shadow
       />
       <div id="globe" className="-mt-10">
         <Globe
