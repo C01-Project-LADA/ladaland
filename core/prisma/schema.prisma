@@ -34,6 +34,7 @@ model Post {
   country    String
   content    String
   images     Json?
+  tags       String[] @default([])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
