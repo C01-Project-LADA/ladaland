@@ -13,7 +13,8 @@ import travelSuggestionsRoute from './routes/travel-suggestions';
 import markVistedCountriesRoute from './routes/mark-visited-countries';
 import meRoute from './routes/user/me';
 import postsRoute from './routes/posts';
-import postVotesRoute from './routes/post-votes';
+import commentsRoute from './routes/comments';
+import postVotesRoute from "./routes/post-votes";
 import logoutRoute from "./routes/user/logout";
 
 dotenv.config();
@@ -48,7 +49,8 @@ app.use('/api', visitedCountriesPercentRoute);
 app.use('/api', travelSuggestionsRoute);
 app.use('/api', markVistedCountriesRoute);
 app.use('/api', meRoute);
-app.use('/api/posts', postsRoute);
+app.use('/api/posts', postsRoute); 
+app.use('/api/comments', commentsRoute);
 app.use('/api/post-votes', postVotesRoute);
 app.use('/api', logoutRoute);
 
