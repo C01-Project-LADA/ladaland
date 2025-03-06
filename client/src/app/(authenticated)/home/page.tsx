@@ -5,6 +5,7 @@ const Globe = dynamic(() => import('react-globe.gl'), { ssr: false });
 import { useCallback, useEffect, useState } from 'react';
 import countries from '@/lib/geocountries.json';
 import useScreenDimensions from '@/hooks/useScreenDimensions';
+import axios from 'axios';
 
 // EXAMPLE: https://github.com/vasturiano/react-globe.gl/blob/master/example/choropleth-countries/index.html
 export default function Home() {
@@ -16,8 +17,21 @@ export default function Home() {
 
   // Fetch user visited countries and populate visitedCountries state
   useEffect(() => {
-    // TODO: Fetch user visited countries and populate visitedCountries state
-    // ...
+    async function fetchVisitedCountries() {
+      try {
+        const response = await axios.get(
+          'http://localhost:4000/api/getVisitedCountries',
+          { withCredentials: true }
+        );
+        if (response.status === 200) {
+          setVisitedCountries(response.data.visitedCountries);
+        }
+      } catch (error) {
+        console.error('Error fetching visited countries:', error);
+      }
+    }
+
+    fetchVisitedCountries();
   }, []);
 
   const getPolygonCapColor = useCallback(
@@ -34,14 +48,23 @@ export default function Home() {
    * Handle right click event for a country on the 3D globe
    */
   const handleRightClick = useCallback(
-    (d: GlobeCountry) => {
+    async (d: GlobeCountry) => {
       const countryCode = d.properties.ISO_A2;
-      if (visitedCountries.includes(countryCode)) {
-        // TODO: Remove country as visited in backend
-        setVisitedCountries((prev) => prev.filter((c) => c !== countryCode));
-      } else {
-        // TODO: Add country as visited in backend
-        setVisitedCountries((prev) => [...prev, countryCode]);
+      const isVisited = visitedCountries.includes(countryCode);
+      const action = isVisited ? 'remove' : 'add';
+
+      try {
+        const response = await axios.post(
+          'http://localhost:4000/api/markVisitedCountries',
+          { countryCode, action },
+          { withCredentials: true }
+        );
+
+        if (response.status === 200) {
+          setVisitedCountries(response.data.visitedCountries);
+        }
+      } catch (error) {
+        console.error(`Error ${action}ing country ${countryCode}:`, error);
       }
     },
     [visitedCountries]
