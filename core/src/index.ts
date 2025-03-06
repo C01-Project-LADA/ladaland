@@ -14,7 +14,7 @@ import markVistedCountriesRoute from './routes/mark-visited-countries';
 import meRoute from './routes/user/me';
 import postsRoute from './routes/posts';
 import postVotesRoute from './routes/post-votes';
-import logoutRoute from "./routes/user/logout";
+import logoutRoute from './routes/user/logout';
 
 dotenv.config();
 

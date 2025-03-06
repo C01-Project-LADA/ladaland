@@ -8,9 +8,16 @@ const prisma = new PrismaClient();
 router.post(
   '/',
   [
-    body("country").notEmpty().withMessage("Please select a country for this post before submitting."),
-    body("content").notEmpty().withMessage("Please input content for this post before submitting."),
-    body("tags").optional().isArray().withMessage("Tags should be an array of strings."),
+    body('country')
+      .notEmpty()
+      .withMessage('Please select a country for this post before submitting.'),
+    body('content')
+      .notEmpty()
+      .withMessage('Please input content for this post before submitting.'),
+    body('tags')
+      .optional()
+      .isArray()
+      .withMessage('Tags should be an array of strings.'),
   ],
   async (req: Request, res: Response): Promise<void> => {
     if (!req.session || !req.session.user) {
@@ -22,9 +29,15 @@ router.post(
     const { country, content, images, tags } = req.body;
 
     try {
-      const post = await prisma.post.create({
-        data: { userId, country, content, images, tags: tags || [] },
-      });
+      const [post] = await prisma.$transaction([
+        prisma.post.create({
+          data: { userId, country, content, images, tags: tags || [] },
+        }),
+        prisma.user.update({
+          where: { id: userId },
+          data: { points: { increment: 20 } },
+        }),
+      ]);
 
       res.status(201).json(post);
     } catch (error) {
@@ -60,9 +73,15 @@ router.delete(
         return;
       }
 
-      await prisma.post.delete({
-        where: { id },
-      });
+      await prisma.$transaction([
+        prisma.post.delete({
+          where: { id },
+        }),
+        prisma.user.update({
+          where: { id: userId },
+          data: { points: { decrement: 20 } },
+        }),
+      ]);
 
       res.status(200).json({ message: 'Post deleted successfully' });
     } catch (error) {
