@@ -6,6 +6,7 @@ const Globe = dynamic(() => import('react-globe.gl'), { ssr: false });
 import { useCallback, useEffect, useState } from 'react';
 import countries from '@/lib/geocountries.json';
 import useScreenDimensions from '@/hooks/useScreenDimensions';
+import axios from 'axios';
 
 // EXAMPLE: https://github.com/vasturiano/react-globe.gl/blob/master/example/choropleth-countries/index.html
 export default function Home() {
@@ -14,11 +15,31 @@ export default function Home() {
   const [hoverD, setHoverD] = useState<GlobeCountry>();
 
   const [visitedCountries, setVisitedCountries] = useState<string[]>([]);
+  const [visitedMessage, setVisitedMessage] = useState<string>('Loading...');
 
   // Fetch user visited countries and populate visitedCountries state
   useEffect(() => {
-    // TODO: Fetch user visited countries and populate visitedCountries state
-    // ...
+    async function fetchVisitedData() {
+      try {
+        const [countriesResponse, percentResponse] = await Promise.all([
+          axios.get('http://localhost:4000/api/getVisitedCountries', { withCredentials: true }),
+          axios.get('http://localhost:4000/api/visitedCountriesPercent', { withCredentials: true }),
+        ]);
+
+        if (countriesResponse.status === 200) {
+          setVisitedCountries(countriesResponse.data.visitedCountries);
+        }
+
+        if (percentResponse.status === 200) {
+          setVisitedMessage(percentResponse.data.message);
+        }
+      } catch (error) {
+        console.error('Error fetching visited countries:', error);
+        setVisitedMessage('Error loading travel progress.');
+      }
+    }
+
+    fetchVisitedData();
   }, []);
 
   const getPolygonCapColor = useCallback(
@@ -35,14 +56,28 @@ export default function Home() {
    * Handle right click event for a country on the 3D globe
    */
   const handleRightClick = useCallback(
-    (d: GlobeCountry) => {
+    async (d: GlobeCountry) => {
       const countryCode = d.properties.ISO_A2;
-      if (visitedCountries.includes(countryCode)) {
-        // TODO: Remove country as visited in backend
-        setVisitedCountries((prev) => prev.filter((c) => c !== countryCode));
-      } else {
-        // TODO: Add country as visited in backend
-        setVisitedCountries((prev) => [...prev, countryCode]);
+      const isVisited = visitedCountries.includes(countryCode);
+      const action = isVisited ? 'remove' : 'add';
+
+      try {
+        const response = await axios.post(
+          'http://localhost:4000/api/markVisitedCountries',
+          { countryCode, action },
+          { withCredentials: true }
+        );
+
+        if (response.status === 200) {
+          setVisitedCountries(response.data.visitedCountries);
+
+          const percentResponse = await axios.get('http://localhost:4000/api/visitedCountriesPercent', { withCredentials: true });
+          if (percentResponse.status === 200) {
+            setVisitedMessage(percentResponse.data.message);
+          }
+        }
+      } catch (error) {
+        console.error(`Error ${action}ing country ${countryCode}:`, error);
       }
     },
     [visitedCountries]
@@ -50,7 +85,7 @@ export default function Home() {
 
   return (
     <div id="globe">
-      <VisitedCountriesBanner />
+      <VisitedCountriesBanner visitedMessage={visitedMessage} />
       <Globe
         width={500}
         height={height}
