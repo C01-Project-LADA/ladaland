@@ -9,6 +9,19 @@ import { Image, MapPin } from 'lucide-react';
 import Post from '@/components/Post';
 import { Spinner } from '@/components/ui/spinner';
 
+const mockPost: Post = {
+  id: '1',
+  userId: '1',
+  country: 'Canada',
+  content:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec sem nec justo tincidunt fermentum. Nullam nec sem nec justo tincidunt',
+  createdAt: new Date(1741365088777),
+  updatedAt: new Date(1741365088777),
+  username: 'shadcn',
+  likes: 23091,
+  dislikes: 5810,
+};
+
 export default function Social() {
   // TEMP: Remove this when we have custom hooks
   const [posting, setPosting] = useState(false);
@@ -112,7 +125,7 @@ export default function Social() {
       </div>
 
       <div className="mt-5 mb-10">
-        <Post />
+        <Post post={mockPost} />
       </div>
     </div>
   );
