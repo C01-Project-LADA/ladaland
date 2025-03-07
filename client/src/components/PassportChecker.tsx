@@ -98,6 +98,8 @@ export default function PassportChecker() {
   return (
     <div className="max-w-full">
       <CountrySelectDialog
+        title="Add a passport"
+        description="Search for a passport to check its passport index."
         countriesSelected={hasPassport}
         setCountriesSelected={setHasPassport}
         dialogTrigger={

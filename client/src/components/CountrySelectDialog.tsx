@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useRef, useEffect } from 'react';
 import styles from '@/styles/PassportChecker.module.css';
 import { Button } from '@/components/ui/button';
@@ -18,12 +20,16 @@ export default function CountrySelectDialog({
   countriesSelected,
   setCountriesSelected,
   dialogTrigger,
+  title,
+  description,
 }: {
   countriesSelected: Record<string, Country>;
   setCountriesSelected: React.Dispatch<
     React.SetStateAction<Record<string, Country>>
   >;
   dialogTrigger: React.ReactNode;
+  title: string;
+  description: string;
 }) {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -70,10 +76,10 @@ export default function CountrySelectDialog({
       <DialogTrigger asChild>{dialogTrigger}</DialogTrigger>
       <DialogContent className={styles.modal_container}>
         <DialogHeader>
-          <DialogTitle className="text-xl mb-2">Add a passport</DialogTitle>
+          <DialogTitle className="text-xl mb-2">{title}</DialogTitle>
         </DialogHeader>
         <DialogDescription style={{ display: 'none' }}>
-          Search for a passport to check its passport index.
+          {description}
         </DialogDescription>
         <div className={styles.modal_content}>
           <Input

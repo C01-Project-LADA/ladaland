@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Image, MapPin } from 'lucide-react';
 import Post from '@/components/Post';
 import { Spinner } from '@/components/ui/spinner';
+import CountrySelectDialog from '@/components/CountrySelectDialog';
 
 const mockPost: Post = {
   id: '1',
@@ -23,6 +24,20 @@ const mockPost: Post = {
 };
 
 export default function Social() {
+  const [countriesSelected, setCountriesSelected] = useState<
+    Record<string, Country>
+  >({});
+  const [location, setLocation] = useState<string | null>(null);
+
+  // When countries selected changes, extract the country selected and revert it back to an empty object
+  useEffect(() => {
+    if (Object.keys(countriesSelected).length > 0) {
+      const country = Object.values(countriesSelected)[0];
+      setCountriesSelected({});
+      setLocation(country.name);
+    }
+  }, [countriesSelected]);
+
   // TEMP: Remove this when we have custom hooks
   const [posting, setPosting] = useState(false);
   useEffect(() => {
@@ -50,6 +65,8 @@ export default function Social() {
     }
   }
 
+  const mapPinButtonRef = useRef<HTMLButtonElement>(null);
+
   return (
     <div className="mt-5">
       <div className={`${styles.new_post_container} rounded-md`}>
@@ -61,7 +78,18 @@ export default function Social() {
         </div>
 
         <div className="flex-1">
-          <p className="text-gray-500 text-sm font-bold mt-1 mb-1">LOCATION</p>
+          <div
+            className="text-gray-500 text-sm font-bold mt-1 mb-1 hover:cursor-pointer"
+            onClick={() => mapPinButtonRef.current?.click()}
+          >
+            {location ? (
+              <p>
+                in <span className="underline">{location}</span>
+              </p>
+            ) : (
+              'LOCATION'
+            )}
+          </div>
 
           <Textarea
             ref={textareaRef}
@@ -95,9 +123,22 @@ export default function Social() {
                 <Image className="scale-150" />
               </Button>
 
-              <Button variant="ghost" size="icon" elevated={false}>
-                <MapPin className="scale-150" />
-              </Button>
+              <CountrySelectDialog
+                title="Select location"
+                description="Select a country to post about"
+                countriesSelected={{}}
+                setCountriesSelected={setCountriesSelected}
+                dialogTrigger={
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    elevated={false}
+                    ref={mapPinButtonRef}
+                  >
+                    <MapPin className="scale-150" />
+                  </Button>
+                }
+              />
             </div>
             <div className="flex gap-5 pb-2 items-end">
               <p
