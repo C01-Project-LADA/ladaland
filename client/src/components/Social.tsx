@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Image, MapPin } from 'lucide-react';
+import { Spinner } from './ui/spinner';
 
 export default function Social() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -79,12 +80,12 @@ export default function Social() {
               </p>
               <Button
                 variant="accent"
-                elevated={false}
                 disabled={
                   newPostText.length === 0 || newPostText.length >= 1000
                 }
               >
-                POST
+                <span>POST</span>
+                {/* <Spinner /> */}
               </Button>
             </div>
           </div>
