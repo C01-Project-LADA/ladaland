@@ -6,15 +6,22 @@ const router = Router();
 const prisma = new PrismaClient();
 
 router.post(
-  "/",
+  '/',
   [
-    body("country").notEmpty().withMessage("Please select a country for this post before submitting."),
-    body("content").notEmpty().withMessage("Please input content for this post before submitting."),
-    body("tags").optional().isArray().withMessage("Tags should be an array of strings."),
+    body('country')
+      .notEmpty()
+      .withMessage('Please select a country for this post before submitting.'),
+    body('content')
+      .notEmpty()
+      .withMessage('Please input content for this post before submitting.'),
+    body('tags')
+      .optional()
+      .isArray()
+      .withMessage('Tags should be an array of strings.'),
   ],
   async (req: Request, res: Response): Promise<void> => {
     if (!req.session || !req.session.user) {
-      res.status(401).json({ error: "Unauthorized." });
+      res.status(401).json({ error: 'Unauthorized.' });
       return;
     }
 
@@ -22,23 +29,29 @@ router.post(
     const { country, content, images, tags } = req.body;
 
     try {
-      const post = await prisma.post.create({
-        data: { userId, country, content, images, tags: tags || [] },
-      });
+      const [post] = await prisma.$transaction([
+        prisma.post.create({
+          data: { userId, country, content, images, tags: tags || [] },
+        }),
+        prisma.user.update({
+          where: { id: userId },
+          data: { points: { increment: 20 } },
+        }),
+      ]);
 
       res.status(201).json(post);
     } catch (error) {
-      res.status(500).json({ message: "Something went wrong." });
+      res.status(500).json({ message: 'Something went wrong.' });
     }
   }
 );
 
 router.delete(
-  "/:id",
-  [param("id").notEmpty().withMessage("Post ID is required")],
+  '/:id',
+  [param('id').notEmpty().withMessage('Post ID is required')],
   async (req: Request, res: Response): Promise<void> => {
     if (!req.session || !req.session.user) {
-      res.status(401).json({ error: "Unauthorized." });
+      res.status(401).json({ error: 'Unauthorized.' });
       return;
     }
 
@@ -51,22 +64,28 @@ router.delete(
       });
 
       if (!existingPost) {
-        res.status(404).json({ error: "Post not found." });
+        res.status(404).json({ error: 'Post not found.' });
         return;
       }
 
       if (existingPost.userId !== userId) {
-        res.status(403).json({ error: "You can only delete your own posts." });
+        res.status(403).json({ error: 'You can only delete your own posts.' });
         return;
       }
 
-      await prisma.post.delete({
-        where: { id },
-      });
+      await prisma.$transaction([
+        prisma.post.delete({
+          where: { id },
+        }),
+        prisma.user.update({
+          where: { id: userId },
+          data: { points: { decrement: 20 } },
+        }),
+      ]);
 
-      res.status(200).json({ message: "Post deleted successfully" });
+      res.status(200).json({ message: 'Post deleted successfully' });
     } catch (error) {
-      res.status(500).json({ message: "Something went wrong." });
+      res.status(500).json({ message: 'Something went wrong.' });
     }
   }
 );

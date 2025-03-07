@@ -8,14 +8,15 @@ import { PrismaClient } from '@prisma/client';
 import registerRoute from './routes/user/register';
 import loginRoute from './routes/user/login';
 import visaRequirementsRoute from './routes/visa-requirements';
-import visitedCountriesPercentRoute from './routes/visitedCountriesPercent';
+import visitedCountriesPercentRoute from './routes/visited-countries-percent';
 import travelSuggestionsRoute from './routes/travel-suggestions';
-import markVistedCountriesRoute from './routes/markVistedCountries';
+import markVistedCountriesRoute from './routes/mark-visited-countries';
 import meRoute from './routes/user/me';
 import postsRoute from './routes/posts';
 import commentsRoute from './routes/comments';
 import postVotesRoute from "./routes/post-votes";
 import logoutRoute from "./routes/user/logout";
+import commentVotesRoute from "./routes/comment-votes";
 
 dotenv.config();
 
@@ -53,6 +54,7 @@ app.use('/api/posts', postsRoute);
 app.use('/api/comments', commentsRoute);
 app.use('/api/post-votes', postVotesRoute);
 app.use('/api', logoutRoute);
+app.use('/api/comment-votes', commentVotesRoute);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
