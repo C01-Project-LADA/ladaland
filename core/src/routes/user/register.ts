@@ -30,11 +30,9 @@ router.post(
         where: { username },
       });
       if (existingUser) {
-        res
-          .status(400)
-          .json({
-            error: 'Username is already taken. Please choose another one.',
-          });
+        res.status(400).json({
+          error: 'Username is already taken. Please choose another one.',
+        });
         return;
       }
 

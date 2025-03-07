@@ -24,8 +24,11 @@ model User {
   phone     String?
   createdAt DateTime @default(now())
   visitedCountries String?
+  points            Int      @default(0)
   posts     Post[]
+  comments  Comment[]
   postVotes PostVote[]
+  commentVotes CommentVote[]
 }
 
 model Post {
@@ -38,8 +41,26 @@ model Post {
   tags       String[] @default([])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  @@index([userId])
+  pointsAwarded Int      @default(0)
+  comments   Comment[]
   postVotes  PostVote[]
+
+  @@index([userId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  commentVotes CommentVote[]
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([postId, userId])
 }
 
 model PostVote {
@@ -49,7 +70,19 @@ model PostVote {
   type    VoteType
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   post    Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+
   @@unique([userId, postId])
+}
+
+model CommentVote {
+  id        String  @id @default(uuid())
+  userId    String
+  commentId String
+  type      VoteType
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, commentId])
 }
 
 enum VoteType {
