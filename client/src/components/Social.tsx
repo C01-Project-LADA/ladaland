@@ -3,12 +3,28 @@
 import styles from '@/styles/Social.module.css';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Textarea } from '@/components/ui/textarea';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Image, MapPin } from 'lucide-react';
-import { Spinner } from './ui/spinner';
+import Post from '@/components/Post';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function Social() {
+  // TEMP: Remove this when we have custom hooks
+  const [posting, setPosting] = useState(false);
+  useEffect(() => {
+    if (posting) {
+      setTimeout(() => {
+        setPosting(false);
+        setNewPostText('');
+      }, 2000);
+    }
+  }, [posting]);
+
+  function handleNewPostSubmit() {
+    setPosting(true);
+  }
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [newPostText, setNewPostText] = useState('');
 
@@ -81,15 +97,22 @@ export default function Social() {
               <Button
                 variant="accent"
                 disabled={
-                  newPostText.length === 0 || newPostText.length >= 1000
+                  newPostText.length === 0 ||
+                  newPostText.length >= 1000 ||
+                  posting
                 }
+                onClick={handleNewPostSubmit}
               >
                 <span>POST</span>
-                {/* <Spinner /> */}
+                {posting && <Spinner />}
               </Button>
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="mt-5 mb-10">
+        <Post />
       </div>
     </div>
   );
