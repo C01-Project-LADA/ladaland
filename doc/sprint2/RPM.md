@@ -40,9 +40,6 @@
 - **Basic Social Media Functionalities:**  
   As an existing user, I would like to create, share, and delete travel posts, as well as like and dislike other users' posts, so that I can share my trip details as well as get insights from other users' trips.
 
-- **Introduce Earning Points For Interacting With the App:** 
-  Аs an existing user, I would like to earn points for each post I make about my travel experience and how many likes my posts get, so that I can level up and feel motivated to share my experiences with others in an interesting format.
-
 - **Logout Functionality:** 
   As a logged in user, I would like to be able to log out of my account, so that I can login with another account and/or not worry that someone will use my account without me knowing.
 
@@ -55,13 +52,23 @@
 - **[Core] Earn points for liked posts:** 
   Аs an existing user, I would like to receive points for every few 'likes' that I get on my posts, so that I am motivated to share high-quality content and engage more with the community.
 
+- **[Core] Search posts by tags, name, country:** 
+  Аs an existing user, I would like to search for posts based on country, city and destination tags, so that I can easily find relevant content for my next trip.
+
+- **[Core] Sort posts:** 
+  Аs an existing user, I would like to sort posts based on most/least liked, and most/least recent, so that I can quickly find the most relevant, popular, or latest travel experiences that interest me.
+
+- **[Core] Earn points for posts:**
+  Аs an existing user, I would like to earn points for each post I make about my travel experience, so that I can level up and feel motivated to share my experiences with others.
+
 ### Excluded Features
 
-- CLIENT Tickets for:
+- **CLIENT Tickets for:**
   - AI Budget-Based Travel Suggestions
   - Comment on travel posts
   - Earn points for comments
   - Earn points for liked posts
+  - Sort posts
 
   **Reasoning:** Client tickets have been very time consuming; however, they rely heavily on the backend functionality being put in place for integration purposes, so we feel comfortable being ahead on core work.
 

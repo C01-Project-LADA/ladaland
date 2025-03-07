@@ -25,12 +25,20 @@
 
 #### Goals and/or Tasks That Were Met/Completed
 
-- **Login/Registration Functionality:** [LADA-11](https://lada.atlassian.net/browse/LADA-11), [LADA-36](https://lada.atlassian.net/browse/LADA-36), [LADA-42](https://lada.atlassian.net/browse/LADA-42), [LADA-38](https://lada.atlassian.net/browse/LADA-38), [LADA-10](https://lada.atlassian.net/browse/LADA-10), [LADA-44](https://lada.atlassian.net/browse/LADA-44), [LADA-45](https://lada.atlassian.net/browse/LADA-45)
-- **Visa Requirement Tool:** [LADA-17](https://lada.atlassian.net/browse/LADA-17), [LADA-39](https://lada.atlassian.net/browse/LADA-39)
-- **[CORE] AI Budget-Based Travel Suggestions:** [LADA-16](https://lada.atlassian.net/browse/LADA-16)
-- **[CORE] Show % of Countries Visited:** [LADA-14](https://lada.atlassian.net/browse/LADA-14)
-- **[CORE] Mark Visited Countries on the Globe/Map:** [LADA-13](https://lada.atlassian.net/browse/LADA-13)
-- **Basic Frontend Outline:** [LADA-39](https://lada.atlassian.net/browse/LADA-39)
+- **Show % of Countries Visited:** [LADA-41](https://lada.atlassian.net/browse/LADA-41)
+- **Mark Visited Countries on the Globe/Map:** [LADA-37](https://lada.atlassian.net/browse/LADA-37), 
+[LADA-54](https://lada.atlassian.net/browse/LADA-54)
+
+- **Basic Social Media Functionalities:** [LADA-48](https://lada.atlassian.net/browse/LADA-48), [LADA-49](https://lada.atlassian.net/browse/LADA-49), [LADA-57](https://lada.atlassian.net/browse/LADA-57), [LADA-19](https://lada.atlassian.net/browse/LADA-19), [LADA-18](https://lada.atlassian.net/browse/LADA-18), [LADA-25](https://lada.atlassian.net/browse/LADA-25)
+
+- **Logout Functionality:** [LADA-67](https://lada.atlassian.net/browse/LADA-67), [LADA-68](https://lada.atlassian.net/browse/LADA-68)
+
+- **[Core] Comment on travel posts:** [LADA-20](https://lada.atlassian.net/browse/LADA-20)
+- **[Core] Earn points for comments:** [LADA-24](https://lada.atlassian.net/browse/LADA-24)
+- **[Core] Earn points for liked posts:** [LADA-31](https://lada.atlassian.net/browse/LADA-31)
+- **[Core] Search posts by tags, name, country:** [LADA-26](https://lada.atlassian.net/browse/LADA-26)
+- **[Core] Sort posts:** [LADA-29](https://lada.atlassian.net/browse/LADA-29)
+- **[Core] Earn points for posts:** [LADA-23](https://lada.atlassian.net/browse/LADA-23)
 
 #### Goals and/or Tasks That Were Planned But Not Met/Completed
 
@@ -39,6 +47,7 @@
   - Comment on travel posts
   - Earn points for comments
   - Earn points for liked posts
+  - Sort posts
 
   **Reasoning:** Client tickets have been very time-consuming; however, they rely heavily on the backend functionality being in place for integration purposes, so we feel comfortable being ahead on core work.
 
