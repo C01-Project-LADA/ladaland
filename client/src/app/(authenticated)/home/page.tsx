@@ -22,8 +22,12 @@ export default function Home() {
     async function fetchVisitedData() {
       try {
         const [countriesResponse, percentResponse] = await Promise.all([
-          axios.get('http://localhost:4000/api/getVisitedCountries', { withCredentials: true }),
-          axios.get('http://localhost:4000/api/visitedCountriesPercent', { withCredentials: true }),
+          axios.get('http://localhost:4000/api/getVisitedCountries', {
+            withCredentials: true,
+          }),
+          axios.get('http://localhost:4000/api/visitedCountriesPercent', {
+            withCredentials: true,
+          }),
         ]);
 
         if (countriesResponse.status === 200) {
@@ -71,7 +75,10 @@ export default function Home() {
         if (response.status === 200) {
           setVisitedCountries(response.data.visitedCountries);
 
-          const percentResponse = await axios.get('http://localhost:4000/api/visitedCountriesPercent', { withCredentials: true });
+          const percentResponse = await axios.get(
+            'http://localhost:4000/api/visitedCountriesPercent',
+            { withCredentials: true }
+          );
           if (percentResponse.status === 200) {
             setVisitedMessage(percentResponse.data.message);
           }
