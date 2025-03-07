@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Nunito_Sans } from 'next/font/google';
 import SideNavigation from '@/components/SideNavigation';
 import Dashboard from '@/components/Dashboard';
+import { Toaster } from '@/components/ui/sonner';
 import '@/app/globals.css';
 import 'flag-icons/css/flag-icons.min.css';
 
@@ -30,6 +31,8 @@ export default function RootLayout({
           {children}
           <Dashboard />
         </div>
+
+        <Toaster />
       </body>
     </html>
   );
