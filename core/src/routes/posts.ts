@@ -1,6 +1,6 @@
-import { Router, Request, Response } from 'express';
-import { Prisma, PrismaClient } from '@prisma/client';
-import { body, param } from 'express-validator';
+import { Router, Request, Response } from "express";
+import { PrismaClient } from "@prisma/client";
+import { body, param, query } from "express-validator";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -90,57 +90,58 @@ router.delete(
   }
 );
 
-router.get('/', async (req: Request, res: Response): Promise<void> => {
-  const { sortBy } = req.query;
+router.get(
+  "/",
+  query("q").optional().isString(),
+  async (req: Request, res: Response): Promise<void> => {
+    const { q } = req.query;
 
-  try {
-    const orderByClause: Prisma.PostOrderByWithRelationInput | undefined =
-      sortBy === 'mostRecent'
-        ? { createdAt: 'desc' as Prisma.SortOrder }
-        : sortBy === 'leastRecent'
-          ? { createdAt: 'asc' as Prisma.SortOrder }
-          : undefined;
+    try {
+      const posts = await prisma.post.findMany({
+        where: q
+          ? {
+              OR: [
+                { country: { contains: q as string, mode: "insensitive" } },
+                { tags: { has: q as string } },
+              ],
+            }
+          : {},
+        include: {
+          user: { select: { username: true } },
+          postVotes: true,
+        },
+      });
 
-    const posts = await prisma.post.findMany({
-      include: {
-        user: { select: { username: true } },
-        postVotes: true,
-      },
-      orderBy: orderByClause,
-    });
+      if (!posts.length && q) {
+        res.status(404).json({ message: "No posts found with this tag. Try a different search." });
+        return;
+      }
 
-    let formattedPosts = posts.map((post) => {
-      const likes = post.postVotes.filter(
-        (vote) => vote.type === 'LIKE'
-      ).length;
-      const dislikes = post.postVotes.filter(
-        (vote) => vote.type === 'DISLIKE'
-      ).length;
+      const formattedPosts = posts.map((post) => {
+        const likes = post.postVotes.filter((vote) => vote.type === "LIKE").length;
+        const dislikes = post.postVotes.filter((vote) => vote.type === "DISLIKE").length;
 
-      return {
-        id: post.id,
-        userId: post.userId,
-        country: post.country,
-        content: post.content,
-        images: post.images,
-        createdAt: post.createdAt,
-        updatedAt: post.updatedAt,
-        username: post.user.username,
-        likes,
-        dislikes,
-      };
-    });
+        return {
+          id: post.id,
+          userId: post.userId,
+          country: post.country,
+          content: post.content,
+          images: post.images,
+          tags: post.tags,
+          createdAt: post.createdAt,
+          updatedAt: post.updatedAt,
+          username: post.user.username,
+          likes,
+          dislikes,
+        };
+      });
 
-    if (sortBy === 'mostLiked') {
-      formattedPosts.sort((a, b) => b.likes - a.likes);
-    } else if (sortBy === 'leastLiked') {
-      formattedPosts.sort((a, b) => a.likes - b.likes);
+      res.status(200).json(formattedPosts);
+    } catch (error) {
+      console.error("Search error:", error);
+      res.status(500).json({ message: "Something went wrong" });
     }
-
-    res.status(200).json(formattedPosts);
-  } catch (error) {
-    res.status(500).json({ message: 'Something went wrong' });
   }
-});
+);
 
 export default router;
