@@ -69,7 +69,7 @@ export default function Post({
               src="https://github.com/shadcn.png"
               alt={`@${post.username}`}
             />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback>{post.username[0].toUpperCase()}</AvatarFallback>
           </Avatar>
 
           <div>
@@ -85,7 +85,10 @@ export default function Post({
             </div>
 
             <p className="text-gray-500 font-semibold">
-              in <span className="underline">{post.country}</span>
+              in{' '}
+              <span className="underline">
+                {ct.getName(post.country, 'en')}
+              </span>
             </p>
           </div>
         </div>

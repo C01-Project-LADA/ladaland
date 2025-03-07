@@ -12,7 +12,7 @@ import { Spinner } from '@/components/ui/spinner';
 const mockPost: Post = {
   id: '1',
   userId: '1',
-  country: 'Canada',
+  country: 'CA',
   content:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec sem nec justo tincidunt fermentum. Nullam nec sem nec justo tincidunt',
   createdAt: new Date(1741365088777),

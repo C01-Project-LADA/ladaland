@@ -3,6 +3,9 @@
 type Post = {
   id: string;
   userId: string;
+  /**
+   * ISO 2-letter country code
+   */
   country: string;
   content: string;
   // images: string[];
