@@ -11,6 +11,7 @@ import Post from '@/components/Post';
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
 import CountrySelectDialog from '@/components/CountrySelectDialog';
+import useUser from '@/hooks/useUser';
 import useNewPost from '@/hooks/useNewPost';
 import usePosts from '@/hooks/usePosts';
 
@@ -18,6 +19,8 @@ export default function Social() {
   const [countriesSelected, setCountriesSelected] = useState<
     Record<string, Country>
   >({});
+
+  const { user } = useUser();
 
   const {
     location,
@@ -168,7 +171,11 @@ export default function Social() {
 
       <div className="mt-5 mb-10 flex flex-col gap-7">
         {posts.map((post) => (
-          <Post key={post.id} post={post} />
+          <Post
+            key={post.id}
+            post={post}
+            ownedByUser={post.userId === user?.id}
+          />
         ))}
 
         {postsLoading &&
