@@ -2,48 +2,21 @@
 
 import styles from '@/styles/PassportChecker.module.css';
 import { Button } from '@/components/ui/button';
-import { Plus, X, Search, Check } from 'lucide-react';
-import {
-  AlertDialog,
-  // AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  // AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import Pagination from '@/components/Pagination';
-import { Input } from '@/components/ui/input';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import useCountries from '@/hooks/useCountries';
+import { Plus, X } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import SectionHeading from '@/components/SectionHeading';
 import useVisaRequirements from '@/hooks/useVisaRequirements';
 import { Badge } from '@/components/ui/badge';
 import ct from 'i18n-iso-countries';
 import en from 'i18n-iso-countries/langs/en.json';
+import CountrySelectDialog from './CountrySelectDialog';
 
 ct.registerLocale(en);
 
 export default function PassportChecker() {
-  const [search, setSearch] = useState('');
-  const [page, setPage] = useState(1);
-  const [passportSearchOpen, setPassportSearchOpen] = useState(false);
-
   const [hasPassport, setHasPassport] = useState<Record<string, Country>>({});
 
-  // Reset page when search changes
-  useEffect(() => {
-    if (page !== 1) setPage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search]);
-
-  const { countries, pageCount } = useCountries({
-    filter: search,
-    page,
-  });
   const passports = useMemo(() => Object.keys(hasPassport), [hasPassport]);
   const haveMultiplePassports = passports.length > 1;
 
@@ -104,30 +77,6 @@ export default function PassportChecker() {
     [visaRequirements]
   );
 
-  const modalInputRef = useRef<HTMLInputElement>(null);
-
-  function handleOpenChange(open: boolean) {
-    setPassportSearchOpen(open);
-    if (!open) {
-      setSearch('');
-      setPage(1);
-    } else {
-      setTimeout(() => {
-        modalInputRef.current?.focus();
-      }, 200);
-    }
-  }
-
-  function addPassport(country: Country) {
-    setPassportSearchOpen(false);
-    setHasPassport((prev) => ({
-      ...prev,
-      [country.code]: country,
-    }));
-    setSearch('');
-    setPage(1);
-  }
-
   function removePassport(country: Country) {
     setHasPassport((prev) => {
       const newPassports = { ...prev };
@@ -148,74 +97,19 @@ export default function PassportChecker() {
 
   return (
     <div className="max-w-full">
-      <AlertDialog open={passportSearchOpen} onOpenChange={handleOpenChange}>
-        <AlertDialogTrigger asChild>
+      <CountrySelectDialog
+        title="Add a passport"
+        description="Search for a passport to check its passport index."
+        countriesSelected={hasPassport}
+        setCountriesSelected={setHasPassport}
+        dialogTrigger={
           <div className="mb-5 w-fit">
             <Button variant="secondary" className="font-medium">
               <Plus /> ADD PASSPORT
             </Button>
           </div>
-        </AlertDialogTrigger>
-        <AlertDialogContent className={styles.modal_container}>
-          <AlertDialogHeader>
-            <div className="flex items-center justify-between">
-              <AlertDialogTitle style={{ fontSize: '1.3rem' }}>
-                Add a passport
-              </AlertDialogTitle>
-              <AlertDialogCancel asChild>
-                <Button
-                  variant="ghost"
-                  elevated={false}
-                  size="icon"
-                  style={{ borderWidth: 0 }}
-                >
-                  <X />
-                </Button>
-              </AlertDialogCancel>
-            </div>
-          </AlertDialogHeader>
-          <AlertDialogDescription style={{ display: 'none' }}>
-            Search for a passport to check its passport index.
-          </AlertDialogDescription>
-          <div className={styles.modal_content}>
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              ref={modalInputRef}
-              startIcon={Search}
-              placeholder="Search for a country..."
-            />
-
-            <div className={styles.countries}>
-              {countries.map((country) => (
-                <Button
-                  key={country.code}
-                  variant="outline"
-                  elevated={false}
-                  className="w-full h-[120px] relative"
-                  title={country.name}
-                  disabled={!!hasPassport[country.code]}
-                  onClick={() => addPassport(country)}
-                >
-                  <div className={styles.country_container}>
-                    {hasPassport[country.code] && (
-                      <div className={styles.check}>
-                        <Check strokeWidth="3px" size="28px" />
-                      </div>
-                    )}
-                    <span
-                      className={`fi !w-4/5 max-w-[80px] aspect-[4/3] fi-${country.code.toLowerCase()} bg-muted rounded-md`}
-                    />
-                    <p>{country.name}</p>
-                  </div>
-                </Button>
-              ))}
-            </div>
-
-            <Pagination page={page} pageCount={pageCount} setPage={setPage} />
-          </div>
-        </AlertDialogContent>
-      </AlertDialog>
+        }
+      />
 
       {Object.values(hasPassport).length !== 0 && (
         <>

@@ -18,6 +18,7 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Separator } from '@/components/ui/separator';
 
 const links = [
@@ -31,9 +32,17 @@ const links = [
 // TODO: Don't show if user unauthenticated
 export default function SideNavigation() {
   const pathname = usePathname();
+  const router = useRouter();
 
   function handleLogOut() {
-    // TODO: Implement logout and redirect to "/"
+    fetch('http://localhost:4000/api/logout', {
+      method: 'POST',
+      credentials: 'include',
+    }).then(() => {
+      setTimeout(() => {
+        router.push('/');
+      }, 250);
+    });
   }
 
   return (
