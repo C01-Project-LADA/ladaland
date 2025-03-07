@@ -5,25 +5,14 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Textarea } from '@/components/ui/textarea';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Image, MapPin } from 'lucide-react';
 import Post from '@/components/Post';
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
 import CountrySelectDialog from '@/components/CountrySelectDialog';
 import useNewPost from '@/hooks/useNewPost';
-
-const mockPost: Post = {
-  id: '1',
-  userId: '1',
-  country: 'CA',
-  content:
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec sem nec justo tincidunt fermentum. Nullam nec sem nec justo tincidunt',
-  createdAt: new Date(1741365088777),
-  updatedAt: new Date(1741365088777),
-  username: 'shadcn',
-  likes: 19950,
-  dislikes: 5949,
-};
+import usePosts from '@/hooks/usePosts';
 
 export default function Social() {
   const [countriesSelected, setCountriesSelected] = useState<
@@ -41,6 +30,8 @@ export default function Social() {
     clearError,
   } = useNewPost();
 
+  const { posts, loading: postsLoading, error: postsError } = usePosts();
+
   // When countries selected changes, extract the country selected and revert it back to an empty object
   useEffect(() => {
     if (Object.keys(countriesSelected).length > 0) {
@@ -57,6 +48,13 @@ export default function Social() {
       clearError();
     }
   }, [newPostError, clearError]);
+
+  // When there is an error showing all posts, show a toast
+  useEffect(() => {
+    if (postsError) {
+      toast.error(postsError);
+    }
+  }, [postsError]);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -168,8 +166,15 @@ export default function Social() {
         </div>
       </div>
 
-      <div className="mt-5 mb-10">
-        <Post post={mockPost} />
+      <div className="mt-5 mb-10 flex flex-col gap-7">
+        {posts.map((post) => (
+          <Post key={post.id} post={post} />
+        ))}
+
+        {postsLoading &&
+          [1, 2, 3].map((i) => (
+            <Skeleton key={i} className="w-full h-48 rounded-md" />
+          ))}
       </div>
     </div>
   );
