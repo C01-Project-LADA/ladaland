@@ -21,9 +21,16 @@ router.post(
     const { postId, content } = req.body;
 
     try {
-      const comment = await prisma.comment.create({
-        data: { postId, userId, content },
-      });
+      const comment = await prisma.$transaction([
+        prisma.comment.create({
+          data: { postId, userId, content },
+        }),
+        prisma.user.update({
+          where: {id: userId},
+          data: { points: { increment: 5 } },
+        })
+      ]);
+      
 
       res.status(201).json(comment);
     } catch (error) {
@@ -111,7 +118,15 @@ router.delete(
         return;
       }
 
-      await prisma.comment.delete({ where: { id } });
+      await prisma.$transaction([
+        prisma.comment.delete({
+          where: { id },
+        }),
+        prisma.user.update({
+          where: { id: userId },
+          data: { points: { decrement: 5 } },
+        }),
+      ]);
 
       res.status(200).json({ message: "Comment deleted successfully." });
     } catch (error) {
