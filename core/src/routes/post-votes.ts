@@ -81,18 +81,25 @@ router.post('/:postId', async (req: Request, res: Response): Promise<void> => {
 });
 
 router.get('/:postId', async (req: Request, res: Response): Promise<void> => {
+  if (!req.session || !req.session.user) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+
+  const userId = req.session.user.id;
   const { postId } = req.params;
 
   try {
-    const likes = await prisma.postVote.count({
-      where: { postId, type: 'LIKE' },
+    const postVotes = await prisma.postVote.findMany({
+      where: { postId },
+      select: { userId: true, type: true },
     });
 
-    const dislikes = await prisma.postVote.count({
-      where: { postId, type: 'DISLIKE' },
-    });
+    const likes = postVotes.filter(vote => vote.type === 'LIKE').length;
+    const dislikes = postVotes.filter(vote => vote.type === 'DISLIKE').length;
+    const userVote = postVotes.find(vote => vote.userId === userId)?.type || null;
 
-    res.status(200).json({ likes, dislikes });
+    res.status(200).json({ likes, dislikes, userVote });
   } catch (error) {
     res.status(500).json({ error: 'Something went wrong' });
   }

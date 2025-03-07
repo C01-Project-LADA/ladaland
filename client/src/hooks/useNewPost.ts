@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import axios from 'axios';
 
 export default function useNewPost() {
   /**
@@ -18,27 +19,36 @@ export default function useNewPost() {
    */
   const [error, setError] = useState<string | null>(null);
 
-  // TODO: Remove this useEffect once new post submission is implemented
-  useEffect(() => {
-    if (posting) {
-      setTimeout(() => {
-        setPosting(false);
-        setContent('');
-        setLocation(null);
-      }, 2000);
-    }
-  }, [posting]);
-
   /**
    * Handle new post submit
    */
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!location) {
       setError('Please select a location');
       return;
     }
-    // TODO: Implement new post submit
+    if (!content.trim()) {
+      setError('Post content cannot be empty');
+      return;
+    }
+
     setPosting(true);
+    setError(null);
+
+    try {
+      await axios.post(
+        'http://localhost:4000/api/posts',
+        { country: location.code, content },
+        { withCredentials: true }
+      );
+
+      setContent('');
+      setLocation(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create post');
+    } finally {
+      setPosting(false);
+    }
   }
 
   /**

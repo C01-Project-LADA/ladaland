@@ -14,11 +14,14 @@ import CountrySelectDialog from '@/components/CountrySelectDialog';
 import useUser from '@/hooks/useUser';
 import useNewPost from '@/hooks/useNewPost';
 import usePosts from '@/hooks/usePosts';
+import axios from 'axios';
 
 export default function Social() {
   const [countriesSelected, setCountriesSelected] = useState<
     Record<string, Country>
   >({});
+
+  const [isVoting, setIsVoting] = useState(false);
 
   /**
    * Currently logged in user
@@ -80,22 +83,60 @@ export default function Social() {
 
   const mapPinButtonRef = useRef<HTMLButtonElement>(null);
 
-  function deletePost(id: string) {
-    // TODO: Implement delete post
-    console.log('Delete post with id:', id);
-
-    refresh();
+  async function deletePost(id: string) {
+    try {
+      await axios.delete(`http://localhost:4000/api/posts/${id}`, {
+        withCredentials: true,
+      });
+  
+      toast.success('Post deleted successfully');
+      refresh();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to delete post');
+    }
   }
-
-  function likePost(id: string) {
-    // TODO: Implement like post
-    console.log('Like post with id:', id);
+  
+  async function likePost(id: string) {
+    if (isVoting) return;
+    setIsVoting(true);
+  
+    try {
+      const response = await axios.post(
+        `http://localhost:4000/api/post-votes/${id}`,
+        { voteType: 'LIKE' },
+        { withCredentials: true }
+      );
+  
+      if (response.status === 200 || response.status === 201) {
+        await refresh();
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to like post');
+    } finally {
+      setIsVoting(false);
+    }
   }
-
-  function dislikePost(id: string) {
-    // TODO: Implement dislike post
-    console.log('Dislike post with id:', id);
-  }
+  
+  async function dislikePost(id: string) {
+    if (isVoting) return;
+    setIsVoting(true);
+  
+    try {
+      const response = await axios.post(
+        `http://localhost:4000/api/post-votes/${id}`,
+        { voteType: 'DISLIKE' },
+        { withCredentials: true }
+      );
+  
+      if (response.status === 200 || response.status === 201) {
+        await refresh();
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to dislike post');
+    } finally {
+      setIsVoting(false);
+    }
+  }  
 
   return (
     <div className="mt-5">
