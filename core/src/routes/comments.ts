@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, VoteType } from "@prisma/client";
 import { body, param, query } from "express-validator";
 
 const router = Router();
@@ -46,20 +46,40 @@ router.get(
     const skip = (Number(page) - 1) * pageSize;
 
     let orderBy: any;
-    if (sort === "most_liked") orderBy = { likes: "desc" };
-    else if (sort === "most_disliked") orderBy = { dislikes: "desc" };
+    if (sort === "most_liked") orderBy = { commentVotes: { _count: "desc" } };
+    else if (sort === "most_disliked") orderBy = { commentVotes: { _count: "asc" } };
     else orderBy = { createdAt: "desc" };
 
     try {
       const comments = await prisma.comment.findMany({
         where: { postId },
-        include: { user: { select: { username: true } } },
+        include: {
+          user: { select: { username: true } },
+          commentVotes: true,
+        },
         orderBy,
         skip,
         take: pageSize,
       });
 
-      res.status(200).json(comments);
+      const formattedComments = comments.map((comment) => {
+        const likes = comment.commentVotes.filter((vote) => vote.type === "LIKE").length;
+        const dislikes = comment.commentVotes.filter((vote) => vote.type === "DISLIKE").length;
+
+        return {
+          id: comment.id,
+          postId: comment.postId,
+          userId: comment.userId,
+          content: comment.content,
+          createdAt: comment.createdAt,
+          updatedAt: comment.updatedAt,
+          username: comment.user.username,
+          likes,
+          dislikes,
+        };
+      });
+
+      res.status(200).json(formattedComments);
     } catch (error) {
       res.status(500).json({ message: "Something went wrong." });
     }
@@ -94,54 +114,6 @@ router.delete(
       await prisma.comment.delete({ where: { id } });
 
       res.status(200).json({ message: "Comment deleted successfully." });
-    } catch (error) {
-      res.status(500).json({ message: "Something went wrong." });
-    }
-  }
-);
-
-router.post(
-  "/:id/like",
-  [param("id").notEmpty().withMessage("Comment ID is required.")],
-  async (req: Request, res: Response): Promise<void> => {
-    if (!req.session || !req.session.user) {
-      res.status(401).json({ error: "Unauthorized." });
-      return;
-    }
-
-    const { id } = req.params;
-
-    try {
-      const comment = await prisma.comment.update({
-        where: { id },
-        data: { likes: { increment: 1 } },
-      });
-
-      res.status(200).json(comment);
-    } catch (error) {
-      res.status(500).json({ message: "Something went wrong." });
-    }
-  }
-);
-
-router.post(
-  "/:id/dislike",
-  [param("id").notEmpty().withMessage("Comment ID is required.")],
-  async (req: Request, res: Response): Promise<void> => {
-    if (!req.session || !req.session.user) {
-      res.status(401).json({ error: "Unauthorized." });
-      return;
-    }
-
-    const { id } = req.params;
-
-    try {
-      const comment = await prisma.comment.update({
-        where: { id },
-        data: { dislikes: { increment: 1 } },
-      });
-
-      res.status(200).json(comment);
     } catch (error) {
       res.status(500).json({ message: "Something went wrong." });
     }
