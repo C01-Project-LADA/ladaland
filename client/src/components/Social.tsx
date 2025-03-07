@@ -18,8 +18,8 @@ const mockPost: Post = {
   createdAt: new Date(1741365088777),
   updatedAt: new Date(1741365088777),
   username: 'shadcn',
-  likes: 23091,
-  dislikes: 5810,
+  likes: 19950,
+  dislikes: 5949,
 };
 
 export default function Social() {

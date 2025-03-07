@@ -7,21 +7,33 @@ import {
   MessageSquareText,
   ThumbsUp,
   ThumbsDown,
+  Trash,
+  Plane,
 } from 'lucide-react';
 import { formatNumberToKorM, formatLastUpdatedDate } from '@/lib/utils';
 import { useRef, useState } from 'react';
 import { motion, animate } from 'motion/react';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import ct from 'i18n-iso-countries';
 import en from 'i18n-iso-countries/langs/en.json';
 
 ct.registerLocale(en);
 
-export default function Post({ post }: { post: Post }) {
+export default function Post({
+  post,
+  ownedByUser = false,
+}: {
+  post: Post;
+  ownedByUser?: boolean;
+}) {
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
 
   const likeRef = useRef<HTMLDivElement>(null);
-  const dislikeRef = useRef<HTMLDivElement>(null);
 
   function handleLike() {
     setLiked((prev) => {
@@ -78,9 +90,36 @@ export default function Post({ post }: { post: Post }) {
           </div>
         </div>
 
-        <Button variant="ghost" size="icon" elevated={false}>
-          <EllipsisVertical />
-        </Button>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="ghost" size="icon" elevated={false}>
+              <EllipsisVertical />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-64"
+            side="left"
+            align="start"
+            sideOffset={-40}
+          >
+            <ul>
+              {ownedByUser && (
+                <li>
+                  <button className="hover:bg-[#e9e9e9] duration-150 w-full flex items-center py-3 px-4 gap-3 font-bold text-red-500 leading-none text-left">
+                    <Trash />
+                    Delete post
+                  </button>
+                </li>
+              )}
+              <li>
+                <button className="hover:bg-[#e9e9e9] duration-150 w-full flex items-center py-3 px-4 gap-3 font-bold text-gray-500 leading-none text-left">
+                  <Plane />
+                  Plan a trip here
+                </button>
+              </li>
+            </ul>
+          </PopoverContent>
+        </Popover>
       </div>
 
       <p className="mt-2">{post.content}</p>
@@ -109,7 +148,7 @@ export default function Post({ post }: { post: Post }) {
           <motion.div ref={likeRef}>
             <ThumbsUp fill={liked ? 'var(--lada-accent)' : 'transparent'} />
           </motion.div>
-          {formatNumberToKorM(post.likes)}
+          {formatNumberToKorM(post.likes + Number(liked))}
         </Button>
 
         <Button
@@ -122,12 +161,12 @@ export default function Post({ post }: { post: Post }) {
           }`}
           onClick={handleDislike}
         >
-          <motion.div ref={dislikeRef}>
+          <motion.div>
             <ThumbsDown
               fill={disliked ? 'var(--lada-accent)' : 'transparent'}
             />
           </motion.div>
-          {formatNumberToKorM(post.dislikes)}
+          {formatNumberToKorM(post.dislikes + Number(disliked))}
         </Button>
       </div>
     </div>
