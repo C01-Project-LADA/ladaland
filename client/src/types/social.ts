@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 type Post = {
+  userVote: string;
   id: string;
   userId: string;
   /**

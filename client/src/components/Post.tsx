@@ -11,7 +11,7 @@ import {
   Plane,
 } from 'lucide-react';
 import { formatNumberToKorM, formatLastUpdatedDate } from '@/lib/utils';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { motion, animate } from 'motion/react';
 import {
   Popover,
@@ -36,14 +36,14 @@ export default function Post({
   likePost: () => void;
   dislikePost: () => void;
 }) {
-  const [liked, setLiked] = useState(false);
-  const [disliked, setDisliked] = useState(false);
-
   const likeRef = useRef<HTMLDivElement>(null);
 
+  const liked = post.userVote === 'LIKE';
+  const disliked = post.userVote === 'DISLIKE';
+
   function handleLike() {
-    setLiked((prev) => {
-      if (!prev && likeRef.current)
+    if (!liked) {
+      if (likeRef.current) {
         animate([
           [
             likeRef.current,
@@ -56,20 +56,15 @@ export default function Post({
             { duration: 0.3, type: 'spring' },
           ],
         ]);
-      return !prev;
-    });
-    setDisliked(false);
-
-    // Like post on backend
-    likePost();
+      }
+      likePost();
+    }
   }
 
   function handleDislike() {
-    setDisliked((prev) => !prev);
-    setLiked(false);
-
-    // Dislike post on backend
-    dislikePost();
+    if (!disliked) {
+      dislikePost();
+    }
   }
 
   return (
@@ -150,7 +145,7 @@ export default function Post({
         >
           <MessageSquareText />
           {/* TODO: Comment count */}
-          1k
+          0
         </Button>
 
         <Button
@@ -166,7 +161,7 @@ export default function Post({
           <motion.div ref={likeRef}>
             <ThumbsUp fill={liked ? 'var(--lada-accent)' : 'transparent'} />
           </motion.div>
-          {formatNumberToKorM(post.likes + Number(liked))}
+          {formatNumberToKorM(post.likes)}
         </Button>
 
         <Button
@@ -184,7 +179,7 @@ export default function Post({
               fill={disliked ? 'var(--lada-accent)' : 'transparent'}
             />
           </motion.div>
-          {formatNumberToKorM(post.dislikes + Number(disliked))}
+          {formatNumberToKorM(post.dislikes)}
         </Button>
       </div>
     </div>
