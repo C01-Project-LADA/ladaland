@@ -36,7 +36,12 @@ export default function Social() {
     clearError,
   } = useNewPost();
 
-  const { posts, loading: postsLoading, error: postsError } = usePosts();
+  const {
+    posts,
+    loading: postsLoading,
+    error: postsError,
+    refresh,
+  } = usePosts();
 
   // When countries selected changes, extract the country selected and revert it back to an empty object
   useEffect(() => {
@@ -78,6 +83,8 @@ export default function Social() {
   function deletePost(id: string) {
     // TODO: Implement delete post
     console.log('Delete post with id:', id);
+
+    refresh();
   }
 
   function likePost(id: string) {

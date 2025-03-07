@@ -31,13 +31,18 @@ export default function usePosts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // TODO: Replace below useEffect code with API call to get posts
+  function fetchPosts() {
+    // TODO: Implement API call to get posts in this fcn. and replace below mock code
+    setLoading(true);
     setTimeout(() => {
       setPosts([mockPost1, mockPost2]);
       setLoading(false);
     }, 2000);
+  }
+
+  useEffect(() => {
+    fetchPosts();
   }, []);
 
-  return { posts, loading, error };
+  return { posts, loading, error, refresh: fetchPosts };
 }
