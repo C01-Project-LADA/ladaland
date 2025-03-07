@@ -13,11 +13,21 @@ function mapColorToGradient(
   direction: 'forwards' | 'backwards'
 ) {
   if (variant === 'green') {
-    return `var(--lada-primary) ${direction === 'forwards' ? '0%' : '100%'},
-    var(--lada-secondary) ${direction === 'forwards' ? '100%' : '0%'}`;
+    if (direction === 'forwards') {
+      return `var(--lada-primary) 0%,
+      var(--lada-secondary) 100%`;
+    } else {
+      return `var(--lada-secondary) 0%,
+      var(--lada-primary) 100%`;
+    }
   } else if (variant === 'blue') {
-    return `var(--lada-dark-accent) ${direction === 'forwards' ? '0%' : '100%'},
-    var(--lada-accent) ${direction === 'forwards' ? '100%' : '0%'}`;
+    if (direction === 'forwards') {
+      return `var(--lada-dark-accent) 0%,
+      var(--lada-accent) 100%`;
+    } else {
+      return `var(--lada-accent) 0%,
+      var(--lada-dark-accent) 100%`;
+    }
   }
 }
 

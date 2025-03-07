@@ -11,6 +11,7 @@ export default function Social() {
         title="SOCIAL"
         message="See trending locations and posts from around the world!"
         variant="blue"
+        direction="backwards"
       />
 
       <SocialPage />
