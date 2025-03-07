@@ -16,6 +16,7 @@ import postsRoute from './routes/posts';
 import commentsRoute from './routes/comments';
 import postVotesRoute from "./routes/post-votes";
 import logoutRoute from "./routes/user/logout";
+import commentVotesRoute from "./routes/comment-votes";
 
 dotenv.config();
 
@@ -53,6 +54,7 @@ app.use('/api/posts', postsRoute);
 app.use('/api/comments', commentsRoute);
 app.use('/api/post-votes', postVotesRoute);
 app.use('/api', logoutRoute);
+app.use('/api/comment-votes', commentVotesRoute);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {

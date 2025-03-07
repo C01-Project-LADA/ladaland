@@ -28,6 +28,7 @@ model User {
   posts     Post[]
   comments  Comment[]
   postVotes PostVote[]
+  commentVotes CommentVote[]
 }
 
 model Post {
@@ -42,6 +43,8 @@ model Post {
   updatedAt  DateTime @updatedAt
   pointsAwarded Int      @default(0)
   comments   Comment[]
+  postVotes  PostVote[]
+
   @@index([userId])
 }
 
@@ -50,11 +53,9 @@ model Comment {
   postId    String
   userId    String
   content   String
-  likes     Int      @default(0)
-  dislikes  Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  postVotes  PostVote[]
+  commentVotes CommentVote[]
 
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -69,7 +70,19 @@ model PostVote {
   type    VoteType
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   post    Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+
   @@unique([userId, postId])
+}
+
+model CommentVote {
+  id        String  @id @default(uuid())
+  userId    String
+  commentId String
+  type      VoteType
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, commentId])
 }
 
 enum VoteType {
