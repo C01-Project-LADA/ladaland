@@ -1,8 +1,38 @@
 import { Router, Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, VoteType } from '@prisma/client';
 
 const router = Router();
 const prisma = new PrismaClient();
+
+async function updatePointsForPost(postId: string) {
+  const threshold = 5;
+
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+  });
+  if (!post) return;
+
+  const totalLikes = await prisma.postVote.count({
+    where: { postId, type: VoteType.LIKE },
+  });
+
+  const newAward = Math.floor(totalLikes / threshold);
+
+  const diff = newAward - post.pointsAwarded;
+
+  if (diff !== 0) {
+    await prisma.$transaction([
+      prisma.post.update({
+        where: { id: postId },
+        data: { pointsAwarded: newAward },
+      }),
+      prisma.user.update({
+        where: { id: post.userId },
+        data: { points: { increment: diff } },
+      }),
+    ]);
+  }
+}
 
 router.post('/:postId', async (req: Request, res: Response): Promise<void> => {
   if (!req.session || !req.session.user) {
@@ -35,12 +65,14 @@ router.post('/:postId', async (req: Request, res: Response): Promise<void> => {
           where: { id: existingVote.id },
           data: { type: voteType },
         });
+        await updatePointsForPost(postId);
         res.status(200).json({ message: `Vote changed to ${voteType}` });
       }
     } else {
       await prisma.postVote.create({
         data: { userId, postId, type: voteType },
       });
+      await updatePointsForPost(postId);
       res.status(201).json({ message: `${voteType} added` });
     }
   } catch (error) {
