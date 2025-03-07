@@ -8,7 +8,9 @@ import { Button } from '@/components/ui/button';
 import { Image, MapPin } from 'lucide-react';
 import Post from '@/components/Post';
 import { Spinner } from '@/components/ui/spinner';
+import { toast } from 'sonner';
 import CountrySelectDialog from '@/components/CountrySelectDialog';
+import useNewPost from '@/hooks/useNewPost';
 
 const mockPost: Post = {
   id: '1',
@@ -27,34 +29,36 @@ export default function Social() {
   const [countriesSelected, setCountriesSelected] = useState<
     Record<string, Country>
   >({});
-  const [location, setLocation] = useState<string | null>(null);
+
+  const {
+    location,
+    setLocation,
+    content,
+    setContent,
+    posting,
+    handleSubmit,
+    error: newPostError,
+    clearError,
+  } = useNewPost();
 
   // When countries selected changes, extract the country selected and revert it back to an empty object
   useEffect(() => {
     if (Object.keys(countriesSelected).length > 0) {
       const country = Object.values(countriesSelected)[0];
       setCountriesSelected({});
-      setLocation(country.name);
+      setLocation(country);
     }
-  }, [countriesSelected]);
+  }, [countriesSelected, setLocation]);
 
-  // TEMP: Remove this when we have custom hooks
-  const [posting, setPosting] = useState(false);
+  // When new post error changes, show a toast
   useEffect(() => {
-    if (posting) {
-      setTimeout(() => {
-        setPosting(false);
-        setNewPostText('');
-      }, 2000);
+    if (newPostError) {
+      toast.error(newPostError);
+      clearError();
     }
-  }, [posting]);
-
-  function handleNewPostSubmit() {
-    setPosting(true);
-  }
+  }, [newPostError, clearError]);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [newPostText, setNewPostText] = useState('');
 
   function textAreaAdjust() {
     if (textareaRef.current) {
@@ -84,7 +88,7 @@ export default function Social() {
           >
             {location ? (
               <p>
-                in <span className="underline">{location}</span>
+                in <span className="underline">{location.name}</span>
               </p>
             ) : (
               'LOCATION'
@@ -94,10 +98,11 @@ export default function Social() {
           <Textarea
             ref={textareaRef}
             onKeyUp={textAreaAdjust}
-            value={newPostText}
-            onChange={(e) => setNewPostText(e.target.value)}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
             rows={4}
             placeholder="What's on your mind?"
+            disabled={posting}
             style={{
               fontSize: '1.2rem',
               letterSpacing: '-0.2px',
@@ -143,19 +148,17 @@ export default function Social() {
             <div className="flex gap-5 pb-2 items-end">
               <p
                 className={`text-xs ${
-                  newPostText.length >= 1000 ? 'text-red-500' : ''
+                  content.length >= 1000 ? 'text-red-500' : ''
                 }`}
               >
-                {newPostText.length}/1000
+                {content.length}/1000
               </p>
               <Button
                 variant="accent"
                 disabled={
-                  newPostText.length === 0 ||
-                  newPostText.length >= 1000 ||
-                  posting
+                  content.length === 0 || content.length >= 1000 || posting
                 }
-                onClick={handleNewPostSubmit}
+                onClick={handleSubmit}
               >
                 <span>POST</span>
                 {posting && <Spinner />}
