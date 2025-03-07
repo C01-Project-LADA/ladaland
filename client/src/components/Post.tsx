@@ -26,9 +26,15 @@ ct.registerLocale(en);
 export default function Post({
   post,
   ownedByUser = false,
+  deletePost,
+  likePost,
+  dislikePost,
 }: {
   post: Post;
   ownedByUser?: boolean;
+  deletePost?: () => void;
+  likePost: () => void;
+  dislikePost: () => void;
 }) {
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
@@ -53,11 +59,17 @@ export default function Post({
       return !prev;
     });
     setDisliked(false);
+
+    // Like post on backend
+    likePost();
   }
 
   function handleDislike() {
     setDisliked((prev) => !prev);
     setLiked(false);
+
+    // Dislike post on backend
+    dislikePost();
   }
 
   return (
@@ -108,7 +120,10 @@ export default function Post({
             <ul>
               {ownedByUser && (
                 <li>
-                  <button className="hover:bg-[#e9e9e9] duration-150 w-full flex items-center py-3 px-4 gap-3 font-bold text-red-500 leading-none text-left">
+                  <button
+                    className="hover:bg-[#e9e9e9] duration-150 w-full flex items-center py-3 px-4 gap-3 font-bold text-red-500 leading-none text-left"
+                    onClick={deletePost}
+                  >
                     <Trash />
                     Delete post
                   </button>

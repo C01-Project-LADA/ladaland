@@ -20,6 +20,9 @@ export default function Social() {
     Record<string, Country>
   >({});
 
+  /**
+   * Currently logged in user
+   */
   const { user } = useUser();
 
   const {
@@ -71,6 +74,21 @@ export default function Social() {
   }
 
   const mapPinButtonRef = useRef<HTMLButtonElement>(null);
+
+  function deletePost(id: string) {
+    // TODO: Implement delete post
+    console.log('Delete post with id:', id);
+  }
+
+  function likePost(id: string) {
+    // TODO: Implement like post
+    console.log('Like post with id:', id);
+  }
+
+  function dislikePost(id: string) {
+    // TODO: Implement dislike post
+    console.log('Dislike post with id:', id);
+  }
 
   return (
     <div className="mt-5">
@@ -175,6 +193,9 @@ export default function Social() {
             key={post.id}
             post={post}
             ownedByUser={post.userId === user?.id}
+            deletePost={() => deletePost(post.id)}
+            likePost={() => likePost(post.id)}
+            dislikePost={() => dislikePost(post.id)}
           />
         ))}
 
