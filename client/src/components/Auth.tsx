@@ -95,16 +95,17 @@ export default function Auth() {
       );
 
       if (response.status === 201) {
-        alert('User registered and logged in successfully!');
-        router.push('/'); // TODO: Take user to main screen after login
+        router.push('/');
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         const errorMessage =
           error.response?.data?.error || 'An unexpected error occurred';
-        alert(errorMessage);
+        registerForm.setError('confirm', { message: errorMessage });
       } else {
-        alert('An unexpected error occurred.');
+        registerForm.setError('confirm', {
+          message: 'An unexpected error occurred. Please try again later.',
+        });
       }
     }
   }
@@ -120,16 +121,17 @@ export default function Auth() {
       );
 
       if (response.status === 200) {
-        alert('Login successful!');
-        router.push('/'); // TODO: Take user to main screen after login
+        router.push('/');
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         const errorMessage =
           error.response?.data?.error || 'An unexpected error occurred';
-        alert(errorMessage);
+        loginForm.setError('password', { message: errorMessage });
       } else {
-        alert('An unexpected error occurred.');
+        loginForm.setError('password', {
+          message: 'An unexpected error occurred. Please try again later.',
+        });
       }
     }
   }
