@@ -1,6 +1,6 @@
 # LADA Land
 
-## Iteration 01 - Review & Retrospect
+## Iteration 02 - Review & Retrospect
 
 * **When:** March 6, 2025
 * **Where:** Online Meeting
