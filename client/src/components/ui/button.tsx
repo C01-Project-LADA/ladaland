@@ -54,7 +54,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         <Comp
           className={cn(
             buttonVariants({ variant, size, className }),
-            'active:translate-y-1'
+            'active:translate-y-1 z-[2] relative'
           )}
           ref={ref}
           {...props}
@@ -62,7 +62,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         <div
           className={cn(
             buttonVariants({ variant, size, className }),
-            'absolute brightness-50 -bottom-1 left-0 w-full h-full rounded-md z-[-1] pointer-events-none',
+            'absolute brightness-50 -bottom-1 left-0 w-full h-full rounded-md z-[1] pointer-events-none',
             props.disabled && 'opacity-0'
           )}
         />

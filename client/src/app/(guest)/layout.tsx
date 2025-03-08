@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Nunito_Sans } from 'next/font/google';
 import Navbar from '@/components/Navbar';
 import '@/app/globals.css';
+import 'flag-icons/css/flag-icons.min.css';
 
 const nunito_sans = Nunito_Sans({
   // variable: '--font-nunito_sans',

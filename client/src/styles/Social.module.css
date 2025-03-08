@@ -1,0 +1,27 @@
+.new_post_container {
+  position: relative;
+  padding: 15px;
+  padding-left: 0;
+  padding-right: 4rem;
+  background-clip: padding-box;
+  border: solid 1.5px transparent;
+  background-color: white;
+  display: flex;
+}
+
+.new_post_container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: -1.5px;
+  border-radius: inherit;
+  background: linear-gradient(
+    45deg,
+    var(--lada-accent) 0%,
+    var(--lada-dark-accent) 100%
+  );
+  z-index: -1;
+}
