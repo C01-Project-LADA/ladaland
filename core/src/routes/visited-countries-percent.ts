@@ -41,8 +41,7 @@ router.get(
         message: `You have visited ${visitedCount}/${TOTAL_COUNTRIES} countries, which is ${percentage}% of the world!`,
       });
     } catch (error) {
-      console.error('Error fetching visited percentage:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      res.status(500).json({ error: 'Error fetching visited percentage' });
     }
   }
 );

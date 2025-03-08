@@ -41,3 +41,6 @@ postcss.config.js
 
 # Ignore Prettier cache
 .prettiercache
+
+# Ignore markdown files
+*.md
