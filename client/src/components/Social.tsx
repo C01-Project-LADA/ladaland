@@ -105,15 +105,11 @@ export default function Social() {
     setIsVoting(true);
 
     try {
-      const response = await axios.post(
+      await axios.post(
         `http://localhost:4000/api/post-votes/${id}`,
         { voteType: 'LIKE' },
         { withCredentials: true }
       );
-
-      if (response.status === 200 || response.status === 201) {
-        await refresh();
-      }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to like post');
     } finally {
@@ -126,15 +122,11 @@ export default function Social() {
     setIsVoting(true);
 
     try {
-      const response = await axios.post(
+      await axios.post(
         `http://localhost:4000/api/post-votes/${id}`,
         { voteType: 'DISLIKE' },
         { withCredentials: true }
       );
-
-      if (response.status === 200 || response.status === 201) {
-        await refresh();
-      }
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : 'Failed to dislike post'

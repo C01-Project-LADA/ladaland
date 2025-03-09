@@ -95,6 +95,7 @@ router.get(
   query('q').optional().isString(),
   async (req: Request, res: Response): Promise<void> => {
     const { q } = req.query;
+    const userId = req.session?.user?.id;
 
     try {
       const posts = await prisma.post.findMany({
@@ -114,11 +115,9 @@ router.get(
       });
 
       if (!posts.length && q) {
-        res
-          .status(404)
-          .json({
-            message: 'No posts found with this tag. Try a different search.',
-          });
+        res.status(404).json({
+          message: 'No posts found with this tag. Try a different search.',
+        });
         return;
       }
 
@@ -129,6 +128,9 @@ router.get(
         const dislikes = post.postVotes.filter(
           (vote) => vote.type === 'DISLIKE'
         ).length;
+        const userVote = post.postVotes.find(
+          (vote) => vote.userId === userId
+        )?.type;
 
         return {
           id: post.id,
@@ -142,6 +144,7 @@ router.get(
           username: post.user.username,
           likes,
           dislikes,
+          userVote: userVote || null,
         };
       });
 

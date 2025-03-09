@@ -11,7 +11,7 @@ import {
   Plane,
 } from 'lucide-react';
 import { formatNumberToKorM, formatLastUpdatedDate } from '@/lib/utils';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, animate } from 'motion/react';
 import {
   Popover,
@@ -38,34 +38,49 @@ export default function Post({
 }) {
   const likeRef = useRef<HTMLDivElement>(null);
 
-  const liked = post.userVote === 'LIKE';
-  const disliked = post.userVote === 'DISLIKE';
+  const [liked, setLiked] = useState(post.userVote === 'LIKE');
+  const [disliked, setDisliked] = useState(post.userVote === 'DISLIKE');
 
   function handleLike() {
-    if (!liked) {
-      if (likeRef.current) {
-        animate([
-          [
-            likeRef.current,
-            { scale: 1.5, rotate: -10, y: -3 },
-            { duration: 0.4, type: 'spring' },
-          ],
-          [
-            likeRef.current,
-            { scale: 1, rotate: 0, y: 0 },
-            { duration: 0.3, type: 'spring' },
-          ],
-        ]);
-      }
-      likePost();
+    if (!liked && likeRef.current) {
+      animate([
+        [
+          likeRef.current,
+          { scale: 1.5, rotate: -10, y: -3 },
+          { duration: 0.4, type: 'spring' },
+        ],
+        [
+          likeRef.current,
+          { scale: 1, rotate: 0, y: 0 },
+          { duration: 0.3, type: 'spring' },
+        ],
+      ]);
+      setDisliked(false);
     }
+    setLiked(!liked);
+    likePost();
   }
 
   function handleDislike() {
-    if (!disliked) {
-      dislikePost();
-    }
+    if (!disliked) setLiked(false);
+    setDisliked(!disliked);
+    dislikePost();
   }
+
+  const originallyLiked = post.userVote === 'LIKE';
+  const originallyDisliked = post.userVote === 'DISLIKE';
+  const likes =
+    originallyLiked && !liked
+      ? post.likes - 1
+      : !originallyLiked && liked
+      ? post.likes + 1
+      : post.likes;
+  const dislikes =
+    originallyDisliked && !disliked
+      ? post.dislikes - 1
+      : !originallyDisliked && disliked
+      ? post.dislikes + 1
+      : post.dislikes;
 
   return (
     <div className="p-[20px] bg-white rounded-md">
@@ -160,7 +175,7 @@ export default function Post({
           <motion.div ref={likeRef}>
             <ThumbsUp fill={liked ? 'var(--lada-accent)' : 'transparent'} />
           </motion.div>
-          {formatNumberToKorM(post.likes)}
+          {formatNumberToKorM(likes)}
         </Button>
 
         <Button
@@ -178,7 +193,7 @@ export default function Post({
               fill={disliked ? 'var(--lada-accent)' : 'transparent'}
             />
           </motion.div>
-          {formatNumberToKorM(post.dislikes)}
+          {formatNumberToKorM(dislikes)}
         </Button>
       </div>
     </div>
