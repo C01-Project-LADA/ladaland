@@ -3,11 +3,13 @@ import axios from 'axios';
 
 export default function usePosts() {
   const [posts, setPosts] = useState<Post[]>([]);
+  /**
+   * Loading only true for the first render
+   */
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   async function fetchPosts() {
-    setLoading(true);
     setError(null);
 
     try {
