@@ -135,7 +135,7 @@ export default function Post({
         </Popover>
       </div>
 
-      <p className="mt-2">{post.content}</p>
+      <p className="mt-2 break-words">{post.content}</p>
 
       <div className="mt-2 flex gap-8">
         <Button
@@ -144,8 +144,7 @@ export default function Post({
           className="py-0 px-3 text-gray-500"
         >
           <MessageSquareText />
-          {/* TODO: Comment count */}
-          0
+          {/* TODO: Comment count */}0
         </Button>
 
         <Button
