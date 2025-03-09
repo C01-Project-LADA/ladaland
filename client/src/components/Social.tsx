@@ -156,7 +156,7 @@ export default function Social() {
                 in <span className="underline">{location.name}</span>
               </p>
             ) : (
-              'LOCATION'
+              <span className="underline">LOCATION</span>
             )}
           </div>
 
@@ -174,6 +174,7 @@ export default function Social() {
               lineHeight: '1.3',
               color: 'black',
               scrollbarWidth: 'none',
+              maxHeight: '400px',
             }}
           />
 
