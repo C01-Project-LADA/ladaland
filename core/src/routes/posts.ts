@@ -145,3 +145,5 @@ router.get(
 );
 
 export default router;
+
+//LADA-61
