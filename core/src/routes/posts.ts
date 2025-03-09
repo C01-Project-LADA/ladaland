@@ -1,6 +1,6 @@
-import { Router, Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-import { body, param, query } from "express-validator";
+import { Router, Request, Response } from 'express';
+import { PrismaClient } from '@prisma/client';
+import { body, param, query } from 'express-validator';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -91,17 +91,18 @@ router.delete(
 );
 
 router.get(
-  "/",
-  query("q").optional().isString(),
+  '/',
+  query('q').optional().isString(),
   async (req: Request, res: Response): Promise<void> => {
     const { q } = req.query;
+    const userId = req.session?.user?.id;
 
     try {
       const posts = await prisma.post.findMany({
         where: q
           ? {
               OR: [
-                { country: { contains: q as string, mode: "insensitive" } },
+                { country: { contains: q as string, mode: 'insensitive' } },
                 { tags: { has: q as string } },
               ],
             }
@@ -110,16 +111,26 @@ router.get(
           user: { select: { username: true } },
           postVotes: true,
         },
+        orderBy: { createdAt: 'desc' },
       });
 
       if (!posts.length && q) {
-        res.status(404).json({ message: "No posts found with this tag. Try a different search." });
+        res.status(404).json({
+          message: 'No posts found with this tag. Try a different search.',
+        });
         return;
       }
 
       const formattedPosts = posts.map((post) => {
-        const likes = post.postVotes.filter((vote) => vote.type === "LIKE").length;
-        const dislikes = post.postVotes.filter((vote) => vote.type === "DISLIKE").length;
+        const likes = post.postVotes.filter(
+          (vote) => vote.type === 'LIKE'
+        ).length;
+        const dislikes = post.postVotes.filter(
+          (vote) => vote.type === 'DISLIKE'
+        ).length;
+        const userVote = post.postVotes.find(
+          (vote) => vote.userId === userId
+        )?.type;
 
         return {
           id: post.id,
@@ -133,13 +144,14 @@ router.get(
           username: post.user.username,
           likes,
           dislikes,
+          userVote: userVote || null,
         };
       });
 
       res.status(200).json(formattedPosts);
     } catch (error) {
-      console.error("Search error:", error);
-      res.status(500).json({ message: "Something went wrong" });
+      console.error('Search error:', error);
+      res.status(500).json({ message: 'Something went wrong' });
     }
   }
 );
