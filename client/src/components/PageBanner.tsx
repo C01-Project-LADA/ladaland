@@ -1,4 +1,6 @@
 import styles from '@/styles/PageBanner.module.css';
+import { MoveLeft } from 'lucide-react';
+import Link from 'next/link';
 
 interface PageBannerProps {
   title: string;
@@ -6,6 +8,7 @@ interface PageBannerProps {
   direction?: 'forwards' | 'backwards';
   shadow?: boolean;
   message: string;
+  backLink?: string;
 }
 
 function mapColorToGradient(
@@ -37,6 +40,7 @@ export default function PageBanner({
   direction = 'forwards',
   shadow = false,
   message,
+  backLink,
 }: PageBannerProps) {
   return (
     <div
@@ -49,7 +53,16 @@ export default function PageBanner({
         boxShadow: shadow ? 'rgba(0, 0, 0, 0.35) 0px 5px 15px' : 'none',
       }}
     >
-      <h2>{title}</h2>
+      {backLink ? (
+        <Link href={backLink}>
+          <h2 className="flex items-center gap-2">
+            <MoveLeft size={20} />
+            {title}
+          </h2>
+        </Link>
+      ) : (
+        <h2>{title}</h2>
+      )}
       <h1>{message}</h1>
     </div>
   );
