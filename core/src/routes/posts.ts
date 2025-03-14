@@ -156,4 +156,52 @@ router.get(
   }
 );
 
+router.get('/:id', async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
+  const userId = req.session?.user?.id;
+
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id },
+      include: {
+        user: { select: { username: true } },
+        postVotes: true,
+      },
+    });
+
+    if (!post) {
+      res.status(404).json({ message: 'Post not found.' });
+      return;
+    }
+
+    const likes = post.postVotes.filter((vote) => vote.type === 'LIKE').length;
+    const dislikes = post.postVotes.filter(
+      (vote) => vote.type === 'DISLIKE'
+    ).length;
+    const userVote = post.postVotes.find(
+      (vote) => vote.userId === userId
+    )?.type;
+
+    const formattedPost = {
+      id: post.id,
+      userId: post.userId,
+      country: post.country,
+      content: post.content,
+      images: post.images,
+      tags: post.tags,
+      createdAt: new Date(post.createdAt),
+      updatedAt: new Date(post.updatedAt),
+      username: post.user.username,
+      likes,
+      dislikes,
+      userVote: userVote || null,
+    };
+
+    res.status(200).json(formattedPost);
+  } catch (error) {
+    console.error('Post error:', error);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+});
+
 export default router;
