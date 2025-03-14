@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/popover';
 import ct from 'i18n-iso-countries';
 import en from 'i18n-iso-countries/langs/en.json';
+import Link from 'next/link';
 
 ct.registerLocale(en);
 
@@ -157,9 +158,12 @@ export default function Post({
           variant="ghost"
           elevated={false}
           className="py-0 px-3 text-gray-500"
+          asChild
         >
-          <MessageSquareText />
-          {/* TODO: Comment count */}0
+          <Link href={`/social/${post.id}`}>
+            <MessageSquareText />
+            {/* TODO: Comment count */}0
+          </Link>
         </Button>
 
         <Button
