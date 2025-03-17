@@ -3,8 +3,7 @@
 import styles from '@/styles/Social.module.css';
 import PageBanner from '@/components/PageBanner';
 import usePosts from '@/hooks/usePosts';
-import { useRef, useState } from 'react';
-import { Image } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import Post from '@/components/Post';
 import useUser from '@/hooks/useUser';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -16,10 +15,12 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import useNewComment from '@/hooks/useNewComment';
+import useComments from '@/hooks/useComments';
+import Comment from './Comment';
 
 export default function PostDetails({ postId }: { postId: string }) {
   const router = useRouter();
-  const { posts, loading, refresh } = usePosts(postId);
+  const { posts, loading } = usePosts(postId);
   const post = posts[0];
 
   /**
@@ -29,8 +30,36 @@ export default function PostDetails({ postId }: { postId: string }) {
 
   const [isVoting, setIsVoting] = useState(false);
 
-  const { content, setContent, posting, handleSubmit, error, clearError } =
-    useNewComment(postId);
+  const {
+    content,
+    setContent,
+    posting,
+    handleSubmit,
+    error: newCommentError,
+    clearError,
+  } = useNewComment(postId);
+
+  const {
+    comments,
+    loading: commentsLoading,
+    error: commentsError,
+    refresh,
+  } = useComments(postId);
+
+  // When new post error changes, show a toast
+  useEffect(() => {
+    if (newCommentError) {
+      toast.error(newCommentError);
+      clearError();
+    }
+  }, [newCommentError, clearError]);
+
+  // When there is an error showing all posts, show a toast
+  useEffect(() => {
+    if (commentsError) {
+      toast.error(commentsError);
+    }
+  }, [commentsError]);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -172,18 +201,7 @@ export default function PostDetails({ postId }: { postId: string }) {
             }}
           />
 
-          <div className="mt-2 flex justify-between items-center">
-            <div className="flex gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="-ml-2"
-                elevated={false}
-              >
-                {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                <Image className="scale-150" />
-              </Button>
-            </div>
+          <div className="mt-2 flex justify-end items-center">
             <div className="flex gap-5 pb-2 items-end">
               <p
                 className={`text-xs ${
@@ -205,6 +223,23 @@ export default function PostDetails({ postId }: { postId: string }) {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="mt-5 flex flex-col gap-3 mb-10">
+        {commentsLoading ? (
+          <Skeleton className="w-full h-36 rounded-md mt-5" />
+        ) : (
+          comments.map((comment) => (
+            <Comment
+              key={comment.id}
+              comment={comment}
+              likeComment={() => {}}
+              dislikeComment={() => {}}
+              deleteComment={() => {}}
+              ownedByUser={comment.userId === user?.id}
+            />
+          ))
+        )}
       </div>
     </>
   );

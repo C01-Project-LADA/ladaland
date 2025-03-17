@@ -16,3 +16,16 @@ type Post = {
   likes: number;
   dislikes: number;
 };
+
+type PostComment = {
+  userVote: string | null;
+  id: string;
+  postId: string;
+  userId: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+  username: string;
+  likes: number;
+  dislikes: number;
+};
