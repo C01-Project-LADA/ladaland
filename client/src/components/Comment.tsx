@@ -73,17 +73,20 @@ export default function Comment({
 
   return (
     <div className="p-[15px] pb-[5px] bg-white rounded-md">
-      <div className="flex items-start justify-between">
-        <div className="flex gap-3">
-          <Avatar>
-            <AvatarImage
-              src="https://github.com/shadcn.png"
-              alt={`@${comment.username}`}
-            />
-            <AvatarFallback>{comment.username[0].toUpperCase()}</AvatarFallback>
-          </Avatar>
+      <div className="flex gap-3">
+        <Avatar>
+          <AvatarImage
+            src="https://github.com/shadcn.png"
+            alt={`@${comment.username}`}
+          />
+          <AvatarFallback>{comment.username[0].toUpperCase()}</AvatarFallback>
+        </Avatar>
 
-          <div>
+        <div
+          className="flex-1 break-words"
+          style={{ maxWidth: 'calc(100% - 60px)' }}
+        >
+          <div className="flex items-start justify-between">
             <div className="flex items-center">
               <p className="font-bold">@{comment.username}</p>
               <p className="text-gray-500 ml-1">&middot;</p>
@@ -95,75 +98,73 @@ export default function Comment({
               </p>
             </div>
 
-            <p className="mt-1 break-words">{comment.content}</p>
+            {ownedByUser && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon" elevated={false}>
+                    <EllipsisVertical />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-64"
+                  side="left"
+                  align="start"
+                  sideOffset={-40}
+                >
+                  <ul>
+                    <li>
+                      <button
+                        className="hover:bg-[#e9e9e9] duration-150 w-full flex items-center py-3 px-4 gap-3 font-bold text-red-500 leading-none text-left"
+                        onClick={deleteComment}
+                      >
+                        <Trash />
+                        Delete comment
+                      </button>
+                    </li>
+                  </ul>
+                </PopoverContent>
+              </Popover>
+            )}
+          </div>
 
-            <div className="mt-1 flex gap-3 -ml-3">
-              <Button
-                variant="ghost"
-                elevated={false}
-                className={`py-0 px-3 text-gray-500 ${
-                  liked
-                    ? 'text-sky-500 font-bold hover:text-sky-500 hover:font-bold'
-                    : ''
-                }`}
-                onClick={handleLike}
-              >
-                <motion.div ref={likeRef}>
-                  <ThumbsUp
-                    fill={liked ? 'var(--lada-accent)' : 'transparent'}
-                  />
-                </motion.div>
-                {formatNumberToKorM(likes)}
-              </Button>
+          <p className="-mt-3 break-words">{comment.content}</p>
 
-              <Button
-                variant="ghost"
-                elevated={false}
-                className={`py-0 px-3 text-gray-500 ${
-                  disliked
-                    ? 'text-sky-500 font-bold hover:text-sky-500 hover:font-bold'
-                    : ''
-                }`}
-                onClick={handleDislike}
-              >
-                <motion.div>
-                  <ThumbsDown
-                    fill={disliked ? 'var(--lada-accent)' : 'transparent'}
-                  />
-                </motion.div>
-                {formatNumberToKorM(dislikes)}
-              </Button>
-            </div>
+          <div className="mt-1 flex gap-3 -ml-3">
+            <Button
+              variant="ghost"
+              elevated={false}
+              className={`py-0 px-3 text-gray-500 ${
+                liked
+                  ? 'text-sky-500 font-bold hover:text-sky-500 hover:font-bold'
+                  : ''
+              }`}
+              onClick={handleLike}
+            >
+              <motion.div ref={likeRef}>
+                <ThumbsUp fill={liked ? 'var(--lada-accent)' : 'transparent'} />
+              </motion.div>
+              {formatNumberToKorM(likes)}
+            </Button>
+
+            <Button
+              variant="ghost"
+              elevated={false}
+              className={`py-0 px-3 text-gray-500 ${
+                disliked
+                  ? 'text-sky-500 font-bold hover:text-sky-500 hover:font-bold'
+                  : ''
+              }`}
+              onClick={handleDislike}
+            >
+              <motion.div>
+                <ThumbsDown
+                  fill={disliked ? 'var(--lada-accent)' : 'transparent'}
+                />
+              </motion.div>
+              {formatNumberToKorM(dislikes)}
+            </Button>
           </div>
         </div>
-
-        {ownedByUser && (
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" elevated={false}>
-                <EllipsisVertical />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              className="w-64"
-              side="left"
-              align="start"
-              sideOffset={-40}
-            >
-              <ul>
-                <li>
-                  <button
-                    className="hover:bg-[#e9e9e9] duration-150 w-full flex items-center py-3 px-4 gap-3 font-bold text-red-500 leading-none text-left"
-                    onClick={deleteComment}
-                  >
-                    <Trash />
-                    Delete comment
-                  </button>
-                </li>
-              </ul>
-            </PopoverContent>
-          </Popover>
-        )}
       </div>
     </div>
   );

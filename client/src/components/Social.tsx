@@ -178,7 +178,7 @@ export default function Social() {
             }}
           />
 
-          <p className="text-xs text-sky-500 mt-1">
+          <p className="text-xs mt-1" style={{ color: 'var(--lada-accent)' }}>
             Everyone can view and reply
           </p>
 

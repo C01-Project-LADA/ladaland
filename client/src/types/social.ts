@@ -15,6 +15,7 @@ type Post = {
   username: string;
   likes: number;
   dislikes: number;
+  commentsCount: number;
 };
 
 type PostComment = {

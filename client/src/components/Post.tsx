@@ -162,7 +162,7 @@ export default function Post({
         >
           <Link href={`/social/${post.id}`}>
             <MessageSquareText />
-            {/* TODO: Comment count */}0
+            {post.commentsCount}
           </Link>
         </Button>
 

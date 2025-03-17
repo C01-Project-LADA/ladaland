@@ -110,6 +110,7 @@ router.get(
         include: {
           user: { select: { username: true } },
           postVotes: true,
+          comments: true,
         },
         orderBy: { createdAt: 'desc' },
       });
@@ -131,6 +132,7 @@ router.get(
         const userVote = post.postVotes.find(
           (vote) => vote.userId === userId
         )?.type;
+        const commentsCount = post.comments.length;
 
         return {
           id: post.id,
@@ -145,6 +147,7 @@ router.get(
           likes,
           dislikes,
           userVote: userVote || null,
+          commentsCount,
         };
       });
 
@@ -166,6 +169,7 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
       include: {
         user: { select: { username: true } },
         postVotes: true,
+        comments: true,
       },
     });
 
@@ -181,6 +185,7 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
     const userVote = post.postVotes.find(
       (vote) => vote.userId === userId
     )?.type;
+    const commentsCount = post.comments.length;
 
     const formattedPost = {
       id: post.id,
@@ -195,6 +200,7 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
       likes,
       dislikes,
       userVote: userVote || null,
+      commentsCount,
     };
 
     res.status(200).json(formattedPost);
