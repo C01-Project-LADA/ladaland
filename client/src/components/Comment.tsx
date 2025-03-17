@@ -103,7 +103,7 @@ export default function Comment({
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="-mt-2"
+                    className="-mt-2 -mb-2"
                     size="icon"
                     elevated={false}
                   >
@@ -132,7 +132,7 @@ export default function Comment({
             )}
           </div>
 
-          <p className="-mt-1 break-words">{comment.content}</p>
+          <p className="mt-1 break-words">{comment.content}</p>
 
           <div className="mt-1 flex gap-3 -ml-3">
             <Button
