@@ -153,7 +153,7 @@ export default function Post({
 
       <p className="mt-2 break-words">{post.content}</p>
 
-      <div className="mt-2 flex gap-8">
+      <div className="mt-2 flex gap-8 -ml-3">
         <Button
           variant="ghost"
           elevated={false}
