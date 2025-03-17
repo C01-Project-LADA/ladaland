@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${nunito_sans.className} antialiased flex`}>
-        <div className="mr-auto ml-auto flex gap-[50px]">{children}</div>
+        {children}
         <Toaster />
       </body>
     </html>
