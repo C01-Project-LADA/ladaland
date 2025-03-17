@@ -69,10 +69,10 @@ export default function SideNavigation() {
 
         <ul className={styles.links}>
           {links.map(({ href, text, icon }) => (
-            <Link key={href} href={href}>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
+            <TooltipProvider key={href}>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Link href={href}>
                     <li
                       className={
                         pathname === href ? styles.active : styles.link
@@ -81,13 +81,13 @@ export default function SideNavigation() {
                       {icon}
                       <p className={styles.link_text}>{text.toUpperCase()}</p>
                     </li>
-                  </TooltipTrigger>
-                  <TooltipContent side="right">
-                    <p className="font-bold py-1 px-2">{text.toUpperCase()}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </Link>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p className="font-bold py-1 px-2">{text.toUpperCase()}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           ))}
 
           <HoverCard openDelay={150} closeDelay={500}>
