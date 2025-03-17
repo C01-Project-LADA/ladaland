@@ -125,6 +125,59 @@ export default function PostDetails({ postId }: { postId: string }) {
     }
   }
 
+  async function deleteComment(id: string) {
+    try {
+      await axios.delete(`http://localhost:4000/api/comments/${id}`, {
+        withCredentials: true,
+      });
+
+      toast.success('Comment deleted successfully');
+      refresh();
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to delete comment'
+      );
+    }
+  }
+
+  async function likeComment(id: string) {
+    if (isVoting) return;
+    setIsVoting(true);
+
+    try {
+      await axios.post(
+        `http://localhost:4000/api/comment-votes/${id}`,
+        { voteType: 'LIKE' },
+        { withCredentials: true }
+      );
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to like comment'
+      );
+    } finally {
+      setIsVoting(false);
+    }
+  }
+
+  async function dislikeComment(id: string) {
+    if (isVoting) return;
+    setIsVoting(true);
+
+    try {
+      await axios.post(
+        `http://localhost:4000/api/comment-votes/${id}`,
+        { voteType: 'DISLIKE' },
+        { withCredentials: true }
+      );
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to dislike comment'
+      );
+    } finally {
+      setIsVoting(false);
+    }
+  }
+
   if (posts.length === 0 && !loading) {
     return (
       <PageBanner
@@ -233,9 +286,9 @@ export default function PostDetails({ postId }: { postId: string }) {
             <Comment
               key={comment.id}
               comment={comment}
-              likeComment={() => {}}
-              dislikeComment={() => {}}
-              deleteComment={() => {}}
+              likeComment={() => likeComment(comment.id)}
+              dislikeComment={() => dislikeComment(comment.id)}
+              deleteComment={() => deleteComment(comment.id)}
               ownedByUser={comment.userId === user?.id}
             />
           ))
