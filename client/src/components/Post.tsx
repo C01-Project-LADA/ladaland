@@ -84,7 +84,7 @@ export default function Post({
       : post.dislikes;
 
   return (
-    <div className="p-[20px] pb-[10px] bg-white rounded-md">
+    <div className="p-[20px] pb-[10px] pl-6 bg-white rounded-md">
       <div className="flex items-start justify-between">
         <div className="flex gap-5">
           <Avatar>
