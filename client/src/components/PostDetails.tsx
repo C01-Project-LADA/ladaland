@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+import { useRouter, notFound } from 'next/navigation';
 import axios from 'axios';
 import useNewComment from '@/hooks/useNewComment';
 import useComments from '@/hooks/useComments';
@@ -179,15 +179,7 @@ export default function PostDetails({ postId }: { postId: string }) {
   }
 
   if (posts.length === 0 && !loading) {
-    return (
-      <PageBanner
-        title="BACK TO SOCIAL"
-        message="Error! No post found."
-        variant="blue"
-        direction="backwards"
-        backLink="/social"
-      />
-    );
+    notFound();
   }
 
   return (
