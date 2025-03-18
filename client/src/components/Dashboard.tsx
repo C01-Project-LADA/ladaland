@@ -20,6 +20,7 @@ export default function Dashboard() {
     function onscroll() {
       if (sidebarRef.current && contentRef.current) {
         const scrollTop = window.scrollY;
+        const scrollLeft = window.scrollX;
         const viewportHeight = window.innerHeight;
         const contentHeight =
           contentRef.current?.getBoundingClientRect().height;
@@ -28,6 +29,7 @@ export default function Dashboard() {
           contentRef.current.style.transform = `translateY(-${
             contentHeight - viewportHeight + 30
           }px)`;
+          contentRef.current.style.transform = `translateX(${-scrollLeft}px)`;
           contentRef.current.style.position = 'fixed';
         } else {
           contentRef.current.style.transform = '';
