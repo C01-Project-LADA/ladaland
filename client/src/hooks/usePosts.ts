@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
-export default function usePosts(id?: string) {
+export default function usePosts(id?: string, query?: string, sortBy?: string) {
   const [posts, setPosts] = useState<Post[]>([]);
   /**
    * Loading only true for the first render
@@ -13,8 +13,14 @@ export default function usePosts(id?: string) {
     setError(null);
 
     try {
+      const queryParams = new URLSearchParams();
+      if (query) queryParams.append('q', query.substring(0, 2));
+      if (sortBy) queryParams.append('sortBy', sortBy);
+
       const response = await axios.get(
-        `http://localhost:4000/api/posts/${id || ''}`,
+        `http://localhost:4000/api/posts${
+          id ? `/${id}` : ''
+        }?${queryParams.toString()}`,
         {
           withCredentials: true,
         }
@@ -40,7 +46,7 @@ export default function usePosts(id?: string) {
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, query, sortBy]);
 
   useEffect(() => {
     fetchPosts();
