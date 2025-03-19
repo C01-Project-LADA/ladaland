@@ -110,6 +110,7 @@ router.get(
           OR: [
             { country: { contains: q as string, mode: 'insensitive' } },
             { tags: { has: q as string } },
+            { content: { contains: q as string, mode: 'insensitive' } },
           ],
         }
           : {},
