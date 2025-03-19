@@ -15,6 +15,12 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -63,12 +69,25 @@ export default function SideNavigation() {
 
         <ul className={styles.links}>
           {links.map(({ href, text, icon }) => (
-            <Link key={href} href={href}>
-              <li className={pathname === href ? styles.active : styles.link}>
-                {icon}
-                <p className={styles.link_text}>{text.toUpperCase()}</p>
-              </li>
-            </Link>
+            <TooltipProvider key={href}>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Link href={href}>
+                    <li
+                      className={
+                        pathname === href ? styles.active : styles.link
+                      }
+                    >
+                      {icon}
+                      <p className={styles.link_text}>{text.toUpperCase()}</p>
+                    </li>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p className="font-bold py-1 px-2">{text.toUpperCase()}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           ))}
 
           <HoverCard openDelay={150} closeDelay={500}>

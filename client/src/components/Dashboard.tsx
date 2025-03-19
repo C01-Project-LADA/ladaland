@@ -1,9 +1,20 @@
 'use client';
 
 import styles from '@/styles/Dashboard.module.css';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
+import { usePathname, useRouter } from 'next/navigation';
+import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 
 const mockData = {
   xp: 1531,
@@ -12,14 +23,20 @@ const mockData = {
 };
 
 export default function Dashboard() {
+  const pathname = usePathname();
+  const router = useRouter();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  const [postSearch, setPostSearch] = useState('');
+  const [postSortBy, setPostSortBy] = useState<string | null>('');
 
   // Let sidebar scroll with the page
   useEffect(() => {
     function onscroll() {
       if (sidebarRef.current && contentRef.current) {
         const scrollTop = window.scrollY;
+        const scrollLeft = window.scrollX;
         const viewportHeight = window.innerHeight;
         const contentHeight =
           contentRef.current?.getBoundingClientRect().height;
@@ -28,6 +45,7 @@ export default function Dashboard() {
           contentRef.current.style.transform = `translateY(-${
             contentHeight - viewportHeight + 30
           }px)`;
+          contentRef.current.style.transform = `translateX(${-scrollLeft}px)`;
           contentRef.current.style.position = 'fixed';
         } else {
           contentRef.current.style.transform = '';
@@ -42,10 +60,20 @@ export default function Dashboard() {
     };
   }, []);
 
+  function pushRouterWithQuery(query: string) {
+    const linkWithoutQuery = pathname.split('?')[0];
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const [key, value] = query.split('=');
+    urlParams.set(key, value);
+
+    router.push(`${linkWithoutQuery}?${urlParams.toString()}`);
+  }
+
   return (
     <div className={styles.container} ref={sidebarRef}>
       <div className={styles.content} ref={contentRef}>
-        <div className={styles.profile_container}>
+        <div className={styles.sidebar_content_container}>
           <div className={styles.top_stats}>
             <div className={styles.levels}>
               <div className="flex items-end justify-between w-full mb-[4px]">
@@ -86,6 +114,59 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+
+        {pathname === '/social' && (
+          <div className={`${styles.sidebar_content_container} mt-10`}>
+            <h3 className="text-md font-bold mt-1">Search posts</h3>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                pushRouterWithQuery(`q=${postSearch}`);
+              }}
+            >
+              <Input
+                value={postSearch}
+                onChange={(e) => setPostSearch(e.target.value)}
+                className="mt-4 text-sm"
+                startIcon={Search}
+                placeholder="Search for a country..."
+              />
+            </form>
+
+            <Select
+              value={postSortBy || ''}
+              onValueChange={(value) => {
+                setPostSortBy(value);
+                pushRouterWithQuery(`sortBy=${value}`);
+              }}
+            >
+              <SelectTrigger className="mt-3">
+                <SelectValue placeholder="Filter by..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="mostRecent">Most Recent</SelectItem>
+                <SelectItem value="leastRecent">Least Recent</SelectItem>
+                <SelectItem value="mostLiked">Most Liked</SelectItem>
+                <SelectItem value="leastLiked">Least Liked</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <div className="mt-2 mb-2">
+              <Button
+                className="w-full"
+                variant="secondary"
+                onClick={() => {
+                  setPostSearch('');
+                  setPostSortBy(null);
+                  router.push('/social');
+                }}
+              >
+                <span className="px-5">Clear</span>
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
