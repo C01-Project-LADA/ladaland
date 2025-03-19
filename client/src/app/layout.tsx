@@ -1,9 +1,13 @@
 import type { Metadata } from 'next';
-import SideNavigation from '@/components/SideNavigation';
-import Dashboard from '@/components/Dashboard';
+import { Nunito_Sans } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
 import '@/app/globals.css';
-import 'flag-icons/css/flag-icons.min.css';
+
+const nunito_sans = Nunito_Sans({
+  // variable: '--font-nunito_sans',
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Lada Land',
@@ -17,14 +21,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
-      <SideNavigation />
-      <div className="mr-auto ml-auto flex gap-[50px]">
+    <html lang="en">
+      <body className={`${nunito_sans.className} antialiased flex`}>
         {children}
-        <Dashboard />
-      </div>
-
-      <Toaster />
-    </>
+        <Toaster />
+      </body>
+    </html>
   );
 }

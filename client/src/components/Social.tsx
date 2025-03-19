@@ -15,8 +15,14 @@ import useUser from '@/hooks/useUser';
 import useNewPost from '@/hooks/useNewPost';
 import usePosts from '@/hooks/usePosts';
 import axios from 'axios';
+import { useSearchParams } from 'next/navigation';
 
 export default function Social() {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('q');
+  const sortBy = searchParams.get('sortBy');
+  console.log(searchQuery, sortBy);
+
   const [countriesSelected, setCountriesSelected] = useState<
     Record<string, Country>
   >({});
@@ -44,7 +50,7 @@ export default function Social() {
     loading: postsLoading,
     error: postsError,
     refresh,
-  } = usePosts();
+  } = usePosts(undefined, searchQuery || '', sortBy || '');
 
   // When countries selected changes, extract the country selected and revert it back to an empty object
   useEffect(() => {
@@ -178,7 +184,7 @@ export default function Social() {
             }}
           />
 
-          <p className="text-xs text-sky-500 mt-1">
+          <p className="text-xs mt-1" style={{ color: 'var(--lada-accent)' }}>
             Everyone can view and reply
           </p>
 

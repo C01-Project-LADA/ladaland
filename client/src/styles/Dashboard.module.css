@@ -1,16 +1,19 @@
 .container {
   width: 350px;
+  z-index: 10;
 
   /* NOTE: if modifying this value, also modify the onscroll function in Dashboard.tsx */
   padding-top: 30px;
 }
 
 .content {
+  z-index: 10;
+
   /* NOTE: width here should match width of container */
   width: 350px;
 }
 
-.profile_container {
+.sidebar_content_container {
   padding: 8px 15px;
   /* TEMP */
   border-radius: 10px;
