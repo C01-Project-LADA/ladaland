@@ -89,3 +89,22 @@ enum VoteType {
   LIKE
   DISLIKE
 }
+
+model Trip {
+  id          String    @id @default(uuid())
+  name        String
+  startDate   DateTime  @default(now())
+  endDate     DateTime
+  budget      Int
+  completed   Boolean   @default(false)
+  expenses    Expense[]
+}
+
+model Expense {
+  id          String    @id @default(uuid())
+  type        String
+  name        String
+  cost        Int
+  tripId      String?
+  trip        Trip?     @relation(fields: [tripId], references: [id])
+}
