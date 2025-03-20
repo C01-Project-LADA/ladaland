@@ -229,5 +229,3 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
 });
 
 export default router;
-
-//LADA-61
