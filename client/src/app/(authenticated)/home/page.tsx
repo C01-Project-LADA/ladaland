@@ -106,7 +106,7 @@ export default function Home() {
           width={500}
           height={height - 100}
           backgroundColor="#f5f5f5"
-          globeImageUrl="/globe-bg.png"
+          globeImageUrl="/water.jpg"
           polygonsData={countries.features}
           polygonAltitude={(d) => (d === hoverD ? 0.03 : 0.01)}
           polygonStrokeColor={() => '#111'}
