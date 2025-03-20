@@ -106,7 +106,7 @@ export default function Home() {
           width={500}
           height={height - 100}
           backgroundColor="#f5f5f5"
-          globeImageUrl="https://unpkg.com/three-globe/example/img/earth-night.jpg"
+          globeImageUrl="/globe-bg.png"
           polygonsData={countries.features}
           polygonAltitude={(d) => (d === hoverD ? 0.03 : 0.01)}
           polygonStrokeColor={() => '#111'}
