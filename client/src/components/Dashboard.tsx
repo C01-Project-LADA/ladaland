@@ -7,6 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { usePathname, useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
+import useUser from '@/hooks/useUser';
 import {
   Select,
   SelectContent,
@@ -16,12 +17,6 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 
-const mockData = {
-  xp: 1531,
-  startxp: 1000,
-  endxp: 5000,
-};
-
 export default function Dashboard() {
   const pathname = usePathname();
   const router = useRouter();
@@ -30,6 +25,19 @@ export default function Dashboard() {
 
   const [postSearch, setPostSearch] = useState('');
   const [postSortBy, setPostSortBy] = useState<string | null>('');
+
+  const { user } = useUser();
+  const currentPoints = user?.points || 0;
+
+  const level = Math.floor(currentPoints / 1000) + 1;
+
+  const startXp = (level - 1) * 1000; 
+  const endXp = level * 1000; 
+
+  let progress = 0;
+  if (endXp > startXp) {
+    progress = ((currentPoints - startXp) / (endXp - startXp)) * 100;
+  }
 
   // Let sidebar scroll with the page
   useEffect(() => {
@@ -77,18 +85,21 @@ export default function Dashboard() {
           <div className={styles.top_stats}>
             <div className={styles.levels}>
               <div className="flex items-end justify-between w-full mb-[4px]">
-                <p className={styles.level_title}>Level 5, Explorer</p>
+              <p className={styles.level_title}>
+                  Level {level}
+                </p>
                 <p className={styles.level_current}>
-                  {mockData.xp.toLocaleString('en', { useGrouping: true })} xp
+                  {currentPoints.toLocaleString()} points
                 </p>
               </div>
-              <Progress value={20} />
+              <Progress value={progress} />
+
               <div className="flex justify-between w-full">
                 <p className={styles.level_num}>
-                  {mockData.startxp.toLocaleString('en', { useGrouping: true })}
+                  {startXp.toLocaleString()}
                 </p>
                 <p className={styles.level_num}>
-                  {mockData.endxp.toLocaleString('en', { useGrouping: true })}
+                  {endXp.toLocaleString()}
                 </p>
               </div>
             </div>
