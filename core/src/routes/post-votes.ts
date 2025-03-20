@@ -59,6 +59,7 @@ router.post('/:postId', async (req: Request, res: Response): Promise<void> => {
     if (existingVote) {
       if (existingVote.type === voteType) {
         await prisma.postVote.delete({ where: { id: existingVote.id } });
+        await updatePointsForPost(postId);
         res.status(200).json({ message: `${voteType} removed` });
       } else {
         await prisma.postVote.update({
