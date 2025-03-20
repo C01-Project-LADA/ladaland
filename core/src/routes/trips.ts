@@ -12,8 +12,14 @@ router.post(
     body('startDate').notEmpty().withMessage('Start date is required'),
     body('endDate').notEmpty().withMessage('End date is required'),
     body('budget').isNumeric().withMessage('Budget must be a number'),
-    body('completed').optional().isBoolean().withMessage('Completed must be a boolean'),
-    body('expenses').optional().isArray().withMessage('Expenses must be an array'),
+    body('completed')
+      .optional()
+      .isBoolean()
+      .withMessage('Completed must be a boolean'),
+    body('expenses')
+      .optional()
+      .isArray()
+      .withMessage('Expenses must be an array'),
   ],
   async (req: Request, res: Response): Promise<void> => {
     const errors = validationResult(req);
@@ -55,17 +61,32 @@ router.put(
   [
     param('tripId').notEmpty().withMessage('Trip ID is required'),
     body('name').optional().notEmpty().withMessage('Trip name cannot be empty'),
-    body('startDate').optional().notEmpty().withMessage('Start date cannot be empty'),
-    body('endDate').optional().notEmpty().withMessage('End date cannot be empty'),
-    body('budget').optional().isNumeric().withMessage('Budget must be a number'),
-    body('completed').optional().isBoolean().withMessage('Completed must be a boolean'),
-    body('expenses').optional().isArray().withMessage('Expenses must be an array'),
+    body('startDate')
+      .optional()
+      .notEmpty()
+      .withMessage('Start date cannot be empty'),
+    body('endDate')
+      .optional()
+      .notEmpty()
+      .withMessage('End date cannot be empty'),
+    body('budget')
+      .optional()
+      .isNumeric()
+      .withMessage('Budget must be a number'),
+    body('completed')
+      .optional()
+      .isBoolean()
+      .withMessage('Completed must be a boolean'),
+    body('expenses')
+      .optional()
+      .isArray()
+      .withMessage('Expenses must be an array'),
   ],
   async (req: Request, res: Response): Promise<void> => {
     const errors = validationResult(req);
-    if (!errors.isEmpty()){
-       res.status(400).json({ errors: errors.array() });
-       return;
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() });
+      return;
     }
     const { tripId } = req.params;
     const { name, startDate, endDate, budget, completed, expenses } = req.body;
@@ -124,37 +145,62 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
     const trips = await prisma.trip.findMany({
       include: { expenses: true },
     });
-    res.status(200).json(trips);
+
+    const tripsWithBudgetLeft = trips.map((trip) => {
+      const totalExpenses = trip.expenses.reduce(
+        (sum, expense) => sum + expense.cost,
+        0
+      );
+      return {
+        ...trip,
+        budgetLeft: trip.budget - totalExpenses,
+      };
+    });
+
+    res.status(200).json(tripsWithBudgetLeft);
   } catch (error) {
     console.error('Error fetching trips:', error);
     res.status(500).json({ error: 'Error fetching trips' });
   }
 });
 
-router.delete('/:tripId', async (req: Request, res: Response): Promise<void> => {
-  const { tripId } = req.params;
-  try {
-    const deletedTrip = await prisma.trip.delete({
-      where: { id: tripId },
-    });
-    res.status(200).json({ message: 'Trip deleted successfully', trip: deletedTrip });
-  } catch (error) {
-    console.error('Error deleting trip:', error);
-    res.status(500).json({ error: 'Error deleting trip' });
+router.delete(
+  '/:tripId',
+  async (req: Request, res: Response): Promise<void> => {
+    const { tripId } = req.params;
+    try {
+      const deletedTrip = await prisma.trip.delete({
+        where: { id: tripId },
+      });
+      res
+        .status(200)
+        .json({ message: 'Trip deleted successfully', trip: deletedTrip });
+    } catch (error) {
+      console.error('Error deleting trip:', error);
+      res.status(500).json({ error: 'Error deleting trip' });
+    }
   }
-});
+);
 
-router.delete('/expense/:expenseId', async (req: Request, res: Response): Promise<void> => {
-  const { expenseId } = req.params;
-  try {
-    const deletedExpense = await prisma.expense.delete({
-      where: { id: expenseId },
-    });
-    res.status(200).json({ message: 'Expense deleted successfully', expense: deletedExpense });
-  } catch (error) {
-    console.error('Error deleting expense:', error);
-    res.status(500).json({ error: 'Error deleting expense' });
+router.delete(
+  '/expense/:expenseId',
+  async (req: Request, res: Response): Promise<void> => {
+    const { expenseId } = req.params;
+    try {
+      const deletedExpense = await prisma.expense.delete({
+        where: { id: expenseId },
+      });
+      res
+        .status(200)
+        .json({
+          message: 'Expense deleted successfully',
+          expense: deletedExpense,
+        });
+    } catch (error) {
+      console.error('Error deleting expense:', error);
+      res.status(500).json({ error: 'Error deleting expense' });
+    }
   }
-});
+);
 
 export default router;
