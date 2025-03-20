@@ -154,7 +154,10 @@ export default function Auth() {
     <>
       <Button
         style={{ fontWeight: 'bold', paddingLeft: 25, paddingRight: 25 }}
-        onClick={() => setFormOpen(true)}
+        onClick={() => {
+          setIsSignUp(true);
+          setFormOpen(true);
+        }}
         id="get-started"
       >
         GET STARTED
