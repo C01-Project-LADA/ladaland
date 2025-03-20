@@ -50,12 +50,13 @@ const exampleUsernames = [
 
 // This component renders a GET STARTED button in the navbar that opens a form to sign up or log in
 export default function Auth() {
+  const router = useRouter();
   const [formOpen, setFormOpen] = useState(false);
   const [isSignUp, setIsSignUp] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [exampleUsername, setExampleUsername] = useState('thebesttraveller');
-  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   // Display new example username when opening form
   useEffect(() => {
@@ -85,6 +86,7 @@ export default function Auth() {
   });
 
   async function onRegisterSubmit(values: z.infer<typeof registerSchema>) {
+    setLoading(true);
     try {
       const response = await axios.post(
         'http://localhost:4000/api/register',
@@ -98,6 +100,7 @@ export default function Auth() {
         router.push('/');
       }
     } catch (error: unknown) {
+      setLoading(false);
       if (axios.isAxiosError(error)) {
         const errorMessage =
           error.response?.data?.error || 'An unexpected error occurred';
@@ -111,6 +114,7 @@ export default function Auth() {
   }
 
   async function onLoginSubmit(values: z.infer<typeof loginSchema>) {
+    setLoading(true);
     try {
       const response = await axios.post(
         'http://localhost:4000/api/login',
@@ -124,6 +128,7 @@ export default function Auth() {
         router.push('/');
       }
     } catch (error: unknown) {
+      setLoading(false);
       if (axios.isAxiosError(error)) {
         const errorMessage =
           error.response?.data?.error || 'An unexpected error occurred';
@@ -208,6 +213,7 @@ export default function Auth() {
                     fontWeight: 800,
                   }}
                   onClick={handleSwitchForm}
+                  disabled={loading}
                 >
                   {isSignUp ? 'LOG IN' : 'SIGN UP'}
                 </Button>
@@ -323,6 +329,7 @@ export default function Auth() {
                     type="submit"
                     variant="accent"
                     style={{ width: '100%', fontWeight: 'bold' }}
+                    disabled={loading}
                   >
                     SIGN UP
                   </Button>
@@ -390,6 +397,7 @@ export default function Auth() {
                     type="submit"
                     variant="accent"
                     style={{ width: '100%', fontWeight: 'bold' }}
+                    disabled={loading}
                   >
                     LOG IN
                   </Button>
