@@ -39,7 +39,10 @@ router.post(
         }),
       ]);
 
-      res.status(201).json(post);
+      res.status(201).json({
+        ...post,
+        pointsAwarded: 20,
+      });
     } catch (error) {
       res.status(500).json({ message: 'Something went wrong.' });
     }
@@ -226,3 +229,5 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
 });
 
 export default router;
+
+//LADA-61

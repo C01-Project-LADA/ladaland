@@ -32,7 +32,7 @@ export default function Social() {
   /**
    * Currently logged in user
    */
-  const { user } = useUser();
+  const {  user, setUser, refresh: refreshUser  } = useUser();
 
   const {
     location,
@@ -89,8 +89,23 @@ export default function Social() {
 
   const mapPinButtonRef = useRef<HTMLButtonElement>(null);
 
-  function createPost() {
-    handleSubmit().then(() => refresh());
+  async function createPost() {
+    const previousPoints = user?.points || 0;
+  
+    await handleSubmit();
+    refresh();
+  
+    try {
+      const updatedUser = await refreshUser();
+      setUser(updatedUser);
+      const updatedPoints = updatedUser.points || 0;
+      const earnedPoints = updatedPoints - previousPoints;
+      if (earnedPoints > 0) {
+        toast.success(`You earned ${earnedPoints} points for making this post`);
+      }
+    } catch (error) {
+      console.error('Error updating user points:', error);
+    }
   }
 
   async function deletePost(id: string) {
