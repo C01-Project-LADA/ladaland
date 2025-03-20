@@ -49,7 +49,14 @@ export default function SideNavigation() {
 
       <nav className={styles.container}>
         <Link href="/home">
-          <p className={styles.logo_text}>lada land</p>
+          <Image
+            src="/LADAlogo.svg"
+            alt="LADA LAND"
+            width={150}
+            height={50}
+            priority
+            className={styles.logo_text}
+          />
           <Image
             src="/logo.svg"
             alt="LADA LAND"
