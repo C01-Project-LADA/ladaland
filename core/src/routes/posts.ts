@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { body, param, query } from 'express-validator';
 
 const router = Router();
@@ -39,7 +39,14 @@ router.post(
         }),
       ]);
 
-      res.status(201).json(post);
+      res.status(201).json({
+        ...post,
+        pointsAwarded: 20,
+      });
+      res.status(201).json({
+        ...post,
+        pointsAwarded: 20,
+      });
     } catch (error) {
       res.status(500).json({ message: 'Something went wrong.' });
     }
@@ -94,32 +101,42 @@ router.get(
   '/',
   query('q').optional().isString(),
   async (req: Request, res: Response): Promise<void> => {
-    const { q } = req.query;
+    const { q, sortBy } = req.query;
     const userId = req.session?.user?.id;
 
     try {
+      const orderByClause: Prisma.PostOrderByWithRelationInput | undefined =
+        sortBy === 'mostRecent'
+          ? { createdAt: 'desc' as Prisma.SortOrder }
+          : sortBy === 'leastRecent'
+          ? { createdAt: 'asc' as Prisma.SortOrder }
+          : undefined;
       const posts = await prisma.post.findMany({
         where: q
           ? {
-              OR: [
-                { country: { contains: q as string, mode: 'insensitive' } },
-                { tags: { has: q as string } },
-              ],
-            }
+          OR: [
+            { country: { contains: q as string, mode: 'insensitive' } },
+            { tags: { has: q as string } },
+            { content: { contains: q as string, mode: 'insensitive' } },
+          ],
+        }
           : {},
         include: {
           user: { select: { username: true } },
           postVotes: true,
+          comments: true,
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: orderByClause || { createdAt: 'desc' as Prisma.SortOrder },
       });
 
-      if (!posts.length && q) {
-        res.status(404).json({
-          message: 'No posts found with this tag. Try a different search.',
-        });
-        return;
-      }
+      // If the search query is not empty and no posts are found, we can return nothing
+
+      // if (!posts.length && q) {
+      //   res.status(404).json({
+      //     message: 'No posts found with this tag. Try a different search.',
+      //   });
+      //   return;
+      // }
 
       const formattedPosts = posts.map((post) => {
         const likes = post.postVotes.filter(
@@ -131,6 +148,7 @@ router.get(
         const userVote = post.postVotes.find(
           (vote) => vote.userId === userId
         )?.type;
+        const commentsCount = post.comments.length;
 
         return {
           id: post.id,
@@ -145,8 +163,15 @@ router.get(
           likes,
           dislikes,
           userVote: userVote || null,
+          commentsCount,
         };
       });
+
+      if (sortBy === 'mostLiked') {
+        formattedPosts.sort((a, b) => b.likes - a.likes);
+      } else if (sortBy === 'leastLiked') {
+        formattedPosts.sort((a, b) => a.likes - b.likes);
+      }
 
       res.status(200).json(formattedPosts);
     } catch (error) {
@@ -155,5 +180,56 @@ router.get(
     }
   }
 );
+
+router.get('/:id', async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
+  const userId = req.session?.user?.id;
+
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id },
+      include: {
+        user: { select: { username: true } },
+        postVotes: true,
+        comments: true,
+      },
+    });
+
+    if (!post) {
+      res.status(404).json({ message: 'Post not found.' });
+      return;
+    }
+
+    const likes = post.postVotes.filter((vote) => vote.type === 'LIKE').length;
+    const dislikes = post.postVotes.filter(
+      (vote) => vote.type === 'DISLIKE'
+    ).length;
+    const userVote = post.postVotes.find(
+      (vote) => vote.userId === userId
+    )?.type;
+    const commentsCount = post.comments.length;
+
+    const formattedPost = {
+      id: post.id,
+      userId: post.userId,
+      country: post.country,
+      content: post.content,
+      images: post.images,
+      tags: post.tags,
+      createdAt: new Date(post.createdAt),
+      updatedAt: new Date(post.updatedAt),
+      username: post.user.username,
+      likes,
+      dislikes,
+      userVote: userVote || null,
+      commentsCount,
+    };
+
+    res.status(200).json(formattedPost);
+  } catch (error) {
+    console.error('Post error:', error);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+});
 
 export default router;

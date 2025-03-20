@@ -10,7 +10,7 @@ import axios from 'axios';
 
 // EXAMPLE: https://github.com/vasturiano/react-globe.gl/blob/master/example/choropleth-countries/index.html
 export default function Home() {
-  const { height } = useScreenDimensions();
+  const { width, height } = useScreenDimensions();
 
   const [hoverD, setHoverD] = useState<GlobeCountry>();
 
@@ -101,12 +101,15 @@ export default function Home() {
         variant="blue"
         shadow
       />
-      <div id="globe" className="-mt-10">
+      <div
+        id="globe"
+        className="-mt-10 max-w-full flex justify-center items-center"
+      >
         <Globe
-          width={500}
+          width={width}
           height={height - 100}
           backgroundColor="#f5f5f5"
-          globeImageUrl="https://unpkg.com/three-globe/example/img/earth-night.jpg"
+          globeImageUrl="/water.jpg"
           polygonsData={countries.features}
           polygonAltitude={(d) => (d === hoverD ? 0.03 : 0.01)}
           polygonStrokeColor={() => '#111'}

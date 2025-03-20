@@ -74,6 +74,7 @@ router.post("/:commentId", async (req: Request, res: Response): Promise<void> =>
   }
 });
 
+// Should not need this for the time being
 router.get("/:commentId", async (req: Request, res: Response): Promise<void> => {
   const { commentId } = req.params;
 

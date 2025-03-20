@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/popover';
 import ct from 'i18n-iso-countries';
 import en from 'i18n-iso-countries/langs/en.json';
+import Link from 'next/link';
 
 ct.registerLocale(en);
 
@@ -83,7 +84,7 @@ export default function Post({
       : post.dislikes;
 
   return (
-    <div className="p-[20px] pb-[10px] bg-white rounded-md">
+    <div className="p-[20px] pb-[10px] pl-6 bg-white rounded-md">
       <div className="flex items-start justify-between">
         <div className="flex gap-5">
           <Avatar>
@@ -152,14 +153,17 @@ export default function Post({
 
       <p className="mt-2 break-words">{post.content}</p>
 
-      <div className="mt-2 flex gap-8">
+      <div className="mt-2 flex gap-8 -ml-3">
         <Button
           variant="ghost"
           elevated={false}
           className="py-0 px-3 text-gray-500"
+          asChild
         >
-          <MessageSquareText />
-          {/* TODO: Comment count */}0
+          <Link href={`/social/${post.id}`}>
+            <MessageSquareText />
+            {post.commentsCount}
+          </Link>
         </Button>
 
         <Button

@@ -19,6 +19,7 @@ router.get('/me', async (req: Request, res: Response): Promise<void> => {
         email: true,
         phone: true,
         createdAt: true,
+        points: true,
       },
     });
 

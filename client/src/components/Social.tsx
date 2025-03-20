@@ -15,8 +15,14 @@ import useUser from '@/hooks/useUser';
 import useNewPost from '@/hooks/useNewPost';
 import usePosts from '@/hooks/usePosts';
 import axios from 'axios';
+import { useSearchParams } from 'next/navigation';
 
 export default function Social() {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('q');
+  const sortBy = searchParams.get('sortBy');
+  console.log(searchQuery, sortBy);
+
   const [countriesSelected, setCountriesSelected] = useState<
     Record<string, Country>
   >({});
@@ -26,7 +32,7 @@ export default function Social() {
   /**
    * Currently logged in user
    */
-  const { user } = useUser();
+  const {  user, setUser, refresh: refreshUser  } = useUser();
 
   const {
     location,
@@ -44,7 +50,7 @@ export default function Social() {
     loading: postsLoading,
     error: postsError,
     refresh,
-  } = usePosts();
+  } = usePosts(undefined, searchQuery || '', sortBy || '');
 
   // When countries selected changes, extract the country selected and revert it back to an empty object
   useEffect(() => {
@@ -83,8 +89,23 @@ export default function Social() {
 
   const mapPinButtonRef = useRef<HTMLButtonElement>(null);
 
-  function createPost() {
-    handleSubmit().then(() => refresh());
+  async function createPost() {
+    const previousPoints = user?.points || 0;
+  
+    await handleSubmit();
+    refresh();
+  
+    try {
+      const updatedUser = await refreshUser();
+      setUser(updatedUser);
+      const updatedPoints = updatedUser.points || 0;
+      const earnedPoints = updatedPoints - previousPoints;
+      if (earnedPoints > 0) {
+        toast.success(`You earned ${earnedPoints} points for making this post`);
+      }
+    } catch (error) {
+      console.error('Error updating user points:', error);
+    }
   }
 
   async function deletePost(id: string) {
@@ -178,7 +199,7 @@ export default function Social() {
             }}
           />
 
-          <p className="text-xs text-sky-500 mt-1">
+          <p className="text-xs mt-1" style={{ color: 'var(--lada-accent)' }}>
             Everyone can view and reply
           </p>
 
