@@ -164,6 +164,35 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
+router.get('/:tripId', async (req: Request, res: Response): Promise<void> => {
+  const { tripId } = req.params;
+  try {
+    const trip = await prisma.trip.findUnique({
+      where: { id: tripId },
+      include: { expenses: true },
+    });
+
+    if (!trip) {
+      res.status(404).json({ error: 'Trip not found' });
+      return;
+    }
+
+    const totalExpenses = trip.expenses.reduce(
+      (sum, expense) => sum + expense.cost,
+      0
+    );
+    const budgetLeft = trip.budget - totalExpenses;
+
+    res.status(200).json({
+      ...trip,
+      budgetLeft,
+    });
+  } catch (error) {
+    console.error('Error fetching trip:', error);
+    res.status(500).json({ error: 'Error fetching trip' });
+  }
+});
+
 router.delete(
   '/:tripId',
   async (req: Request, res: Response): Promise<void> => {
@@ -190,12 +219,10 @@ router.delete(
       const deletedExpense = await prisma.expense.delete({
         where: { id: expenseId },
       });
-      res
-        .status(200)
-        .json({
-          message: 'Expense deleted successfully',
-          expense: deletedExpense,
-        });
+      res.status(200).json({
+        message: 'Expense deleted successfully',
+        expense: deletedExpense,
+      });
     } catch (error) {
       console.error('Error deleting expense:', error);
       res.status(500).json({ error: 'Error deleting expense' });
