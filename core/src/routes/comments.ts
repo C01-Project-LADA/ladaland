@@ -47,6 +47,7 @@ router.get(
     query("sort").optional().isString(),
   ],
   async (req: Request, res: Response): Promise<void> => {
+    const userId = req.session.user?.id;
     const { postId } = req.params;
     const { page = 1, sort = "recent" } = req.query;
     const pageSize = 10;
@@ -72,6 +73,7 @@ router.get(
       const formattedComments = comments.map((comment) => {
         const likes = comment.commentVotes.filter((vote) => vote.type === "LIKE").length;
         const dislikes = comment.commentVotes.filter((vote) => vote.type === "DISLIKE").length;
+        const userVote = comment.commentVotes.find((vote) => vote.userId === userId)?.type || null;
 
         return {
           id: comment.id,
@@ -83,6 +85,7 @@ router.get(
           username: comment.user.username,
           likes,
           dislikes,
+          userVote,
         };
       });
 

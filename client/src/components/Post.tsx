@@ -11,7 +11,7 @@ import {
   Plane,
 } from 'lucide-react';
 import { formatNumberToKorM, formatLastUpdatedDate } from '@/lib/utils';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, animate } from 'motion/react';
 import {
   Popover,
@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/popover';
 import ct from 'i18n-iso-countries';
 import en from 'i18n-iso-countries/langs/en.json';
+import Link from 'next/link';
 
 ct.registerLocale(en);
 
@@ -38,37 +39,52 @@ export default function Post({
 }) {
   const likeRef = useRef<HTMLDivElement>(null);
 
-  const liked = post.userVote === 'LIKE';
-  const disliked = post.userVote === 'DISLIKE';
+  const [liked, setLiked] = useState(post.userVote === 'LIKE');
+  const [disliked, setDisliked] = useState(post.userVote === 'DISLIKE');
 
   function handleLike() {
-    if (!liked) {
-      if (likeRef.current) {
-        animate([
-          [
-            likeRef.current,
-            { scale: 1.5, rotate: -10, y: -3 },
-            { duration: 0.4, type: 'spring' },
-          ],
-          [
-            likeRef.current,
-            { scale: 1, rotate: 0, y: 0 },
-            { duration: 0.3, type: 'spring' },
-          ],
-        ]);
-      }
-      likePost();
+    if (!liked && likeRef.current) {
+      animate([
+        [
+          likeRef.current,
+          { scale: 1.5, rotate: -10, y: -3 },
+          { duration: 0.4, type: 'spring' },
+        ],
+        [
+          likeRef.current,
+          { scale: 1, rotate: 0, y: 0 },
+          { duration: 0.3, type: 'spring' },
+        ],
+      ]);
+      setDisliked(false);
     }
+    setLiked(!liked);
+    likePost();
   }
 
   function handleDislike() {
-    if (!disliked) {
-      dislikePost();
-    }
+    if (!disliked) setLiked(false);
+    setDisliked(!disliked);
+    dislikePost();
   }
 
+  const originallyLiked = post.userVote === 'LIKE';
+  const originallyDisliked = post.userVote === 'DISLIKE';
+  const likes =
+    originallyLiked && !liked
+      ? post.likes - 1
+      : !originallyLiked && liked
+      ? post.likes + 1
+      : post.likes;
+  const dislikes =
+    originallyDisliked && !disliked
+      ? post.dislikes - 1
+      : !originallyDisliked && disliked
+      ? post.dislikes + 1
+      : post.dislikes;
+
   return (
-    <div className="p-[20px] bg-white rounded-md">
+    <div className="p-[20px] pb-[10px] pl-6 bg-white rounded-md">
       <div className="flex items-start justify-between">
         <div className="flex gap-5">
           <Avatar>
@@ -135,17 +151,19 @@ export default function Post({
         </Popover>
       </div>
 
-      <p className="mt-2">{post.content}</p>
+      <p className="mt-2 break-words">{post.content}</p>
 
-      <div className="mt-2 flex gap-8">
+      <div className="mt-2 flex gap-8 -ml-3">
         <Button
           variant="ghost"
           elevated={false}
           className="py-0 px-3 text-gray-500"
+          asChild
         >
-          <MessageSquareText />
-          {/* TODO: Comment count */}
-          0
+          <Link href={`/social/${post.id}`}>
+            <MessageSquareText />
+            {post.commentsCount}
+          </Link>
         </Button>
 
         <Button
@@ -161,7 +179,7 @@ export default function Post({
           <motion.div ref={likeRef}>
             <ThumbsUp fill={liked ? 'var(--lada-accent)' : 'transparent'} />
           </motion.div>
-          {formatNumberToKorM(post.likes)}
+          {formatNumberToKorM(likes)}
         </Button>
 
         <Button
@@ -179,7 +197,7 @@ export default function Post({
               fill={disliked ? 'var(--lada-accent)' : 'transparent'}
             />
           </motion.div>
-          {formatNumberToKorM(post.dislikes)}
+          {formatNumberToKorM(dislikes)}
         </Button>
       </div>
     </div>

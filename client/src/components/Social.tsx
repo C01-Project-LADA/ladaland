@@ -15,8 +15,14 @@ import useUser from '@/hooks/useUser';
 import useNewPost from '@/hooks/useNewPost';
 import usePosts from '@/hooks/usePosts';
 import axios from 'axios';
+import { useSearchParams } from 'next/navigation';
 
 export default function Social() {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('q');
+  const sortBy = searchParams.get('sortBy');
+  console.log(searchQuery, sortBy);
+
   const [countriesSelected, setCountriesSelected] = useState<
     Record<string, Country>
   >({});
@@ -44,7 +50,7 @@ export default function Social() {
     loading: postsLoading,
     error: postsError,
     refresh,
-  } = usePosts();
+  } = usePosts(undefined, searchQuery || '', sortBy || '');
 
   // When countries selected changes, extract the country selected and revert it back to an empty object
   useEffect(() => {
@@ -83,60 +89,58 @@ export default function Social() {
 
   const mapPinButtonRef = useRef<HTMLButtonElement>(null);
 
+  function createPost() {
+    handleSubmit().then(() => refresh());
+  }
+
   async function deletePost(id: string) {
     try {
       await axios.delete(`http://localhost:4000/api/posts/${id}`, {
         withCredentials: true,
       });
-  
+
       toast.success('Post deleted successfully');
       refresh();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to delete post');
     }
   }
-  
+
   async function likePost(id: string) {
     if (isVoting) return;
     setIsVoting(true);
-  
+
     try {
-      const response = await axios.post(
+      await axios.post(
         `http://localhost:4000/api/post-votes/${id}`,
         { voteType: 'LIKE' },
         { withCredentials: true }
       );
-  
-      if (response.status === 200 || response.status === 201) {
-        await refresh();
-      }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to like post');
     } finally {
       setIsVoting(false);
     }
   }
-  
+
   async function dislikePost(id: string) {
     if (isVoting) return;
     setIsVoting(true);
-  
+
     try {
-      const response = await axios.post(
+      await axios.post(
         `http://localhost:4000/api/post-votes/${id}`,
         { voteType: 'DISLIKE' },
         { withCredentials: true }
       );
-  
-      if (response.status === 200 || response.status === 201) {
-        await refresh();
-      }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to dislike post');
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to dislike post'
+      );
     } finally {
       setIsVoting(false);
     }
-  }  
+  }
 
   return (
     <div className="mt-5">
@@ -158,7 +162,7 @@ export default function Social() {
                 in <span className="underline">{location.name}</span>
               </p>
             ) : (
-              'LOCATION'
+              <span className="underline">LOCATION</span>
             )}
           </div>
 
@@ -176,10 +180,11 @@ export default function Social() {
               lineHeight: '1.3',
               color: 'black',
               scrollbarWidth: 'none',
+              maxHeight: '400px',
             }}
           />
 
-          <p className="text-xs text-sky-500 mt-1">
+          <p className="text-xs mt-1" style={{ color: 'var(--lada-accent)' }}>
             Everyone can view and reply
           </p>
 
@@ -225,7 +230,7 @@ export default function Social() {
                 disabled={
                   content.length === 0 || content.length >= 1000 || posting
                 }
-                onClick={handleSubmit}
+                onClick={createPost}
               >
                 <span>POST</span>
                 {posting && <Spinner />}

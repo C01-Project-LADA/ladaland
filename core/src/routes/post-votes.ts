@@ -80,6 +80,7 @@ router.post('/:postId', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
+// For the time being, we probably don't need this route
 router.get('/:postId', async (req: Request, res: Response): Promise<void> => {
   if (!req.session || !req.session.user) {
     res.status(401).json({ error: 'Unauthorized' });
