@@ -157,26 +157,34 @@ export default function Auth() {
 
   return (
     <>
-      <Button
-        style={{ fontWeight: 'bold', paddingLeft: 25, paddingRight: 25 }}
+      {/* Used to open form from other components */}
+      <div
+        style={{
+          display: 'none',
+        }}
         onClick={() => {
           setIsSignUp(true);
           setFormOpen(true);
         }}
         id="get-started"
-      >
-        GET STARTED
-      </Button>
+      />
 
-      {/* Used to open form from other components */}
-      <div
-        style={{ display: 'none' }}
+      <Button
+        style={{
+          fontWeight: 'bold',
+          paddingLeft: 25,
+          paddingRight: 25,
+          color: 'var(--lada-accent)',
+        }}
+        variant="outline"
         onClick={() => {
           setIsSignUp(false);
           setFormOpen(true);
         }}
         id="log-in"
-      />
+      >
+        LOG IN
+      </Button>
 
       <AnimatePresence mode="wait">
         {formOpen && (
