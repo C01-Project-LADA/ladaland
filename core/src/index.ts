@@ -17,6 +17,7 @@ import commentsRoute from './routes/comments';
 import postVotesRoute from "./routes/post-votes";
 import logoutRoute from "./routes/user/logout";
 import commentVotesRoute from "./routes/comment-votes";
+import leaderboardRoute from './routes/leaderboard';
 
 dotenv.config();
 
@@ -50,11 +51,12 @@ app.use('/api', visitedCountriesPercentRoute);
 app.use('/api', travelSuggestionsRoute);
 app.use('/api', markVistedCountriesRoute);
 app.use('/api', meRoute);
-app.use('/api/posts', postsRoute); 
+app.use('/api/posts', postsRoute);
 app.use('/api/comments', commentsRoute);
 app.use('/api/post-votes', postVotesRoute);
 app.use('/api', logoutRoute);
 app.use('/api/comment-votes', commentVotesRoute);
+app.use('/api', leaderboardRoute);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
