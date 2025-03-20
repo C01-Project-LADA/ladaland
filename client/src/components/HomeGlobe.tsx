@@ -9,7 +9,6 @@ import { useRef, useState, useEffect } from 'react';
 import { GlobeMethods } from 'react-globe.gl';
 
 const COUNTRY = 'Canada';
-const OPACITY = 0.22;
 
 type Airport = {
   airportId: string;
@@ -98,7 +97,7 @@ const routeParse = ([
  * Code snippets taken from https://github.com/vasturiano/react-globe.gl/blob/master/example/airline-routes/us-international-outbound.html
  */
 export default function HomeGlobe() {
-  const { height } = useScreenDimensions();
+  const { width, height } = useScreenDimensions();
   const globeRef = useRef<GlobeMethods>(undefined);
 
   const [airports, setAirports] = useState<object[]>([]);
@@ -137,6 +136,7 @@ export default function HomeGlobe() {
             d.srcAirport.country === COUNTRY && d.dstAirport.country !== COUNTRY
         ); // international routes from country
 
+      console.log(filteredRoutes);
       setAirports(airports);
       setRoutes(filteredRoutes);
     });
@@ -149,16 +149,18 @@ export default function HomeGlobe() {
   }, []);
 
   return (
-    <div id="globe" className="mt-5">
+    <div id="globe" className="w-full flex justify-center">
       <Globe
         ref={globeRef}
-        width={500}
+        width={width / 3}
         height={height / 2}
         backgroundColor="#f5f5f5"
-        globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
+        globeImageUrl="/globe-bg.png"
         arcsData={routes}
         // @ts-expect-error: react-globe.gl has terrible ts support, SAD!
         arcStartLat={(d) => +d.srcAirport.lat}
+        // @ts-expect-error: react-globe.gl has terrible ts support, SAD!
+        arcStartLng={(d) => +d.srcAirport.lng}
         // @ts-expect-error: react-globe.gl has terrible ts support, SAD!
         arcEndLat={(d) => +d.dstAirport.lat}
         // @ts-expect-error: react-globe.gl has terrible ts support, SAD!
@@ -167,10 +169,7 @@ export default function HomeGlobe() {
         arcDashGap={1}
         arcDashInitialGap={() => Math.random()}
         arcDashAnimateTime={4000}
-        arcColor={() => [
-          `rgba(0, 255, 0, ${OPACITY})`,
-          `rgba(255, 0, 0, ${OPACITY})`,
-        ]}
+        arcColor={() => [`#14c600`, `#27c4f8`]}
         arcsTransitionDuration={0}
         pointsData={airports}
         pointColor={() => 'orange'}

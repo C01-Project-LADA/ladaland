@@ -5,12 +5,12 @@ import SlidingCountries from '@/components/SlidingCountries';
 export default function Welcome() {
   return (
     <>
-      <div className="items-center flex px-[15%]">
-        <div className="flex-[1.5]">
+      <div className="items-center flex px-[15%] gap-5 h-full">
+        <div className="flex-[1.5] mt-5 basis-2/3">
           <HomeGlobe />
         </div>
-        <div className="flex-1">
-          <h1 className="mt-16 text-2xl font-bold">
+        <div className="flex-1 basis-1/3">
+          <h1 className="mt-12 text-2xl font-bold">
             Gameify your travels, track your budget, and build your itinerary —
             one trip at a time!
           </h1>
