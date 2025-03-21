@@ -65,16 +65,25 @@ router.post(
 - Cost: The estimated cost for admission or experience (exclude flight costs, as I'm already in the country).
 - Purchase Option: A link to tickets or where you can buy admission (if unavailable, state "no purchasing options available").
 
-Format your answer as a bullet list with each suggestion clearly separated.`;
+Return your answer strictly as a valid JSON array, for example:
+[
+  {
+    "destination": "Example Attraction",
+    "reason": "It is affordable because ...",
+    "cost": 100,
+    "purchaseOption": "https://example.com/tickets"
+  },
+  ...
+]`;
 
     try {
       const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini', // Use this model
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
             content:
-              'You are a travel assistant that provides travel destination suggestions based on the user’s budget and current location. Your suggestions must be affordable, concise, and practical.',
+              'You are a travel assistant that provides travel destination suggestions based on the user’s budget and current location. Your suggestions must be affordable, concise, and practical. Return your answer strictly as valid JSON.',
           },
           {
             role: 'user',
@@ -85,21 +94,24 @@ Format your answer as a bullet list with each suggestion clearly separated.`;
         temperature: 0.7,
       });
 
-      const suggestions = completion.choices[0].message?.content;
-
-      if (!suggestions || suggestions.trim() === '') {
+      const suggestionsText = completion.choices[0].message?.content;
+      if (!suggestionsText || suggestionsText.trim() === '') {
         res
           .status(200)
           .json({ message: 'No destinations found within this budget.' });
         return;
       }
-
-      res.status(200).json({ suggestions });
-    } catch (error) {
-      console.error('Error calling OpenAI API:', error);
-      res
-        .status(500)
-        .json({ error: 'Failed to generate travel suggestions.' });
+    
+      let jsonText = suggestionsText.trim();
+      if (jsonText.startsWith('```json')) {
+        jsonText = jsonText.replace(/^```json/, '').replace(/```$/, '').trim();
+      }
+    
+      const suggestionsJson = JSON.parse(jsonText);
+      res.status(200).json({ suggestions: suggestionsJson });
+    } catch (parseError) {
+      console.error('Failed to parse suggestions as JSON:', parseError);
+      res.status(500).json({ error: 'Failed to parse suggestions as JSON.' });
     }
   }
 );
