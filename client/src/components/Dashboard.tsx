@@ -16,6 +16,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import useLeaderboard from '@/hooks/useLeaderboard';
+import Medal from '@/components/Medal';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Dashboard() {
   const pathname = usePathname();
@@ -25,6 +28,9 @@ export default function Dashboard() {
 
   const [postSearch, setPostSearch] = useState('');
   const [postSortBy, setPostSortBy] = useState<string | null>('');
+
+  const { leaderboard, currentUserRanking, totalUsers, loading } =
+    useLeaderboard();
 
   const { user, refresh: refreshUser } = useUser();
   const currentPoints = user?.points || 0;
@@ -50,18 +56,25 @@ export default function Dashboard() {
           contentRef.current?.getBoundingClientRect().height;
 
         if (scrollTop >= contentHeight - viewportHeight + 30) {
-          contentRef.current.style.transform = `translateY(-${
-            contentHeight - viewportHeight + 30
-          }px)`;
+          // contentRef.current.style.transform = `translateY(-${
+          //   contentHeight - viewportHeight + 30
+          // }px)`;
+          console.log(scrollTop, contentHeight, viewportHeight);
+          contentRef.current.style.transform = `translateY(${scrollTop}px)`;
+          // sidebarRef.current.style.transform = `translateY(${Math.min(
+          //   contentHeight,
+          //   scrollTop - (contentHeight - viewportHeight + 30)
+          // )}px)`;
           contentRef.current.style.transform = `translateX(${-scrollLeft}px)`;
           contentRef.current.style.position = 'fixed';
         } else {
           contentRef.current.style.transform = '';
+          // sidebarRef.current.style.transform = '';
           contentRef.current.style.position = '';
         }
       }
     }
-    window.addEventListener('scroll', onscroll);
+    // window.addEventListener('scroll', onscroll);
 
     return () => {
       window.removeEventListener('scroll', onscroll);
@@ -82,7 +95,7 @@ export default function Dashboard() {
     const handleUserPointsUpdate = async () => {
       await refreshUser();
     };
-  
+
     window.addEventListener('userPointsUpdated', handleUserPointsUpdate);
     return () => {
       window.removeEventListener('userPointsUpdated', handleUserPointsUpdate);
@@ -185,6 +198,92 @@ export default function Dashboard() {
             </div>
           </div>
         )}
+
+        {pathname !== '/leaderboard' && (
+          <div className={`${styles.sidebar_content_container} mt-5 pb-2`}>
+            <h3 className="text-md font-bold mt-1 mb-3">Leaderboard</h3>
+
+            {loading ? (
+              <>
+                <Skeleton className="w-full h-5" />
+                <Skeleton className="w-full h-5 my-3" />
+                <Skeleton className="w-full h-5" />
+              </>
+            ) : (
+              <>
+                {(totalUsers || 0) >= 50 && (
+                  <div className="mb-5">
+                    <Button
+                      variant="outline"
+                      onClick={() =>
+                        document
+                          .getElementById('current-user')
+                          ?.scrollIntoView({ behavior: 'smooth' })
+                      }
+                    >
+                      FIND MY RANKING
+                    </Button>
+                  </div>
+                )}
+
+                {leaderboard.slice(0, 5).map((user, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between mb-1 items-center rounded-md p-1"
+                    style={{
+                      border:
+                        index + 1 === currentUserRanking
+                          ? '2px solid var(--lada-secondary)'
+                          : 'none',
+                      background:
+                        index + 1 === currentUserRanking
+                          ? 'rgb(237, 255, 236)'
+                          : 'transparent',
+                    }}
+                    id={
+                      index + 1 === currentUserRanking
+                        ? 'current-user'
+                        : undefined
+                    }
+                  >
+                    <div className="flex gap-3 items-center">
+                      {index === 0 && <Medal placement="gold" />}
+                      {index === 1 && <Medal placement="silver" />}
+                      {index === 2 && <Medal placement="bronze" />}
+                      {index > 2 && (
+                        <div
+                          className="w-7 scale-[0.8] text-lg flex items-center justify-center"
+                          style={{
+                            color: 'var(--lada-primary)',
+                            filter: 'brightness(0.5)',
+                          }}
+                        >
+                          {index + 1}
+                        </div>
+                      )}
+                      <Avatar>
+                        <AvatarImage alt={`@${user.username}`} />
+                        <AvatarFallback title={user.username}>
+                          {user.username[0].toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <p className="font-bold text-sm max-w-[15ch] overflow-hidden text-ellipsis">
+                        {user.username}
+                      </p>
+                    </div>
+                    <p className="text-xs">
+                      {user.points} point{user.points !== 1 && 's'}
+                    </p>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+        )}
+
+        <p className="mt-10 text-center text-sm font-semibold text-gray-400">
+          © 2025 LADA LAND
+        </p>
       </div>
     </div>
   );

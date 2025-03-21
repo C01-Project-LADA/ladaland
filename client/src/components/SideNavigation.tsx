@@ -18,7 +18,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { Separator } from '@/components/ui/separator';
 import useUser from '@/hooks/useUser';
 
 const links = [
@@ -29,7 +28,6 @@ const links = [
   { href: '/passport-tool', text: 'Passport Tool', icon: <BookText /> },
 ];
 
-// TODO: Don't show if user unauthenticated
 export default function SideNavigation() {
   const pathname = usePathname();
   const router = useRouter();
