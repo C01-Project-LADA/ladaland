@@ -1,4 +1,4 @@
- /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 export type User = {
   id: string;
@@ -8,4 +8,12 @@ export type User = {
   level?: number;
   phone: string;
   createdAt: string;
+};
+
+export type UserWithRanking = {
+  visitedCount: number;
+  id: string;
+  username: string;
+  visitedCountries: string | null;
+  points: number;
 };
