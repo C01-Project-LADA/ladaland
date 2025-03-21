@@ -14,10 +14,11 @@ import markVistedCountriesRoute from './routes/mark-visited-countries';
 import meRoute from './routes/user/me';
 import postsRoute from './routes/posts';
 import commentsRoute from './routes/comments';
-import postVotesRoute from "./routes/post-votes";
-import logoutRoute from "./routes/user/logout";
-import commentVotesRoute from "./routes/comment-votes";
+import postVotesRoute from './routes/post-votes';
+import logoutRoute from './routes/user/logout';
+import commentVotesRoute from './routes/comment-votes';
 import leaderboardRoute from './routes/leaderboard';
+import tripRoute from './routes/trips';
 
 dotenv.config();
 
@@ -57,6 +58,7 @@ app.use('/api/post-votes', postVotesRoute);
 app.use('/api', logoutRoute);
 app.use('/api/comment-votes', commentVotesRoute);
 app.use('/api', leaderboardRoute);
+app.use('/api/trips', tripRoute);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {

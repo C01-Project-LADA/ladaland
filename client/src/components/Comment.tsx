@@ -75,11 +75,10 @@ export default function Comment({
     <div className="p-[15px] pb-[5px] bg-white rounded-md">
       <div className="flex gap-3">
         <Avatar>
-          <AvatarImage
-            src="https://github.com/shadcn.png"
-            alt={`@${comment.username}`}
-          />
-          <AvatarFallback>{comment.username[0].toUpperCase()}</AvatarFallback>
+          <AvatarImage alt={`@${comment.username}`} />
+          <AvatarFallback title={comment.username}>
+            {comment.username[0].toUpperCase()}
+          </AvatarFallback>
         </Avatar>
 
         <div

@@ -43,10 +43,6 @@ router.post(
         ...post,
         pointsAwarded: 20,
       });
-      res.status(201).json({
-        ...post,
-        pointsAwarded: 20,
-      });
     } catch (error) {
       res.status(500).json({ message: 'Something went wrong.' });
     }
@@ -109,17 +105,17 @@ router.get(
         sortBy === 'mostRecent'
           ? { createdAt: 'desc' as Prisma.SortOrder }
           : sortBy === 'leastRecent'
-          ? { createdAt: 'asc' as Prisma.SortOrder }
-          : undefined;
+            ? { createdAt: 'asc' as Prisma.SortOrder }
+            : undefined;
       const posts = await prisma.post.findMany({
         where: q
           ? {
-          OR: [
-            { country: { contains: q as string, mode: 'insensitive' } },
-            { tags: { has: q as string } },
-            { content: { contains: q as string, mode: 'insensitive' } },
-          ],
-        }
+              OR: [
+                { country: { contains: q as string, mode: 'insensitive' } },
+                { tags: { has: q as string } },
+                { content: { contains: q as string, mode: 'insensitive' } },
+              ],
+            }
           : {},
         include: {
           user: { select: { username: true } },

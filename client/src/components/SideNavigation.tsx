@@ -1,14 +1,7 @@
 'use client';
 
 import styles from '@/styles/SideNavigation.module.css';
-import {
-  House,
-  Plane,
-  MessageCircle,
-  Trophy,
-  BookText,
-  CircleUserRound,
-} from 'lucide-react';
+import { House, Plane, MessageCircle, Trophy, BookText } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   HoverCard,
@@ -26,6 +19,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { Separator } from '@/components/ui/separator';
+import useUser from '@/hooks/useUser';
 
 const links = [
   { href: '/home', text: 'Home', icon: <House /> },
@@ -39,6 +33,8 @@ const links = [
 export default function SideNavigation() {
   const pathname = usePathname();
   const router = useRouter();
+
+  const { user } = useUser();
 
   function handleLogOut() {
     fetch('http://localhost:4000/api/logout', {
@@ -57,7 +53,14 @@ export default function SideNavigation() {
 
       <nav className={styles.container}>
         <Link href="/home">
-          <p className={styles.logo_text}>lada land</p>
+          <Image
+            src="/LADAlogo.svg"
+            alt="LADA LAND"
+            width={150}
+            height={50}
+            priority
+            className={styles.logo_text}
+          />
           <Image
             src="/logo.svg"
             alt="LADA LAND"
@@ -98,12 +101,12 @@ export default function SideNavigation() {
                 }
               >
                 <Avatar className="w-8 h-8 -ml-1 -mr-1">
-                  <AvatarImage
-                    src="https://github.com/shadcn.png"
-                    alt="@shadcn"
-                  />
-                  <AvatarFallback className="font-semibold text-gray-600">
-                    CN
+                  <AvatarImage alt={`@${user?.username}`} />
+                  <AvatarFallback
+                    className="font-semibold text-gray-600"
+                    title={user?.username}
+                  >
+                    {user?.username[0].toUpperCase() || ''}
                   </AvatarFallback>
                 </Avatar>
                 <p className={styles.link_text}>PROFILE</p>
@@ -114,22 +117,6 @@ export default function SideNavigation() {
               sideOffset={15}
               className="border border-2 border-[#e4e4e4]"
             >
-              <Link href="/profile">
-                <li className={styles.link}>
-                  <CircleUserRound />
-                  <p>MY PROFILE</p>
-                </li>
-              </Link>
-
-              <Separator className="my-3" />
-
-              {/* TODO: decide if ABOUT needed or not */}
-              <Link href="/">
-                <li className={styles.link}>
-                  <p>ABOUT</p>
-                </li>
-              </Link>
-
               <button
                 className={`${styles.link} w-full`}
                 onClick={handleLogOut}
