@@ -45,12 +45,32 @@ export default function Social() {
     clearError,
   } = useNewPost();
 
-  const {
-    posts,
-    loading: postsLoading,
-    error: postsError,
-    refresh,
-  } = usePosts(undefined, searchQuery || '', sortBy || '');
+  const { posts, loading: postsLoading, error: postsError, refresh, loadMore, hasMore } = usePosts(undefined, searchQuery || '', sortBy || '');
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Set up an Intersection Observer to load more posts when the sentinel comes into view.
+  useEffect(() => {
+    if (postsLoading) return;
+    if (!hasMore) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        loadMore();
+      }
+    }, {
+      rootMargin: '100px',
+    });
+
+    if (bottomRef.current) {
+      observer.observe(bottomRef.current);
+    }
+
+    return () => {
+      if (bottomRef.current) {
+        observer.unobserve(bottomRef.current);
+      }
+    };
+  }, [postsLoading, hasMore, loadMore]);
 
   // When countries selected changes, extract the country selected and revert it back to an empty object
   useEffect(() => {
@@ -272,6 +292,14 @@ export default function Social() {
           [1, 2, 3].map((i) => (
             <Skeleton key={i} className="w-full h-48 rounded-md" />
           ))}
+
+        <div ref={bottomRef} />
+        
+        {!hasMore && (
+          <p className="text-center text-sm text-gray-500">
+            No more posts.
+          </p>
+        )}
       </div>
     </div>
   );
