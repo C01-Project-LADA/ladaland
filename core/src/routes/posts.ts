@@ -95,9 +95,18 @@ router.delete(
 
 router.get(
   '/',
-  query('q').optional().isString(),
+  [
+    query('q').optional().isString(),
+    query('page').optional().isInt().toInt(),
+    query('pageSize').optional().isInt().toInt(),
+    query('sortBy').optional().isString(),
+  ],
   async (req: Request, res: Response): Promise<void> => {
     const { q, sortBy } = req.query;
+    const page = Number(req.query.page) || 1;
+    const pageSize = Number(req.query.pageSize) || 10;
+    const skip = (page - 1) * pageSize;
+
     const userId = req.session?.user?.id;
 
     try {
@@ -107,6 +116,7 @@ router.get(
           : sortBy === 'leastRecent'
             ? { createdAt: 'asc' as Prisma.SortOrder }
             : undefined;
+
       const posts = await prisma.post.findMany({
         where: q
           ? {
@@ -123,16 +133,9 @@ router.get(
           comments: true,
         },
         orderBy: orderByClause || { createdAt: 'desc' as Prisma.SortOrder },
+        skip,
+        take: pageSize,
       });
-
-      // If the search query is not empty and no posts are found, we can return nothing
-
-      // if (!posts.length && q) {
-      //   res.status(404).json({
-      //     message: 'No posts found with this tag. Try a different search.',
-      //   });
-      //   return;
-      // }
 
       const formattedPosts = posts.map((post) => {
         const likes = post.postVotes.filter(
