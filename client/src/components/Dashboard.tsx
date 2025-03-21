@@ -26,7 +26,7 @@ export default function Dashboard() {
   const [postSearch, setPostSearch] = useState('');
   const [postSortBy, setPostSortBy] = useState<string | null>('');
 
-  const { user } = useUser();
+  const { user, refresh: refreshUser } = useUser();
   const currentPoints = user?.points || 0;
 
   const level = Math.floor(currentPoints / 1000) + 1;
@@ -77,6 +77,17 @@ export default function Dashboard() {
 
     router.push(`${linkWithoutQuery}?${urlParams.toString()}`);
   }
+
+  useEffect(() => {
+    const handleUserPointsUpdate = async () => {
+      await refreshUser();
+    };
+  
+    window.addEventListener('userPointsUpdated', handleUserPointsUpdate);
+    return () => {
+      window.removeEventListener('userPointsUpdated', handleUserPointsUpdate);
+    };
+  }, [refreshUser]);
 
   return (
     <div className={styles.container} ref={sidebarRef}>

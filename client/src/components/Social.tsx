@@ -98,6 +98,7 @@ export default function Social() {
     try {
       const updatedUser = await refreshUser();
       setUser(updatedUser);
+      window.dispatchEvent(new CustomEvent('userPointsUpdated'));
       const updatedPoints = updatedUser.points || 0;
       const earnedPoints = updatedPoints - previousPoints;
       if (earnedPoints > 0) {
@@ -116,6 +117,14 @@ export default function Social() {
 
       toast.success('Post deleted successfully');
       refresh();
+
+      const updatedUser = await refreshUser();
+      setUser(updatedUser);
+
+    window.dispatchEvent(new CustomEvent('userPointsUpdated'));
+
+    toast.success(`You lost 20 points for deleting your post`);
+    
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to delete post');
     }
