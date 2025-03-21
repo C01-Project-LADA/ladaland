@@ -4,6 +4,8 @@ import { PrismaClient } from '@prisma/client';
 const router = express.Router();
 const prisma = new PrismaClient();
 
+const POINTS_PER_COUNTRY = 200;
+
 router.post(
   '/markVisitedCountries',
   async (req: Request, res: Response): Promise<void> => {
@@ -40,8 +42,11 @@ router.post(
         ? user.visitedCountries.split(',')
         : [];
 
+      let pointsChange = 0;
+
       if (action === 'add' && !visitedCountries.includes(countryCode)) {
         visitedCountries.push(countryCode);
+        pointsChange = POINTS_PER_COUNTRY;
       } else if (
         action === 'remove' &&
         visitedCountries.includes(countryCode)
@@ -49,16 +54,25 @@ router.post(
         visitedCountries = visitedCountries.filter(
           (country) => country !== countryCode
         );
+        pointsChange = -POINTS_PER_COUNTRY;
       }
 
-      await prisma.user.update({
-        where: { id: userId },
-        data: { visitedCountries: visitedCountries.join(',') },
-      });
+      await prisma.$transaction([
+        prisma.user.update({
+          where: { id: userId },
+          data: {
+            visitedCountries: visitedCountries.join(','),
+            points: { increment: pointsChange },
+          },
+        }),
+      ]);
 
       res.status(200).json({
-        message: `Country ${countryCode} has been ${action === 'add' ? 'added to' : 'removed from'} your visited countries.`,
+        message: `Country ${countryCode} has been ${
+          action === 'add' ? 'added to' : 'removed from'
+        } your visited countries.`,
         visitedCountries,
+        pointsChange,
       });
     } catch (error) {
       res.status(500).json({ error: 'Error adding/removing countries' });
