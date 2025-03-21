@@ -23,11 +23,7 @@ export default function PostDetails({ postId }: { postId: string }) {
   const { posts, loading } = usePosts(postId);
   const post = posts[0];
 
-  /**
-   * Currently logged in user
-   */
   const { user, setUser, refresh: refreshUser } = useUser();
-
   const [isVoting, setIsVoting] = useState(false);
 
   const {
@@ -43,10 +39,11 @@ export default function PostDetails({ postId }: { postId: string }) {
     comments,
     loading: commentsLoading,
     error: commentsError,
-    refresh,
+    hasMore,
+    loadMore,
+    refresh: refreshComments,
   } = useComments(postId);
 
-  // When new post error changes, show a toast
   useEffect(() => {
     if (newCommentError) {
       toast.error(newCommentError);
@@ -54,7 +51,6 @@ export default function PostDetails({ postId }: { postId: string }) {
     }
   }, [newCommentError, clearError]);
 
-  // When there is an error showing all posts, show a toast
   useEffect(() => {
     if (commentsError) {
       toast.error(commentsError);
@@ -62,20 +58,18 @@ export default function PostDetails({ postId }: { postId: string }) {
   }, [commentsError]);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
   function textAreaAdjust() {
     if (textareaRef.current) {
       textareaRef.current.style.height = '1px';
-      textareaRef.current.style.height = `${
-        textareaRef.current.scrollHeight + 25
-      }px`;
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 25}px`;
     }
   }
 
   async function createComment() {
     const previousPoints = user?.points || 0;
     await handleSubmit();
-    refresh();
+    refreshComments();
+
     try {
       const updatedUser = await refreshUser();
       setUser(updatedUser);
@@ -88,14 +82,13 @@ export default function PostDetails({ postId }: { postId: string }) {
     } catch (error) {
       console.error('Error updating user points after comment:', error);
     }
-  }  
+  }
 
   async function deletePost(id: string) {
     try {
       await axios.delete(`http://localhost:4000/api/posts/${id}`, {
         withCredentials: true,
       });
-
       toast.success('Post deleted successfully');
       router.push('/social');
     } catch (err) {
@@ -106,7 +99,6 @@ export default function PostDetails({ postId }: { postId: string }) {
   async function likePost(id: string) {
     if (isVoting) return;
     setIsVoting(true);
-
     try {
       await axios.post(
         `http://localhost:4000/api/post-votes/${id}`,
@@ -123,7 +115,6 @@ export default function PostDetails({ postId }: { postId: string }) {
   async function dislikePost(id: string) {
     if (isVoting) return;
     setIsVoting(true);
-
     try {
       await axios.post(
         `http://localhost:4000/api/post-votes/${id}`,
@@ -131,9 +122,7 @@ export default function PostDetails({ postId }: { postId: string }) {
         { withCredentials: true }
       );
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : 'Failed to dislike post'
-      );
+      toast.error(err instanceof Error ? err.message : 'Failed to dislike post');
     } finally {
       setIsVoting(false);
     }
@@ -144,20 +133,16 @@ export default function PostDetails({ postId }: { postId: string }) {
       await axios.delete(`http://localhost:4000/api/comments/${id}`, {
         withCredentials: true,
       });
-
       toast.success('Comment deleted successfully');
-      refresh();
+      refreshComments();
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : 'Failed to delete comment'
-      );
+      toast.error(err instanceof Error ? err.message : 'Failed to delete comment');
     }
   }
 
   async function likeComment(id: string) {
     if (isVoting) return;
     setIsVoting(true);
-
     try {
       await axios.post(
         `http://localhost:4000/api/comment-votes/${id}`,
@@ -165,9 +150,7 @@ export default function PostDetails({ postId }: { postId: string }) {
         { withCredentials: true }
       );
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : 'Failed to like comment'
-      );
+      toast.error(err instanceof Error ? err.message : 'Failed to like comment');
     } finally {
       setIsVoting(false);
     }
@@ -176,7 +159,6 @@ export default function PostDetails({ postId }: { postId: string }) {
   async function dislikeComment(id: string) {
     if (isVoting) return;
     setIsVoting(true);
-
     try {
       await axios.post(
         `http://localhost:4000/api/comment-votes/${id}`,
@@ -184,9 +166,7 @@ export default function PostDetails({ postId }: { postId: string }) {
         { withCredentials: true }
       );
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : 'Failed to dislike comment'
-      );
+      toast.error(err instanceof Error ? err.message : 'Failed to dislike comment');
     } finally {
       setIsVoting(false);
     }
@@ -196,6 +176,34 @@ export default function PostDetails({ postId }: { postId: string }) {
     notFound();
   }
 
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (commentsLoading) return;
+    if (!hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMore();
+        }
+      },
+      {
+        rootMargin: '100px',
+      }
+    );
+
+    if (bottomRef.current) {
+      observer.observe(bottomRef.current);
+    }
+
+    return () => {
+      if (bottomRef.current) {
+        observer.unobserve(bottomRef.current);
+      }
+    };
+  }, [commentsLoading, hasMore, loadMore]);
+
   return (
     <>
       <PageBanner
@@ -203,9 +211,7 @@ export default function PostDetails({ postId }: { postId: string }) {
         message={
           loading
             ? ''
-            : `@${post.username} in ${
-                post.country
-              }, ${post.updatedAt.toDateString()}`
+            : `@${post.username} in ${post.country}, ${post.updatedAt.toDateString()}`
         }
         variant="blue"
         direction="backwards"
@@ -231,7 +237,7 @@ export default function PostDetails({ postId }: { postId: string }) {
           <Avatar>
             <AvatarImage alt={`@${user?.username}`} />
             <AvatarFallback title={user?.username}>
-              {user?.username[0].toUpperCase() || ''}
+              {user?.username[0]?.toUpperCase() || ''}
             </AvatarFallback>
           </Avatar>
         </div>
@@ -240,7 +246,7 @@ export default function PostDetails({ postId }: { postId: string }) {
           <p className="text-sm text-gray-500">
             Replying to{' '}
             <span style={{ color: 'var(--lada-accent)', fontWeight: 500 }}>
-              @shadcn
+              @{post?.username}
             </span>
           </p>
 
@@ -273,9 +279,7 @@ export default function PostDetails({ postId }: { postId: string }) {
               </p>
               <Button
                 variant="accent"
-                disabled={
-                  content.length === 0 || content.length >= 1000 || posting
-                }
+                disabled={content.length === 0 || content.length >= 1000 || posting}
                 onClick={createComment}
               >
                 <span>REPLY</span>
@@ -287,19 +291,25 @@ export default function PostDetails({ postId }: { postId: string }) {
       </div>
 
       <div className="mt-5 flex flex-col gap-3 mb-10">
-        {commentsLoading ? (
+        {comments.map((comment) => (
+          <Comment
+            key={comment.id}
+            comment={comment}
+            likeComment={() => likeComment(comment.id)}
+            dislikeComment={() => dislikeComment(comment.id)}
+            deleteComment={() => deleteComment(comment.id)}
+            ownedByUser={comment.userId === user?.id}
+          />
+        ))}
+
+        {commentsLoading && (
           <Skeleton className="w-full h-36 rounded-md mt-5" />
-        ) : (
-          comments.map((comment) => (
-            <Comment
-              key={comment.id}
-              comment={comment}
-              likeComment={() => likeComment(comment.id)}
-              dislikeComment={() => dislikeComment(comment.id)}
-              deleteComment={() => deleteComment(comment.id)}
-              ownedByUser={comment.userId === user?.id}
-            />
-          ))
+        )}
+
+        <div ref={bottomRef} />
+
+        {!hasMore && !commentsLoading && (
+          <p className="text-center text-sm text-gray-500">No more comments.</p>
         )}
       </div>
     </>
