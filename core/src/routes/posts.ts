@@ -43,10 +43,6 @@ router.post(
         ...post,
         pointsAwarded: 20,
       });
-      res.status(201).json({
-        ...post,
-        pointsAwarded: 20,
-      });
     } catch (error) {
       res.status(500).json({ message: 'Something went wrong.' });
     }
