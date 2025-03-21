@@ -129,14 +129,29 @@ export default function PostDetails({ postId }: { postId: string }) {
   }
 
   async function deleteComment(id: string) {
+    const previousPoints = user?.points || 0;
+
     try {
       await axios.delete(`http://localhost:4000/api/comments/${id}`, {
         withCredentials: true,
       });
+
       toast.success('Comment deleted successfully');
       refreshComments();
+
+      const updatedUser = await refreshUser();
+      setUser(updatedUser);
+      window.dispatchEvent(new CustomEvent('userPointsUpdated'));
+
+      const updatedPoints = updatedUser.points || 0;
+      const lostPoints = previousPoints - updatedPoints;
+      if (lostPoints > 0) {
+        toast.success(`You lost ${lostPoints} points for deleting your comment`);
+      }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to delete comment');
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to delete comment'
+      );
     }
   }
 
