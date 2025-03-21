@@ -26,7 +26,7 @@ export default function PostDetails({ postId }: { postId: string }) {
   /**
    * Currently logged in user
    */
-  const { user } = useUser();
+  const { user, setUser, refresh: refreshUser } = useUser();
 
   const [isVoting, setIsVoting] = useState(false);
 
@@ -72,9 +72,23 @@ export default function PostDetails({ postId }: { postId: string }) {
     }
   }
 
-  function createComment() {
-    handleSubmit().then(() => refresh());
-  }
+  async function createComment() {
+    const previousPoints = user?.points || 0;
+    await handleSubmit();
+    refresh();
+    try {
+      const updatedUser = await refreshUser();
+      setUser(updatedUser);
+      window.dispatchEvent(new CustomEvent('userPointsUpdated'));
+      const updatedPoints = updatedUser.points || 0;
+      const earnedPoints = updatedPoints - previousPoints;
+      if (earnedPoints > 0) {
+        toast.success(`You earned ${earnedPoints} points for commenting`);
+      }
+    } catch (error) {
+      console.error('Error updating user points after comment:', error);
+    }
+  }  
 
   async function deletePost(id: string) {
     try {
