@@ -7,6 +7,8 @@ import { useCallback, useEffect, useState } from 'react';
 import countries from '@/lib/geocountries.json';
 import useScreenDimensions from '@/hooks/useScreenDimensions';
 import axios from 'axios';
+import { toast } from 'sonner';
+import useUser from '@/hooks/useUser';
 
 // EXAMPLE: https://github.com/vasturiano/react-globe.gl/blob/master/example/choropleth-countries/index.html
 export default function Home() {
@@ -16,6 +18,7 @@ export default function Home() {
 
   const [visitedCountries, setVisitedCountries] = useState<string[]>([]);
   const [visitedMessage, setVisitedMessage] = useState<string>('Loading...');
+  const { setUser, refresh: refreshUser } = useUser();
 
   // Fetch user visited countries and populate visitedCountries state
   useEffect(() => {
@@ -83,11 +86,22 @@ export default function Home() {
             setVisitedMessage(percentResponse.data.message);
           }
         }
+
+        const updatedUser = await refreshUser();
+        setUser(updatedUser);
+        window.dispatchEvent(new CustomEvent('userPointsUpdated'));
+
+        if (action == 'add') {
+          toast.success(`You earned 200 points for visiting a new country!`);
+        } else{ 
+          toast.success(`You lost 200 points for unmarking a country.`);
+        }
+
       } catch (error) {
         console.error(`Error ${action}ing country ${countryCode}:`, error);
       }
     },
-    [visitedCountries]
+    [visitedCountries, refreshUser, setUser]
   );
 
   return (
