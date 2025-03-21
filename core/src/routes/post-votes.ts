@@ -97,9 +97,10 @@ router.get('/:postId', async (req: Request, res: Response): Promise<void> => {
       select: { userId: true, type: true },
     });
 
-    const likes = postVotes.filter(vote => vote.type === 'LIKE').length;
-    const dislikes = postVotes.filter(vote => vote.type === 'DISLIKE').length;
-    const userVote = postVotes.find(vote => vote.userId === userId)?.type || null;
+    const likes = postVotes.filter((vote) => vote.type === 'LIKE').length;
+    const dislikes = postVotes.filter((vote) => vote.type === 'DISLIKE').length;
+    const userVote =
+      postVotes.find((vote) => vote.userId === userId)?.type || null;
 
     res.status(200).json({ likes, dislikes, userVote });
   } catch (error) {
