@@ -22,7 +22,6 @@ router.post(
       .withMessage('Expenses must be an array'),
   ],
   async (req: Request, res: Response): Promise<void> => {
-    // Ensure user is logged in
     if (!req.session || !req.session.user) {
       res.status(401).json({ error: 'Unauthorized. Please log in.' });
       return;
@@ -67,7 +66,6 @@ router.post(
 router.put(
   '/:tripId',
   [
-    // Validations as before…
     body('name').optional().notEmpty().withMessage('Trip name cannot be empty'),
     body('startDate')
       .optional()
@@ -104,7 +102,6 @@ router.put(
     const { name, startDate, endDate, budget, completed, expenses } = req.body;
     const userId = req.session.user.id;
     try {
-      // Ensure the trip belongs to the current user before updating
       const existingTrip = await prisma.trip.findFirst({
         where: { id: tripId, userId },
       });
@@ -113,7 +110,6 @@ router.put(
         return;
       }
 
-      // Update trip main fields
       await prisma.trip.update({
         where: { id: tripId },
         data: {
@@ -125,11 +121,9 @@ router.put(
         },
       });
 
-      // Handle expense updates
       if (expenses && Array.isArray(expenses)) {
         for (const exp of expenses) {
           if (exp.id) {
-            // Update an existing expense
             await prisma.expense.update({
               where: { id: exp.id },
               data: {
@@ -139,7 +133,6 @@ router.put(
               },
             });
           } else {
-            // Create a new expense for the trip
             await prisma.expense.create({
               data: {
                 type: exp.type,
@@ -152,7 +145,6 @@ router.put(
         }
       }
 
-      // Retrieve updated trip
       const updatedTrip = await prisma.trip.findUnique({
         where: { id: tripId },
         include: { expenses: true },
@@ -205,7 +197,7 @@ router.get('/:tripId', async (req: Request, res: Response): Promise<void> => {
     const trip = await prisma.trip.findFirst({
       where: {
         id: tripId,
-        userId, // Ensure the trip belongs to the current user
+        userId,
       },
       include: { expenses: true },
     });
@@ -241,7 +233,6 @@ router.delete(
     const userId = req.session.user.id;
     const { tripId } = req.params;
     try {
-      // Confirm trip belongs to the user
       const trip = await prisma.trip.findFirst({
         where: { id: tripId, userId },
       });
@@ -272,7 +263,6 @@ router.delete(
     const userId = req.session.user.id;
     const { expenseId } = req.params;
     try {
-      // Optionally, verify that the expense belongs to a trip owned by the user.
       const expense = await prisma.expense.findUnique({
         where: { id: expenseId },
         include: { trip: true },
