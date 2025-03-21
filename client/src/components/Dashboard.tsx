@@ -31,8 +31,8 @@ export default function Dashboard() {
 
   const level = Math.floor(currentPoints / 1000) + 1;
 
-  const startXp = (level - 1) * 1000; 
-  const endXp = level * 1000; 
+  const startXp = (level - 1) * 1000;
+  const endXp = level * 1000;
 
   let progress = 0;
   if (endXp > startXp) {
@@ -96,9 +96,7 @@ export default function Dashboard() {
           <div className={styles.top_stats}>
             <div className={styles.levels}>
               <div className="flex items-end justify-between w-full mb-[4px]">
-              <p className={styles.level_title}>
-                  Level {level}
-                </p>
+                <p className={styles.level_title}>Level {level}</p>
                 <p className={styles.level_current}>
                   {currentPoints.toLocaleString()} points
                 </p>
@@ -106,18 +104,16 @@ export default function Dashboard() {
               <Progress value={progress} />
 
               <div className="flex justify-between w-full">
-                <p className={styles.level_num}>
-                  {startXp.toLocaleString()}
-                </p>
-                <p className={styles.level_num}>
-                  {endXp.toLocaleString()}
-                </p>
+                <p className={styles.level_num}>{startXp.toLocaleString()}</p>
+                <p className={styles.level_num}>{endXp.toLocaleString()}</p>
               </div>
             </div>
 
             <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage alt={`@${user?.username}`} />
+              <AvatarFallback title={user?.username}>
+                {user?.username[0].toUpperCase() || ''}
+              </AvatarFallback>
             </Avatar>
           </div>
 

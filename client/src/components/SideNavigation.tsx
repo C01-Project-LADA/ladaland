@@ -18,6 +18,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import { Separator } from '@/components/ui/separator';
+import useUser from '@/hooks/useUser';
 
 const links = [
   { href: '/home', text: 'Home', icon: <House /> },
@@ -31,6 +33,8 @@ const links = [
 export default function SideNavigation() {
   const pathname = usePathname();
   const router = useRouter();
+
+  const { user } = useUser();
 
   function handleLogOut() {
     fetch('http://localhost:4000/api/logout', {
@@ -97,12 +101,12 @@ export default function SideNavigation() {
                 }
               >
                 <Avatar className="w-8 h-8 -ml-1 -mr-1">
-                  <AvatarImage
-                    src="https://github.com/shadcn.png"
-                    alt="@shadcn"
-                  />
-                  <AvatarFallback className="font-semibold text-gray-600">
-                    CN
+                  <AvatarImage alt={`@${user?.username}`} />
+                  <AvatarFallback
+                    className="font-semibold text-gray-600"
+                    title={user?.username}
+                  >
+                    {user?.username[0].toUpperCase() || ''}
                   </AvatarFallback>
                 </Avatar>
                 <p className={styles.link_text}>PROFILE</p>

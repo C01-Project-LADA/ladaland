@@ -229,8 +229,10 @@ export default function PostDetails({ postId }: { postId: string }) {
       <div className={`${styles.new_comment_container} rounded-md mt-4`}>
         <div className="px-4">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage alt={`@${user?.username}`} />
+            <AvatarFallback title={user?.username}>
+              {user?.username[0].toUpperCase() || ''}
+            </AvatarFallback>
           </Avatar>
         </div>
 

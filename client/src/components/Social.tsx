@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Image, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import Post from '@/components/Post';
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
@@ -32,7 +32,7 @@ export default function Social() {
   /**
    * Currently logged in user
    */
-  const {  user, setUser, refresh: refreshUser  } = useUser();
+  const { user, setUser, refresh: refreshUser } = useUser();
 
   const {
     location,
@@ -91,10 +91,10 @@ export default function Social() {
 
   async function createPost() {
     const previousPoints = user?.points || 0;
-  
+
     await handleSubmit();
     refresh();
-  
+
     try {
       const updatedUser = await refreshUser();
       setUser(updatedUser);
@@ -171,8 +171,10 @@ export default function Social() {
       <div className={`${styles.new_post_container} rounded-md`}>
         <div className="px-4">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage alt={`@${user?.username}`} />
+            <AvatarFallback title={user?.username}>
+              {user?.username[0].toUpperCase() || ''}
+            </AvatarFallback>
           </Avatar>
         </div>
 
@@ -214,16 +216,6 @@ export default function Social() {
 
           <div className="mt-2 flex justify-between items-center">
             <div className="flex gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="-ml-2"
-                elevated={false}
-              >
-                {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                <Image className="scale-150" />
-              </Button>
-
               <CountrySelectDialog
                 title="Select location"
                 description="Select a country to post about"
