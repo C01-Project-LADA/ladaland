@@ -226,7 +226,7 @@ export default function Dashboard() {
                   </div>
                 )}
 
-                {leaderboard.map((user, index) => (
+                {leaderboard.slice(0, 5).map((user, index) => (
                   <div
                     key={index}
                     className="flex justify-between mb-1 items-center rounded-md p-1"
