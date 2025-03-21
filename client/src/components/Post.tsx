@@ -88,11 +88,10 @@ export default function Post({
       <div className="flex items-start justify-between">
         <div className="flex gap-5">
           <Avatar>
-            <AvatarImage
-              src="https://github.com/shadcn.png"
-              alt={`@${post.username}`}
-            />
-            <AvatarFallback>{post.username[0].toUpperCase()}</AvatarFallback>
+            <AvatarImage alt={`@${post.username}`} />
+            <AvatarFallback title={post.username}>
+              {post.username[0].toUpperCase()}
+            </AvatarFallback>
           </Avatar>
 
           <div>
