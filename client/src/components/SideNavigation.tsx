@@ -1,14 +1,7 @@
 'use client';
 
 import styles from '@/styles/SideNavigation.module.css';
-import {
-  House,
-  Plane,
-  MessageCircle,
-  Trophy,
-  BookText,
-  CircleUserRound,
-} from 'lucide-react';
+import { House, Plane, MessageCircle, Trophy, BookText } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   HoverCard,
@@ -25,7 +18,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { Separator } from '@/components/ui/separator';
 
 const links = [
   { href: '/home', text: 'Home', icon: <House /> },
@@ -57,7 +49,14 @@ export default function SideNavigation() {
 
       <nav className={styles.container}>
         <Link href="/home">
-          <p className={styles.logo_text}>lada land</p>
+          <Image
+            src="/LADAlogo.svg"
+            alt="LADA LAND"
+            width={150}
+            height={50}
+            priority
+            className={styles.logo_text}
+          />
           <Image
             src="/logo.svg"
             alt="LADA LAND"
@@ -114,22 +113,6 @@ export default function SideNavigation() {
               sideOffset={15}
               className="border border-2 border-[#e4e4e4]"
             >
-              <Link href="/profile">
-                <li className={styles.link}>
-                  <CircleUserRound />
-                  <p>MY PROFILE</p>
-                </li>
-              </Link>
-
-              <Separator className="my-3" />
-
-              {/* TODO: decide if ABOUT needed or not */}
-              <Link href="/">
-                <li className={styles.link}>
-                  <p>ABOUT</p>
-                </li>
-              </Link>
-
               <button
                 className={`${styles.link} w-full`}
                 onClick={handleLogOut}
