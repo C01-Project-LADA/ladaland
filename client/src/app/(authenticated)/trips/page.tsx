@@ -1,9 +1,21 @@
 'use client';
 
 import PageBanner from '@/components/PageBanner';
+import Trip from '@/components/Trip';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Plus } from 'lucide-react';
+
+const mockTrip: Trip = {
+  id: '1',
+  userId: '1',
+  name: 'Trip 1',
+  startDate: new Date(1000000000000),
+  endDate: new Date(1000000000000),
+  budget: 1000,
+  completed: false,
+  expenses: [],
+};
 
 export default function Trips() {
   return (
@@ -34,6 +46,10 @@ export default function Trips() {
 
       <h3 className="mt-10 mb-2 text-gray-500 font-bold">Your Trips</h3>
       <Separator />
+
+      <div className="mt-6 flex flex-col gap-2">
+        <Trip trip={mockTrip} />
+      </div>
 
       <h3 className="mt-10 mb-2 text-gray-500 font-bold">Past Trips</h3>
       <Separator />
