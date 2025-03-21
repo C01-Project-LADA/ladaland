@@ -10,7 +10,7 @@ import useVisaRequirements from '@/hooks/useVisaRequirements';
 import { Badge } from '@/components/ui/badge';
 import ct from 'i18n-iso-countries';
 import en from 'i18n-iso-countries/langs/en.json';
-import CountrySelectDialog from './CountrySelectDialog';
+import CountrySelectDialog from '@/components/CountrySelectDialog';
 
 ct.registerLocale(en);
 
