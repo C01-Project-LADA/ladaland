@@ -74,7 +74,7 @@
 
 ### Excluded Features
 
-None
+None, we achieved everything we wanted to in the sprint.
 
 ### Bug Fixes
 
