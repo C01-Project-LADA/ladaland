@@ -65,7 +65,7 @@
 - **Sort posts:**
   Аs an existing user, I would like to sort posts based on most/least liked, and most/least recent, so that I can quickly find the most relevant, popular, or latest travel experiences that interest me.
 
-- **Trip planning:**
+- **[Core] Trip planning:**
   Аs an existing user, I would like to add a destination to 'next trip', so that I can see everything in one place related the next trip I want to go on.
 
 - **Landing page:**
@@ -74,7 +74,10 @@
 
 ### Excluded Features
 
-None, we achieved everything we wanted to in the sprint.
+- **CLIENT Tickets for:**
+  - Trip planning
+
+  **Reasoning:** Client tickets have been very time-consuming; however, they rely heavily on the backend functionality being in place for integration purposes, so we feel comfortable being ahead on core work.
 
 ### Bug Fixes
 

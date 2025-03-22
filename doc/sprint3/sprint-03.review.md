@@ -31,7 +31,7 @@
 - **Earn points for leaving comments on others' posts:** [LADA-65](https://lada.atlassian.net/browse/LADA-65)
 - **See leaderboard:** [LADA-80](https://lada.atlassian.net/browse/LADA-80), [LADA-78](https://lada.atlassian.net/browse/LADA-78), [LADA-15](https://lada.atlassian.net/browse/LADA-15)
 - **Sort posts:** [LADA-64](https://lada.atlassian.net/browse/LADA-64)
-- **Trip planning:** [LADA-79](https://lada.atlassian.net/browse/LADA-79), [LADA-81](https://lada.atlassian.net/browse/LADA-81)
+- **[Core] Trip planning:** [LADA-79](https://lada.atlassian.net/browse/LADA-79)
 - **Landing page:** [LADA-47](https://lada.atlassian.net/browse/LADA-47)
 - **Backend unit tests:** [LADA-75](https://lada.atlassian.net/browse/LADA-75)
 - **Frontend unit tests:** [LADA-90](https://lada.atlassian.net/browse/LADA-90)
@@ -40,7 +40,10 @@
 - **CI/CD (A2):**[LADA-5](https://lada.atlassian.net/browse/LADA-5)
 
 #### Goals and/or Tasks That Were Planned But Not Met/Completed
-None, we achieved everything we wanted to in the sprint.
+- **CLIENT Tickets for:**
+  - Trip planning
+
+  **Reasoning:** Client tickets have been very time-consuming; however, they rely heavily on the backend functionality being in place for integration purposes, so we feel comfortable being ahead on core work.
 
 ## Meeting Highlights
 
