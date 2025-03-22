@@ -59,6 +59,7 @@ router.post('/:postId', async (req: Request, res: Response): Promise<void> => {
     if (existingVote) {
       if (existingVote.type === voteType) {
         await prisma.postVote.delete({ where: { id: existingVote.id } });
+        await updatePointsForPost(postId);
         res.status(200).json({ message: `${voteType} removed` });
       } else {
         await prisma.postVote.update({
@@ -80,6 +81,7 @@ router.post('/:postId', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
+// For the time being, we probably don't need this route
 router.get('/:postId', async (req: Request, res: Response): Promise<void> => {
   if (!req.session || !req.session.user) {
     res.status(401).json({ error: 'Unauthorized' });
@@ -95,9 +97,10 @@ router.get('/:postId', async (req: Request, res: Response): Promise<void> => {
       select: { userId: true, type: true },
     });
 
-    const likes = postVotes.filter(vote => vote.type === 'LIKE').length;
-    const dislikes = postVotes.filter(vote => vote.type === 'DISLIKE').length;
-    const userVote = postVotes.find(vote => vote.userId === userId)?.type || null;
+    const likes = postVotes.filter((vote) => vote.type === 'LIKE').length;
+    const dislikes = postVotes.filter((vote) => vote.type === 'DISLIKE').length;
+    const userVote =
+      postVotes.find((vote) => vote.userId === userId)?.type || null;
 
     res.status(200).json({ likes, dislikes, userVote });
   } catch (error) {
