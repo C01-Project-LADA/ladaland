@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
-import { useRouter, notFound } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import useNewComment from '@/hooks/useNewComment';
 import useComments from '@/hooks/useComments';
@@ -61,7 +61,9 @@ export default function PostDetails({ postId }: { postId: string }) {
   function textAreaAdjust() {
     if (textareaRef.current) {
       textareaRef.current.style.height = '1px';
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 25}px`;
+      textareaRef.current.style.height = `${
+        textareaRef.current.scrollHeight + 25
+      }px`;
     }
   }
 
@@ -122,7 +124,9 @@ export default function PostDetails({ postId }: { postId: string }) {
         { withCredentials: true }
       );
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to dislike post');
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to dislike post'
+      );
     } finally {
       setIsVoting(false);
     }
@@ -146,7 +150,9 @@ export default function PostDetails({ postId }: { postId: string }) {
       const updatedPoints = updatedUser.points || 0;
       const lostPoints = previousPoints - updatedPoints;
       if (lostPoints > 0) {
-        toast.success(`You lost ${lostPoints} points for deleting your comment`);
+        toast.success(
+          `You lost ${lostPoints} points for deleting your comment`
+        );
       }
     } catch (err) {
       toast.error(
@@ -165,7 +171,9 @@ export default function PostDetails({ postId }: { postId: string }) {
         { withCredentials: true }
       );
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to like comment');
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to like comment'
+      );
     } finally {
       setIsVoting(false);
     }
@@ -181,14 +189,12 @@ export default function PostDetails({ postId }: { postId: string }) {
         { withCredentials: true }
       );
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to dislike comment');
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to dislike comment'
+      );
     } finally {
       setIsVoting(false);
     }
-  }
-
-  if (posts.length === 0 && !loading) {
-    notFound();
   }
 
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -219,6 +225,11 @@ export default function PostDetails({ postId }: { postId: string }) {
     };
   }, [commentsLoading, hasMore, loadMore]);
 
+  if (posts.length === 0 && !loading) {
+    // notFound();
+    return <p>Nothing to see</p>;
+  }
+
   return (
     <>
       <PageBanner
@@ -226,7 +237,9 @@ export default function PostDetails({ postId }: { postId: string }) {
         message={
           loading
             ? ''
-            : `@${post.username} in ${post.country}, ${post.updatedAt.toDateString()}`
+            : `@${post.username} in ${
+                post.country
+              }, ${post.updatedAt.toDateString()}`
         }
         variant="blue"
         direction="backwards"
@@ -294,7 +307,9 @@ export default function PostDetails({ postId }: { postId: string }) {
               </p>
               <Button
                 variant="accent"
-                disabled={content.length === 0 || content.length >= 1000 || posting}
+                disabled={
+                  content.length === 0 || content.length >= 1000 || posting
+                }
                 onClick={createComment}
               >
                 <span>REPLY</span>
