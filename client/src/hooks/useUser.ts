@@ -3,6 +3,9 @@ import { User } from '@/types/user';
 
 export default function useUser() {
   const [user, setUser] = useState<User | null>(null);
+  const [postsCount, setPostsCount] = useState<number | null>(null);
+  const [totalLikes, setTotalLikes] = useState<number | null>(null);
+  const [tripsCount, setTripsCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -13,11 +16,21 @@ export default function useUser() {
       credentials: 'include',
     })
       .then((res) => res.json())
-      .then((data: { user: User }) => {
-        setUser(data.user);
-        setLoading(false);
-        return data.user;
-      })
+      .then(
+        (data: {
+          user: User;
+          postsCount: number;
+          totalLikes: number;
+          tripsCount: number;
+        }) => {
+          setUser(data.user);
+          setPostsCount(data.postsCount);
+          setTotalLikes(data.totalLikes);
+          setTripsCount(data.tripsCount);
+          setLoading(false);
+          return data.user;
+        }
+      )
       .catch((err) => {
         setError(err.message);
         setLoading(false);
@@ -29,5 +42,14 @@ export default function useUser() {
     fetchUser();
   }, []);
 
-  return { user, setUser, loading, error, refresh: fetchUser };
+  return {
+    user,
+    postsCount,
+    totalLikes,
+    tripsCount,
+    setUser,
+    loading,
+    error,
+    refresh: fetchUser,
+  };
 }
