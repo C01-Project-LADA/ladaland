@@ -29,6 +29,7 @@ model User {
   comments  Comment[]
   postVotes PostVote[]
   commentVotes CommentVote[]
+  trips Trip[]
 }
 
 model Post {
@@ -88,4 +89,25 @@ model CommentVote {
 enum VoteType {
   LIKE
   DISLIKE
+}
+
+model Trip {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  name        String
+  startDate   DateTime  @default(now())
+  endDate     DateTime
+  budget      Int
+  completed   Boolean   @default(false)
+  expenses    Expense[]
+}
+
+model Expense {
+  id          String    @id @default(uuid())
+  tripId      String
+  trip        Trip      @relation(fields: [tripId], references: [id])
+  type        String
+  name        String
+  cost        Int
 }
