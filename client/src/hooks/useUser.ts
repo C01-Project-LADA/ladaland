@@ -1,25 +1,55 @@
 import { useState, useEffect } from 'react';
+import { User } from '@/types/user';
 
 export default function useUser() {
   const [user, setUser] = useState<User | null>(null);
+  const [postsCount, setPostsCount] = useState<number | null>(null);
+  const [totalLikes, setTotalLikes] = useState<number | null>(null);
+  const [tripsCount, setTripsCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetch('http://localhost:4000/api/me', {
+  const fetchUser = (): Promise<User> => {
+    setLoading(true);
+    return fetch('http://localhost:4000/api/me', {
       method: 'GET',
       credentials: 'include',
     })
       .then((res) => res.json())
-      .then((data: { user: User }) => {
-        setUser(data.user);
-        setLoading(false);
-      })
+      .then(
+        (data: {
+          user: User;
+          postsCount: number;
+          totalLikes: number;
+          tripsCount: number;
+        }) => {
+          setUser(data.user);
+          setPostsCount(data.postsCount);
+          setTotalLikes(data.totalLikes);
+          setTripsCount(data.tripsCount);
+          setLoading(false);
+          return data.user;
+        }
+      )
       .catch((err) => {
         setError(err.message);
         setLoading(false);
+        throw err;
       });
+  };
+
+  useEffect(() => {
+    fetchUser();
   }, []);
 
-  return { user, loading, error };
+  return {
+    user,
+    postsCount,
+    totalLikes,
+    tripsCount,
+    setUser,
+    loading,
+    error,
+    refresh: fetchUser,
+  };
 }

@@ -11,7 +11,7 @@ router.get('/me', async (req: Request, res: Response): Promise<void> => {
   }
 
   try {
-    const user = await prisma.user.findUnique({
+    const userPromise = prisma.user.findUnique({
       where: { id: req.session.user.id },
       select: {
         id: true,
@@ -19,16 +19,55 @@ router.get('/me', async (req: Request, res: Response): Promise<void> => {
         email: true,
         phone: true,
         createdAt: true,
+        points: true,
       },
     });
+
+    const postsCountPromise = prisma.post.count({
+      where: { userId: req.session.user.id },
+    });
+
+    const postLikesPromise = prisma.postVote.count({
+      where: {
+        type: 'LIKE',
+        post: { userId: req.session.user.id },
+      },
+    });
+
+    const commentLikesPromise = prisma.commentVote.count({
+      where: {
+        type: 'LIKE',
+        comment: { userId: req.session.user.id },
+      },
+    });
+
+    const tripsCountPromise = prisma.trip.count({
+      where: { userId: req.session.user.id },
+    });
+
+    const [user, postsCount, postLikes, commentLikes, tripsCount] = await Promise.all([
+      userPromise,
+      postsCountPromise,
+      postLikesPromise,
+      commentLikesPromise,
+      tripsCountPromise,
+    ]);
 
     if (!user) {
       res.status(404).json({ error: 'User not found' });
       return;
     }
 
-    res.status(200).json({ user });
+    const totalLikes = postLikes + commentLikes;
+
+    res.status(200).json({
+      user,
+      postsCount,
+      totalLikes,
+      tripsCount,
+    });
   } catch (error) {
+    console.error('Error fetching user details:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });

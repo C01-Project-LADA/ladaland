@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Image, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import Post from '@/components/Post';
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
@@ -15,8 +15,14 @@ import useUser from '@/hooks/useUser';
 import useNewPost from '@/hooks/useNewPost';
 import usePosts from '@/hooks/usePosts';
 import axios from 'axios';
+import { useSearchParams } from 'next/navigation';
 
 export default function Social() {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('q');
+  const sortBy = searchParams.get('sortBy');
+  console.log(searchQuery, sortBy);
+
   const [countriesSelected, setCountriesSelected] = useState<
     Record<string, Country>
   >({});
@@ -26,7 +32,7 @@ export default function Social() {
   /**
    * Currently logged in user
    */
-  const { user } = useUser();
+  const { user, setUser, refresh: refreshUser } = useUser();
 
   const {
     location,
@@ -39,12 +45,32 @@ export default function Social() {
     clearError,
   } = useNewPost();
 
-  const {
-    posts,
-    loading: postsLoading,
-    error: postsError,
-    refresh,
-  } = usePosts();
+  const { posts, loading: postsLoading, error: postsError, refresh, loadMore, hasMore } = usePosts(undefined, searchQuery || '', sortBy || '');
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Set up an Intersection Observer to load more posts when the sentinel comes into view.
+  useEffect(() => {
+    if (postsLoading) return;
+    if (!hasMore) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        loadMore();
+      }
+    }, {
+      rootMargin: '100px',
+    });
+
+    if (bottomRef.current) {
+      observer.observe(bottomRef.current);
+    }
+
+    return () => {
+      if (bottomRef.current) {
+        observer.unobserve(bottomRef.current);
+      }
+    };
+  }, [postsLoading, hasMore, loadMore]);
 
   // When countries selected changes, extract the country selected and revert it back to an empty object
   useEffect(() => {
@@ -83,68 +109,92 @@ export default function Social() {
 
   const mapPinButtonRef = useRef<HTMLButtonElement>(null);
 
+  async function createPost() {
+    const previousPoints = user?.points || 0;
+
+    await handleSubmit();
+    refresh();
+
+    try {
+      const updatedUser = await refreshUser();
+      setUser(updatedUser);
+      window.dispatchEvent(new CustomEvent('userPointsUpdated'));
+      const updatedPoints = updatedUser.points || 0;
+      const earnedPoints = updatedPoints - previousPoints;
+      if (earnedPoints > 0) {
+        toast.success(`You earned ${earnedPoints} points for making this post`);
+      }
+    } catch (error) {
+      console.error('Error updating user points:', error);
+    }
+  }
+
   async function deletePost(id: string) {
     try {
       await axios.delete(`http://localhost:4000/api/posts/${id}`, {
         withCredentials: true,
       });
-  
+
       toast.success('Post deleted successfully');
       refresh();
+
+      const updatedUser = await refreshUser();
+      setUser(updatedUser);
+
+    window.dispatchEvent(new CustomEvent('userPointsUpdated'));
+
+    toast.success(`You lost 20 points for deleting your post`);
+    
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to delete post');
     }
   }
-  
+
   async function likePost(id: string) {
     if (isVoting) return;
     setIsVoting(true);
-  
+
     try {
-      const response = await axios.post(
+      await axios.post(
         `http://localhost:4000/api/post-votes/${id}`,
         { voteType: 'LIKE' },
         { withCredentials: true }
       );
-  
-      if (response.status === 200 || response.status === 201) {
-        await refresh();
-      }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to like post');
     } finally {
       setIsVoting(false);
     }
   }
-  
+
   async function dislikePost(id: string) {
     if (isVoting) return;
     setIsVoting(true);
-  
+
     try {
-      const response = await axios.post(
+      await axios.post(
         `http://localhost:4000/api/post-votes/${id}`,
         { voteType: 'DISLIKE' },
         { withCredentials: true }
       );
-  
-      if (response.status === 200 || response.status === 201) {
-        await refresh();
-      }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to dislike post');
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to dislike post'
+      );
     } finally {
       setIsVoting(false);
     }
-  }  
+  }
 
   return (
     <div className="mt-5">
       <div className={`${styles.new_post_container} rounded-md`}>
         <div className="px-4">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage alt={`@${user?.username}`} />
+            <AvatarFallback title={user?.username}>
+              {user?.username[0].toUpperCase() || ''}
+            </AvatarFallback>
           </Avatar>
         </div>
 
@@ -158,7 +208,7 @@ export default function Social() {
                 in <span className="underline">{location.name}</span>
               </p>
             ) : (
-              'LOCATION'
+              <span className="underline">LOCATION</span>
             )}
           </div>
 
@@ -176,25 +226,16 @@ export default function Social() {
               lineHeight: '1.3',
               color: 'black',
               scrollbarWidth: 'none',
+              maxHeight: '400px',
             }}
           />
 
-          <p className="text-xs text-sky-500 mt-1">
+          <p className="text-xs mt-1" style={{ color: 'var(--lada-accent)' }}>
             Everyone can view and reply
           </p>
 
           <div className="mt-2 flex justify-between items-center">
             <div className="flex gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="-ml-2"
-                elevated={false}
-              >
-                {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                <Image className="scale-150" />
-              </Button>
-
               <CountrySelectDialog
                 title="Select location"
                 description="Select a country to post about"
@@ -225,7 +266,7 @@ export default function Social() {
                 disabled={
                   content.length === 0 || content.length >= 1000 || posting
                 }
-                onClick={handleSubmit}
+                onClick={createPost}
               >
                 <span>POST</span>
                 {posting && <Spinner />}
@@ -251,6 +292,14 @@ export default function Social() {
           [1, 2, 3].map((i) => (
             <Skeleton key={i} className="w-full h-48 rounded-md" />
           ))}
+
+        <div ref={bottomRef} />
+        
+        {!hasMore && (
+          <p className="text-center text-sm text-gray-500">
+            No more posts.
+          </p>
+        )}
       </div>
     </div>
   );
