@@ -5,16 +5,19 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"npm run dev --prefix core\" \"npm run dev --prefix client\"",
-    "format": "npx prettier --write ."
+    "format": "npx prettier --write .",
+    "cypress:open": "cypress open"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "cypress": "^14.2.0"
   },
   "dependencies": {
     "axios": "^1.7.9",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "cypress-real-events": "^1.14.0"
   }
 }
