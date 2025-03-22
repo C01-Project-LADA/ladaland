@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { usePathname, useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { Search, MessageSquare, ThumbsUp, Plane } from 'lucide-react';
 import useUser from '@/hooks/useUser';
 import {
   Select,
@@ -32,7 +32,13 @@ export default function Dashboard() {
   const { leaderboard, currentUserRanking, totalUsers, loading } =
     useLeaderboard();
 
-  const { user, refresh: refreshUser } = useUser();
+  const {
+    user,
+    postsCount,
+    totalLikes,
+    tripsCount,
+    refresh: refreshUser,
+  } = useUser();
   const currentPoints = user?.points || 0;
 
   const level = Math.floor(currentPoints / 1000) + 1;
@@ -131,17 +137,23 @@ export default function Dashboard() {
           </div>
 
           <div className={styles.bottom_stats}>
-            <div className={styles.stats}>
-              <div className="w-10 h-5 bg-gray-300"></div>
-              <p>5</p>
+            <div className={styles.stats} title="Number of posts you've posted">
+              <MessageSquare />
+              <p>{postsCount}</p>
             </div>
-            <div className={styles.stats}>
-              <div className="w-10 h-5 bg-gray-300"></div>
-              <p>5</p>
+            <div
+              className={styles.stats}
+              title="Number of likes you've gotten on your posts and comments"
+            >
+              <ThumbsUp />
+              <p>{totalLikes}</p>
             </div>
-            <div className={styles.stats}>
-              <div className="w-10 h-5 bg-gray-300"></div>
-              <p>5</p>
+            <div
+              className={styles.stats}
+              title="Number of trips you've planned"
+            >
+              <Plane />
+              <p>{tripsCount}</p>
             </div>
           </div>
         </div>
