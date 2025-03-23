@@ -16,6 +16,7 @@ import useNewPost from '@/hooks/useNewPost';
 import usePosts from '@/hooks/usePosts';
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
+import '@/envConfig.ts'
 
 const url = process.env.API_URL;
 

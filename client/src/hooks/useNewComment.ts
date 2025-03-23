@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import '@/envConfig.ts'
 
 const url = process.env.API_URL;
 
