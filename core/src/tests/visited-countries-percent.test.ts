@@ -19,7 +19,11 @@ const userFindUniqueMock = prisma.user.findUnique as jest.Mock;
 
 describe('Visited Countries Percent Route', () => {
   let app: express.Express;
-  const sessionUser = { id: '1', username: 'testUser', email: 'test@example.com' };
+  const sessionUser = {
+    id: '1',
+    username: 'testUser',
+    email: 'test@example.com',
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -56,7 +60,7 @@ describe('Visited Countries Percent Route', () => {
     const res = await agent.get('/api/visitedCountriesPercent');
 
     expect(res.status).toBe(200);
-  
+
     // Expected visitedCount is 3, percentage = ((3/195)*100).toFixed(2) => "1.54%"
     expect(res.body).toEqual({
       visitedCount: 3,

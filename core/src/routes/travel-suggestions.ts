@@ -101,12 +101,15 @@ Return your answer strictly as a valid JSON array, for example:
           .json({ message: 'No destinations found within this budget.' });
         return;
       }
-    
+
       let jsonText = suggestionsText.trim();
       if (jsonText.startsWith('```json')) {
-        jsonText = jsonText.replace(/^```json/, '').replace(/```$/, '').trim();
+        jsonText = jsonText
+          .replace(/^```json/, '')
+          .replace(/```$/, '')
+          .trim();
       }
-    
+
       const suggestionsJson = JSON.parse(jsonText);
       res.status(200).json({ suggestions: suggestionsJson });
     } catch (parseError) {

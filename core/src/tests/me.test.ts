@@ -38,7 +38,11 @@ app.use(
 );
 
 app.get('/set-session', (req, res) => {
-  req.session.user = { id: '1', username: 'testUser', email: 'test@example.com' };
+  req.session.user = {
+    id: '1',
+    username: 'testUser',
+    email: 'test@example.com',
+  };
   res.status(200).json({ message: 'Session set' });
 });
 
@@ -88,5 +92,4 @@ describe('GET /api/me', () => {
     expect(res.body.totalLikes).toBe(13); // 10 post + 3 comment
     expect(res.body.tripsCount).toBe(2);
   });
-
 });
