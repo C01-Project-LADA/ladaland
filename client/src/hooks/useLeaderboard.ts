@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { UserWithRanking } from '@/types/user';
 
-const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+const url = process.env.API_URL;
 
 export default function useLeaderboard(sortBy = 'points') {
   const [leaderboard, setLeaderboard] = useState<UserWithRanking[]>([]);

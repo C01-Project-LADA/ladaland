@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User } from '@/types/user';
 
-const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+const url = process.env.API_URL;
 
 export default function useUser() {
   const [user, setUser] = useState<User | null>(null);
