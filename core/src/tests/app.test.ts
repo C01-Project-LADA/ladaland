@@ -10,7 +10,7 @@ describe('Express App', () => {
   it('should include CORS headers in the response', async () => {
     const res = await request(app).get('/non-existing-route');
     expect(res.headers['access-control-allow-origin']).toBe(
-      'https://ladaland.com'
+      'https://ladaland.com/'
     );
   });
 });
