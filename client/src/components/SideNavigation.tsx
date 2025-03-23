@@ -62,7 +62,7 @@ export default function SideNavigation() {
             className={styles.logo_text}
           />
           <Image
-            src="/logo.svg"
+            src="/SmallLADAlogo.svg"
             alt="LADA LAND"
             width={50}
             height={50}
