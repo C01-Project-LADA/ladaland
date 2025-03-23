@@ -46,6 +46,6 @@
     "ts-node-dev": "^2.0.0",
     "tsc": "^2.0.4",
     "tsx": "^4.19.2",
-    "typescript": "^5.8.2"
+    "typescript": "^5.7.3"
   }
 }
