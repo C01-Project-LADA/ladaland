@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import '@/envConfig'
 
 const url = process.env.API_URL;
 

@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { UserWithRanking } from '@/types/user';
-import '@/envConfig'
 
 const url = process.env.API_URL;
 
