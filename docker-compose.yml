@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: ladaadmin
+      POSTGRES_PASSWORD: ladaadmin4567!
+      POSTGRES_DB: ladaland
+    ports:
+      - '5555:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

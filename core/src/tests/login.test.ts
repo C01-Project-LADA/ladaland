@@ -96,12 +96,10 @@ describe('POST /api/login', () => {
       password: 'hashedpassword',
     });
     compareMock.mockResolvedValueOnce(true);
-    const res = await request(app)
-      .post('/api/login')
-      .send({
-        usernameOrEmail: 'test2@example.com',
-        password: 'correctpassword',
-      });
+    const res = await request(app).post('/api/login').send({
+      usernameOrEmail: 'test2@example.com',
+      password: 'correctpassword',
+    });
     expect(res.status).toBe(200);
     expect(res.body.message).toBe('Login successful');
   });
