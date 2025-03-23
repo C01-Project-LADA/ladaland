@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
+const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 export default function usePosts(id?: string, query?: string, sortBy?: string) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [page, setPage] = useState(1);
@@ -20,9 +22,7 @@ export default function usePosts(id?: string, query?: string, sortBy?: string) {
         queryParams.append('pageSize', String(pageSize));
 
         const response = await axios.get(
-          `http://localhost:4000/api/posts${
-            id ? `/${id}` : ''
-          }?${queryParams.toString()}`,
+          `${url}/posts${id ? `/${id}` : ''}?${queryParams.toString()}`,
           { withCredentials: true }
         );
 

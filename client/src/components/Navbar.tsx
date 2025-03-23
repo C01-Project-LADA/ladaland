@@ -8,18 +8,10 @@ export default function Navbar() {
     <header className={styles.container}>
       <Link href="/">
         <div className={styles.logo_container}>
-          {/* <Image
-            src="/logo.svg"
-            alt="LADA LAND"
-            width={50}
-            height={50}
-            priority
-          />
-          <p className={styles.logo_text}>lada land</p> */}
           <Image
             src="/LADAlogo.svg"
             alt="LADA LAND"
-            width={125}
+            width={150}
             height={50}
             priority
           />
