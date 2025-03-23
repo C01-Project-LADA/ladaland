@@ -25,7 +25,10 @@ jest.mock('@prisma/client', () => {
     user: mUser,
     $transaction: mTransaction,
   }));
-  return { PrismaClient: mPrismaClient, VoteType: { LIKE: 'LIKE', DISLIKE: 'DISLIKE' } };
+  return {
+    PrismaClient: mPrismaClient,
+    VoteType: { LIKE: 'LIKE', DISLIKE: 'DISLIKE' },
+  };
 });
 
 import { PrismaClient, VoteType } from '@prisma/client';
@@ -53,7 +56,11 @@ describe('POST /api/post-votes/:postId', () => {
     );
 
     app.get('/set-session', (req, res) => {
-      req.session.user = { id: '1', username: 'testUser', email: 'test@example.com' };
+      req.session.user = {
+        id: '1',
+        username: 'testUser',
+        email: 'test@example.com',
+      };
       res.status(200).json({ message: 'Session set' });
     });
 
@@ -80,7 +87,11 @@ describe('POST /api/post-votes/:postId', () => {
       postId: '123',
       type: VoteType.LIKE,
     });
-    postFindUniqueMock.mockResolvedValueOnce({ id: '123', userId: '1', pointsAwarded: 0 });
+    postFindUniqueMock.mockResolvedValueOnce({
+      id: '123',
+      userId: '1',
+      pointsAwarded: 0,
+    });
     postVoteCountMock.mockResolvedValueOnce(5);
     transactionMock.mockResolvedValueOnce([{}, {}]);
 

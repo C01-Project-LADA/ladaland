@@ -28,24 +28,30 @@ describe('Visa Requirements Route', () => {
   });
 
   it('should return 400 if passports array is missing/empty', async () => {
-    const res = await request(app)
-      .post('/api/visa-requirements')
-      .send({});
+    const res = await request(app).post('/api/visa-requirements').send({});
     expect(res.status).toBe(400);
-    expect(res.body.error).toBe('Passports must be provided as a non-empty array.');
+    expect(res.body.error).toBe(
+      'Passports must be provided as a non-empty array.'
+    );
 
     const res2 = await request(app)
       .post('/api/visa-requirements')
       .send({ passports: [] });
     expect(res2.status).toBe(400);
-    expect(res2.body.error).toBe('Passports must be provided as a non-empty array.');
+    expect(res2.body.error).toBe(
+      'Passports must be provided as a non-empty array.'
+    );
   });
 
   it('should return the best visa requirement options for each destination', async () => {
     const visaRows = [
       { destination: 'France', passport: 'USA', requirement: 'visa free' },
       { destination: 'France', passport: 'USA', requirement: '30' },
-      { destination: 'Germany', passport: 'USA', requirement: 'visa on arrival' },
+      {
+        destination: 'Germany',
+        passport: 'USA',
+        requirement: 'visa on arrival',
+      },
     ];
     findManyMock.mockResolvedValueOnce(visaRows);
 
@@ -57,7 +63,11 @@ describe('Visa Requirements Route', () => {
     expect(res.body).toEqual(
       expect.arrayContaining([
         { destination: 'France', requirement: '30', passport: 'USA' },
-        { destination: 'Germany', requirement: 'visa on arrival', passport: 'USA' },
+        {
+          destination: 'Germany',
+          requirement: 'visa on arrival',
+          passport: 'USA',
+        },
       ])
     );
   });

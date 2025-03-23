@@ -25,7 +25,10 @@ jest.mock('@prisma/client', () => {
     user: mUser,
     $transaction: mTransaction,
   }));
-  return { PrismaClient: mPrismaClient, VoteType: { LIKE: 'LIKE', DISLIKE: 'DISLIKE' } };
+  return {
+    PrismaClient: mPrismaClient,
+    VoteType: { LIKE: 'LIKE', DISLIKE: 'DISLIKE' },
+  };
 });
 
 import { PrismaClient, VoteType } from '@prisma/client';
@@ -40,7 +43,11 @@ const transactionMock = prisma.$transaction as jest.Mock;
 
 describe('Comment Votes Routes', () => {
   let app: express.Express;
-  const sessionUser = { id: '1', username: 'testUser', email: 'test@example.com' };
+  const sessionUser = {
+    id: '1',
+    username: 'testUser',
+    email: 'test@example.com',
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -83,7 +90,10 @@ describe('Comment Votes Routes', () => {
       type: VoteType.LIKE,
     });
 
-    commentFindUniqueMock.mockResolvedValueOnce({ id: 'comment1', userId: '2' });
+    commentFindUniqueMock.mockResolvedValueOnce({
+      id: 'comment1',
+      userId: '2',
+    });
     commentVoteCountMock.mockResolvedValueOnce(5);
     userFindUniqueMock.mockResolvedValueOnce({ id: '2', points: 10 });
     transactionMock.mockResolvedValueOnce([{}]);

@@ -19,7 +19,10 @@ jest.mock('@prisma/client', () => {
     user: mUser,
     $transaction: mTransaction,
   }));
-  return { PrismaClient: mPrismaClient, VoteType: { LIKE: 'LIKE', DISLIKE: 'DISLIKE' } };
+  return {
+    PrismaClient: mPrismaClient,
+    VoteType: { LIKE: 'LIKE', DISLIKE: 'DISLIKE' },
+  };
 });
 
 import { PrismaClient } from '@prisma/client';
@@ -29,7 +32,11 @@ const transactionMock = prisma.$transaction as jest.Mock;
 
 describe('Comments Routes', () => {
   let app: express.Express;
-  const sessionUser = { id: '1', username: 'testUser', email: 'test@example.com' };
+  const sessionUser = {
+    id: '1',
+    username: 'testUser',
+    email: 'test@example.com',
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -55,7 +62,12 @@ describe('Comments Routes', () => {
     const agent = request.agent(app);
     await agent.get('/set-session');
 
-    const fakeComment = { id: 'comment1', postId: '123', userId: '1', content: 'Nice post!' };
+    const fakeComment = {
+      id: 'comment1',
+      postId: '123',
+      userId: '1',
+      content: 'Nice post!',
+    };
     transactionMock.mockResolvedValueOnce([fakeComment, {}]);
 
     const res = await agent

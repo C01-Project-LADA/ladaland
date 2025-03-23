@@ -14,12 +14,20 @@ app.use(
 );
 
 app.get('/set-session', (req, res) => {
-  req.session.user = { id: '1', username: 'testUser', email: 'test@example.com' };
+  req.session.user = {
+    id: '1',
+    username: 'testUser',
+    email: 'test@example.com',
+  };
   res.status(200).json({ message: 'Session set' });
 });
 
 app.get('/set-session-error', (req, res) => {
-  req.session.user = { id: '2', username: 'errorUser', email: 'error@example.com' };
+  req.session.user = {
+    id: '2',
+    username: 'errorUser',
+    email: 'error@example.com',
+  };
   (req.session as any).destroy = (cb: (err: any) => void) => {
     cb(new Error('Simulated destroy error'));
   };

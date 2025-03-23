@@ -14,7 +14,6 @@ jest.mock('@prisma/client', () => {
   return { PrismaClient: mPrismaClient };
 });
 
-
 import { PrismaClient } from '@prisma/client';
 const mockedPrisma = new PrismaClient();
 
@@ -38,13 +37,11 @@ describe('POST /api/register', () => {
   });
 
   it('should return validation errors for invalid input', async () => {
-    const res = await request(app)
-      .post('/api/register')
-      .send({
-        username: '',
-        email: 'not-an-email',
-        password: 'short',
-      });
+    const res = await request(app).post('/api/register').send({
+      username: '',
+      email: 'not-an-email',
+      password: 'short',
+    });
     expect(res.status).toBe(400);
     expect(res.body.errors).toBeDefined();
     expect(Array.isArray(res.body.errors)).toBe(true);
@@ -54,13 +51,11 @@ describe('POST /api/register', () => {
   it('should return an error if the username already exists', async () => {
     findUniqueMock.mockResolvedValueOnce({ id: 1, username: 'existingUser' });
 
-    const res = await request(app)
-      .post('/api/register')
-      .send({
-        username: 'existingUser',
-        email: 'newemail@example.com',
-        password: 'validpassword',
-      });
+    const res = await request(app).post('/api/register').send({
+      username: 'existingUser',
+      email: 'newemail@example.com',
+      password: 'validpassword',
+    });
 
     expect(res.status).toBe(400);
     expect(res.body.error).toBe(
@@ -70,20 +65,19 @@ describe('POST /api/register', () => {
 
   it('should return an error if the email already exists', async () => {
     findUniqueMock.mockResolvedValueOnce(null);
-    findUniqueMock.mockResolvedValueOnce({ id: 2, email: 'existing@example.com' });
+    findUniqueMock.mockResolvedValueOnce({
+      id: 2,
+      email: 'existing@example.com',
+    });
 
-    const res = await request(app)
-      .post('/api/register')
-      .send({
-        username: 'newUser',
-        email: 'existing@example.com',
-        password: 'validpassword',
-      });
+    const res = await request(app).post('/api/register').send({
+      username: 'newUser',
+      email: 'existing@example.com',
+      password: 'validpassword',
+    });
 
     expect(res.status).toBe(400);
-    expect(res.body.error).toBe(
-      'Email is already registered. Please log in.'
-    );
+    expect(res.body.error).toBe('Email is already registered. Please log in.');
   });
 
   it('should register a new user successfully', async () => {
@@ -95,14 +89,12 @@ describe('POST /api/register', () => {
       email: 'newuser@example.com',
     });
 
-    const res = await request(app)
-      .post('/api/register')
-      .send({
-        username: 'newUser',
-        email: 'newuser@example.com',
-        password: 'validpassword',
-        phone: '1234567890',
-      });
+    const res = await request(app).post('/api/register').send({
+      username: 'newUser',
+      email: 'newuser@example.com',
+      password: 'validpassword',
+      phone: '1234567890',
+    });
 
     expect(res.status).toBe(201);
     expect(res.body.message).toBe(
