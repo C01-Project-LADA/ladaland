@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
+const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 export default function useComments(postId: string) {
   const [comments, setComments] = useState<PostComment[]>([]);
   const [page, setPage] = useState(1);
@@ -16,7 +18,7 @@ export default function useComments(postId: string) {
 
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/comments/${postId}?page=${pageToFetch}`,
+          `${url}/comments/${postId}?page=${pageToFetch}`,
           { withCredentials: true }
         );
 
@@ -40,7 +42,9 @@ export default function useComments(postId: string) {
           setHasMore(false);
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch comments');
+        setError(
+          err instanceof Error ? err.message : 'Failed to fetch comments'
+        );
       } finally {
         setLoading(false);
       }

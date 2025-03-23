@@ -48,6 +48,8 @@ const exampleUsernames = [
   'traveladdict',
 ];
 
+const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 // This component renders a GET STARTED button in the navbar that opens a form to sign up or log in
 export default function Auth() {
   const router = useRouter();
@@ -88,13 +90,9 @@ export default function Auth() {
   async function onRegisterSubmit(values: z.infer<typeof registerSchema>) {
     setLoading(true);
     try {
-      const response = await axios.post(
-        'http://localhost:4000/api/register',
-        values,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post(`${url}/register`, values, {
+        withCredentials: true,
+      });
 
       if (response.status === 201) {
         router.push('/');
@@ -116,13 +114,9 @@ export default function Auth() {
   async function onLoginSubmit(values: z.infer<typeof loginSchema>) {
     setLoading(true);
     try {
-      const response = await axios.post(
-        'http://localhost:4000/api/login',
-        values,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post(`${url}/login`, values, {
+        withCredentials: true,
+      });
 
       if (response.status === 200) {
         router.push('/');

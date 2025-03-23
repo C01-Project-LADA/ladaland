@@ -17,6 +17,8 @@ import usePosts from '@/hooks/usePosts';
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 
+const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 export default function Social() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('q');
@@ -45,7 +47,14 @@ export default function Social() {
     clearError,
   } = useNewPost();
 
-  const { posts, loading: postsLoading, error: postsError, refresh, loadMore, hasMore } = usePosts(undefined, searchQuery || '', sortBy || '');
+  const {
+    posts,
+    loading: postsLoading,
+    error: postsError,
+    refresh,
+    loadMore,
+    hasMore,
+  } = usePosts(undefined, searchQuery || '', sortBy || '');
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Set up an Intersection Observer to load more posts when the sentinel comes into view.
@@ -53,13 +62,16 @@ export default function Social() {
     if (postsLoading) return;
     if (!hasMore) return;
 
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        loadMore();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMore();
+        }
+      },
+      {
+        rootMargin: '100px',
       }
-    }, {
-      rootMargin: '100px',
-    });
+    );
 
     if (bottomRef.current) {
       observer.observe(bottomRef.current);
@@ -131,7 +143,7 @@ export default function Social() {
 
   async function deletePost(id: string) {
     try {
-      await axios.delete(`http://localhost:4000/api/posts/${id}`, {
+      await axios.delete(`${url}/posts/${id}`, {
         withCredentials: true,
       });
 
@@ -141,10 +153,9 @@ export default function Social() {
       const updatedUser = await refreshUser();
       setUser(updatedUser);
 
-    window.dispatchEvent(new CustomEvent('userPointsUpdated'));
+      window.dispatchEvent(new CustomEvent('userPointsUpdated'));
 
-    toast.success(`You lost 20 points for deleting your post`);
-    
+      toast.success(`You lost 20 points for deleting your post`);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to delete post');
     }
@@ -156,7 +167,7 @@ export default function Social() {
 
     try {
       await axios.post(
-        `http://localhost:4000/api/post-votes/${id}`,
+        `${url}/post-votes/${id}`,
         { voteType: 'LIKE' },
         { withCredentials: true }
       );
@@ -173,7 +184,7 @@ export default function Social() {
 
     try {
       await axios.post(
-        `http://localhost:4000/api/post-votes/${id}`,
+        `${url}/post-votes/${id}`,
         { voteType: 'DISLIKE' },
         { withCredentials: true }
       );
@@ -294,11 +305,9 @@ export default function Social() {
           ))}
 
         <div ref={bottomRef} />
-        
+
         {!hasMore && (
-          <p className="text-center text-sm text-gray-500">
-            No more posts.
-          </p>
+          <p className="text-center text-sm text-gray-500">No more posts.</p>
         )}
       </div>
     </div>

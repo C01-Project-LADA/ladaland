@@ -28,6 +28,8 @@ const links = [
   { href: '/passport-tool', text: 'Passport Tool', icon: <BookText /> },
 ];
 
+const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 export default function SideNavigation() {
   const pathname = usePathname();
   const router = useRouter();
@@ -35,7 +37,7 @@ export default function SideNavigation() {
   const { user } = useUser();
 
   function handleLogOut() {
-    fetch('http://localhost:4000/api/logout', {
+    fetch(`${url}/logout`, {
       method: 'POST',
       credentials: 'include',
     }).then(() => {
