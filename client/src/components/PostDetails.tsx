@@ -17,7 +17,7 @@ import axios from 'axios';
 import useNewComment from '@/hooks/useNewComment';
 import useComments from '@/hooks/useComments';
 import Comment from './Comment';
-import '@/envConfig.ts'
+import '@/envConfig'
 
 const url = process.env.API_URL;
 

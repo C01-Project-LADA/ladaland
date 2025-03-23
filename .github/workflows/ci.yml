@@ -27,7 +27,7 @@ jobs:
           echo "${{ secrets.CORE_ENV }}" > core/.env
       - name: Create .env file for client
         run: |
-          echo "${{ secrets.CLIENT_ENV }}" > client/process.env
+          echo "${{ secrets.CLIENT_ENV }}" > client/.env.local
 
       - name: Run tests
         run: npm run test --prefix core

@@ -9,7 +9,7 @@ import useScreenDimensions from '@/hooks/useScreenDimensions';
 import axios from 'axios';
 import { toast } from 'sonner';
 import useUser from '@/hooks/useUser';
-import '@/envConfig.ts'
+import '@/envConfig'
 
 const url = process.env.API_URL;
 

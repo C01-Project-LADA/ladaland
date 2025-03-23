@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import '@/envConfig.ts'
+import '@/envConfig'
 
 const url = process.env.API_URL;
 
