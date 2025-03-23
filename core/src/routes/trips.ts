@@ -101,7 +101,7 @@ router.put(
         where: { id: tripId },
         data: {
           name,
-          location, // Update location if provided
+          location,
           startDate: startDate ? new Date(startDate) : undefined,
           endDate: endDate ? new Date(endDate) : undefined,
           budget,
