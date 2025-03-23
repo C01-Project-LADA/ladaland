@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { User } from '@/types/user';
 
+const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 export default function useUser() {
   const [user, setUser] = useState<User | null>(null);
   const [postsCount, setPostsCount] = useState<number | null>(null);
@@ -11,7 +13,7 @@ export default function useUser() {
 
   const fetchUser = (): Promise<User> => {
     setLoading(true);
-    return fetch('http://localhost:4000/api/me', {
+    return fetch(`${url}/me`, {
       method: 'GET',
       credentials: 'include',
     })
