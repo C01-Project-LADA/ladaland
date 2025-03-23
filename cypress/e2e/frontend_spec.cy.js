@@ -16,13 +16,17 @@ describe('User Registration', () => {
   
     it('should register a new user with randomized username and email', () => {
         const { username, email } = generateRandomUser();
-  
+
         cy.get('#get-started').click({ force: true });
+
+        cy.wait(1000);
   
         cy.get('input').eq(0).type(username);
         cy.get('input').eq(1).type(email);
         cy.get('input').eq(2).type('password123');
         cy.get('input').eq(3).type('password123');
+
+        cy.wait(1000);
   
         cy.get('button[type="submit"]').contains('SIGN UP').click();
   
@@ -45,13 +49,19 @@ describe('Create a Post', () => {
         cy.wait('@getPosts');
     
         cy.contains('LOCATION').click();
-    
+
+        cy.wait(1000);
+
         cy.contains('button', 'Albania').click({ force: true });
-    
+
+        cy.wait(1000);
+
         const postContent = `Hello from Albania! ${Date.now()}`;
         cy.get('textarea[placeholder="What\'s on your mind?"]')
             .type(postContent);
     
+        cy.wait(1000);
+
         cy.contains('POST').click();
     
         cy.wait('@createPost')
@@ -73,7 +83,7 @@ describe('Logout Test', () => {
     it('logs out on hover + click', () => {
         cy.contains('PROFILE').realHover();
         
-        cy.wait(200);
+        cy.wait(1000);
     
         cy.contains('LOG OUT').should('be.visible').click();
     
