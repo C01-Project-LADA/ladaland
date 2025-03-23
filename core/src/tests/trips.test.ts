@@ -83,6 +83,7 @@ describe('Trips Routes', () => {
         id: 'trip-id-123',
         userId: 'testUserId',
         name: 'Valid Trip',
+        location: 'Test Location',
         startDate: new Date('2025-01-01'),
         endDate: new Date('2025-01-10'),
         budget: 1000,
@@ -92,6 +93,7 @@ describe('Trips Routes', () => {
 
       const res = await agent.post('/api/trips').send({
         name: 'Valid Trip',
+        location: 'Test Location',
         startDate: '2025-01-01',
         endDate: '2025-01-10',
         budget: 1000,
@@ -100,11 +102,13 @@ describe('Trips Routes', () => {
       expect(res.status).toBe(201);
       expect(res.body.id).toBe('trip-id-123');
       expect(res.body.name).toBe('Valid Trip');
+      expect(res.body.location).toBe('Test Location');
       expect(tripCreateMock).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({
             userId: 'testUserId',
             name: 'Valid Trip',
+            location: 'Test Location',
             budget: 1000,
           }),
         })
@@ -127,6 +131,7 @@ describe('Trips Routes', () => {
           id: 'trip1',
           userId: 'testUserId',
           name: 'Trip One',
+          location: 'Location One',
           startDate: new Date('2025-01-01'),
           endDate: new Date('2025-01-05'),
           budget: 500,
@@ -140,6 +145,7 @@ describe('Trips Routes', () => {
           id: 'trip2',
           userId: 'testUserId',
           name: 'Trip Two',
+          location: 'Location Two',
           startDate: new Date('2025-02-01'),
           endDate: new Date('2025-02-07'),
           budget: 1200,

@@ -117,8 +117,5 @@ Thumbs.db
 # ESLint cache
 .eslintcache
 
-# Jest coverage and cache
-jest.config.js
-**/jest.config.js
 coverage/
 **/coverage/
