@@ -19,7 +19,11 @@ const findManyMock = prisma.user.findMany as jest.Mock;
 
 describe('Leaderboard Route', () => {
   let app: express.Express;
-  const sessionUser = { id: '2', username: 'User2', email: 'user2@example.com' };
+  const sessionUser = {
+    id: '2',
+    username: 'User2',
+    email: 'user2@example.com',
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -63,9 +67,27 @@ describe('Leaderboard Route', () => {
 
     expect(res.body).toEqual({
       leaderboard: [
-        { id: '1', username: 'User1', visitedCountries: 'US,CA,MX', points: 500, visitedCount: 3 },
-        { id: '2', username: 'User2', visitedCountries: 'US,CA', points: 600, visitedCount: 2 },
-        { id: '3', username: 'User3', visitedCountries: '', points: 400, visitedCount: 0 },
+        {
+          id: '1',
+          username: 'User1',
+          visitedCountries: 'US,CA,MX',
+          points: 500,
+          visitedCount: 3,
+        },
+        {
+          id: '2',
+          username: 'User2',
+          visitedCountries: 'US,CA',
+          points: 600,
+          visitedCount: 2,
+        },
+        {
+          id: '3',
+          username: 'User3',
+          visitedCountries: '',
+          points: 400,
+          visitedCount: 0,
+        },
       ],
       currentUserRanking: 2,
       totalUsers: 3,
@@ -87,9 +109,27 @@ describe('Leaderboard Route', () => {
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
       leaderboard: [
-        { id: '2', username: 'User2', visitedCountries: 'US,CA', points: 600, visitedCount: 2 },
-        { id: '1', username: 'User1', visitedCountries: 'US,CA,MX', points: 500, visitedCount: 3 },
-        { id: '3', username: 'User3', visitedCountries: '', points: 400, visitedCount: 0 },
+        {
+          id: '2',
+          username: 'User2',
+          visitedCountries: 'US,CA',
+          points: 600,
+          visitedCount: 2,
+        },
+        {
+          id: '1',
+          username: 'User1',
+          visitedCountries: 'US,CA,MX',
+          points: 500,
+          visitedCount: 3,
+        },
+        {
+          id: '3',
+          username: 'User3',
+          visitedCountries: '',
+          points: 400,
+          visitedCount: 0,
+        },
       ],
       currentUserRanking: 1,
       totalUsers: 3,
