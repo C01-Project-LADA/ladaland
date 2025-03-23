@@ -3,6 +3,10 @@
 type Trip = {
   id: string;
   userId: string;
+  /**
+   * 2 letter ISO country code
+   */
+  location: string;
   name: string;
   startDate: Date;
   endDate: Date;

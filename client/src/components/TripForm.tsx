@@ -7,12 +7,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { CalendarIcon, MapPin, DollarSign } from 'lucide-react';
+import { CalendarIcon, MapPin, DollarSign, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { Input } from '@/components/ui/input';
 import CountrySelectDialog from '@/components/CountrySelectDialog';
@@ -23,11 +24,13 @@ import {
 } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import SectionHeading from './SectionHeading';
+import { Button } from '@/components/ui/button';
+import ExpenseDialog from './ExpenseDialog';
 
 const tripDetailsSchema = z
   .object({
     name: z.string().nonempty(),
-    location: z.string().nonempty(),
+    location: z.string().nonempty({ message: 'Location is required' }),
     startDate: z.date(),
     endDate: z.date(),
     // budget should be a positive integer
@@ -39,13 +42,6 @@ const tripDetailsSchema = z
   });
 
 export default function TripForm({ trip }: { trip: Trip }) {
-  // const [name, setName] = useState(trip.name);
-  // const [location, setLocation] = useState(""); // TODO
-  // const [startDate, setStartDate] = useState(trip.startDate);
-  // const [endDate, setEndDate] = useState(trip.endDate);
-  // const [budget, setBudget] = useState(trip.budget);
-  // const [completed, setCompleted] = useState(trip.completed);
-
   const tripDetailsForm = useForm<z.infer<typeof tripDetailsSchema>>({
     resolver: zodResolver(tripDetailsSchema),
     defaultValues: {
@@ -227,10 +223,33 @@ export default function TripForm({ trip }: { trip: Trip }) {
                   {...field}
                 />
               </FormControl>
+              <FormDescription>
+                This is the total amount you are planning to spend on this trip.
+                <br />
+                LADA Land will help you keep track of your expenses and let you
+                know if you are over or under budget.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        <div className="mt-6">
+          <ExpenseDialog
+            title="Add an expense"
+            description="Add an expense to your trip. This could be anything from a flight to a meal to a hotel stay."
+            dialogTrigger={
+              <Button type="button">
+                <Plus />
+                Add an expense
+              </Button>
+            }
+          />
+        </div>
+
+        <div className="mt-8" />
+        <SectionHeading title="Flights" />
+        <div className="mt-2" />
       </form>
     </Form>
   );

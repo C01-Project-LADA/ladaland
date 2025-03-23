@@ -3,10 +3,10 @@
 import PageBanner from '@/components/PageBanner';
 import TripForm from '@/components/TripForm';
 import { useSearchParams } from 'next/navigation';
-import ct from 'i18n-iso-countries';
-import en from 'i18n-iso-countries/langs/en.json';
+// import ct from 'i18n-iso-countries';
+// import en from 'i18n-iso-countries/langs/en.json';
 
-ct.registerLocale(en);
+// ct.registerLocale(en);
 
 const mockTrip: Trip = {
   id: '1',
@@ -31,14 +31,12 @@ export default function NewTripPage() {
     >
       <PageBanner
         title="ALL TRIPS"
-        message={`Plan a new trip ${
-          country ? `to ${ct.getName(country, 'en')}` : ''
-        }`}
+        message="Plan a new trip"
         variant="blue"
         backLink="/trips"
       />
 
-      <TripForm trip={mockTrip} />
+      <TripForm trip={{ ...mockTrip, location: country }} />
     </div>
   );
 }
