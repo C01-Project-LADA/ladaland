@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon --config nodemon.index.json",
     "format": "npx prettier --write .",
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "start": "node dist/index.js",
     "test": "jest"
   },
@@ -45,6 +45,7 @@
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "tsc": "^2.0.4",
+    "tsc-alias": "^1.8.11",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }
