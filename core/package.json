@@ -2,6 +2,7 @@
   "name": "core",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon --config nodemon.index.json",
     "format": "npx prettier --write .",
