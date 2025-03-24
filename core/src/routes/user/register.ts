@@ -17,8 +17,6 @@ router.post(
       .withMessage('Password must be at least 8 characters long'),
   ],
   async (req: Request, res: Response): Promise<void> => {
-    console.log("hello1");
-
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).json({ errors: errors.array() });
@@ -27,7 +25,6 @@ router.post(
 
     const { username, email, password } = req.body;
 
-    console.log("hello2");
     try {
       const existingUser = await prisma.user.findUnique({
         where: { username },
@@ -39,19 +36,15 @@ router.post(
         return;
       }
 
-      console.log("hello2.5");
-
       const existingEmail = await prisma.user.findUnique({ where: { email } });
       if (existingEmail) {
-        res.status(400).json({ error: 'Email is already registered. Please log in.' });
+        res
+          .status(400)
+          .json({ error: 'Email is already registered. Please log in.' });
         return;
       }
 
-      console.log("hello YALLAH");
-
       const hashedPassword = await bcrypt.hash(password, 10);
-
-      console.log("hello3");
 
       const newUser = await prisma.user.create({
         data: {
@@ -61,9 +54,6 @@ router.post(
         },
       });
 
-      console.log("hello4");
-
-      // Log in user
       req.session.user = {
         id: newUser.id,
         username: newUser.username,
@@ -72,11 +62,13 @@ router.post(
 
       req.session.save((err) => {
         if (err) {
-          console.error("Error saving session:", err);
+          console.error('Error saving session:', err);
           return res.status(500).json({ error: 'Internal Server Error' });
         }
-        console.log("Session saved, sending response");
-        res.status(201).json({ message: 'User registered and logged in successfully.' });
+        console.log('Session saved, sending response');
+        res
+          .status(201)
+          .json({ message: 'User registered and logged in successfully.' });
       });
     } catch (error) {
       console.log(error);
