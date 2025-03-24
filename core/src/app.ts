@@ -3,6 +3,7 @@ import session from 'express-session';
 import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
+import morgan from 'morgan';
 
 // Routes
 import registerRoute from './routes/user/register';
@@ -24,6 +25,8 @@ dotenv.config();
 
 const app = express();
 const prisma = new PrismaClient();
+
+app.use(morgan('combined'));
 
 app.use(
   cors({
