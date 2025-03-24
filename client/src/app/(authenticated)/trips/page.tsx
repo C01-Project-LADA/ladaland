@@ -5,9 +5,11 @@ import Trip from '@/components/Trip';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Plus } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 import CountrySelectDialog from '@/components/CountrySelectDialog';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import useTrips from '@/hooks/useTrips';
 
 const mockTrip: Trip = {
   id: '1',
@@ -22,6 +24,8 @@ const mockTrip: Trip = {
 
 export default function Trips() {
   const router = useRouter();
+
+  const { trips, loading, error } = useTrips();
 
   const [countriesSelected, setCountriesSelected] = useState<
     Record<string, Country>
@@ -74,7 +78,13 @@ export default function Trips() {
       <Separator />
 
       <div className="mt-6 flex flex-col gap-2">
-        <Trip trip={mockTrip} />
+        {loading ? (
+          <Skeleton className="h-24" />
+        ) : trips.length === 0 ? (
+          <p>No trips found. Start planning!</p>
+        ) : (
+          trips.map((trip) => <Trip key={trip.id} trip={trip} />)
+        )}
       </div>
 
       <h3 className="mt-10 mb-2 text-gray-500 font-bold">Past Trips</h3>

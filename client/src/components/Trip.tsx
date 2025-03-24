@@ -7,6 +7,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { findDifferenceInDays } from '@/lib/utils';
+import ct from 'i18n-iso-countries';
+import en from 'i18n-iso-countries/langs/en.json';
+
+ct.registerLocale(en);
 
 export default function Trip({ trip }: { trip: Trip }) {
   return (
@@ -27,7 +32,7 @@ export default function Trip({ trip }: { trip: Trip }) {
             </Link>
             <div className="flex gap-2 items-center mt-1">
               <MapPin size={18} />
-              <p className="text-sm">Trip Location</p>
+              <p className="text-sm">{ct.getName(trip.location, 'en')}</p>
             </div>
           </div>
 
@@ -70,8 +75,8 @@ export default function Trip({ trip }: { trip: Trip }) {
         </div>
 
         <p className="mt-2 text-xs text-gray-500">
-          {trip.startDate.toDateString()} — {trip.endDate.toDateString()} (7
-          days)
+          {trip.startDate.toDateString()} — {trip.endDate.toDateString()} (
+          {findDifferenceInDays(trip.startDate, trip.endDate)} days)
         </p>
 
         <div className="mt-3 mb-1">
@@ -87,10 +92,7 @@ export default function Trip({ trip }: { trip: Trip }) {
 
       <div className="flex-1 flex justify-center items-center">
         <span
-          className={`fi !w-[75%] aspect-[4/3] fi-${
-            // TODO: Use the actual country code
-            trip.country || 'ca'
-          } bg-muted rounded-md`}
+          className={`fi !w-[75%] aspect-[4/3] fi-${trip.location.toLowerCase()} bg-muted rounded-md`}
         />
       </div>
     </div>

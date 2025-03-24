@@ -53,3 +53,8 @@ export function formatPastDate(date: Date): string {
     return date.toDateString();
   }
 }
+
+export function findDifferenceInDays(startDate: Date, endDate: Date): number {
+  const diff = endDate.getTime() - startDate.getTime();
+  return Math.floor(diff / 86_400_000);
+}
