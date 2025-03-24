@@ -1,6 +1,5 @@
 'use client';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
 import styles from '@/styles/Auth.module.css';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
