@@ -21,7 +21,7 @@ import { PrismaClient } from '@prisma/client';
 const mockedPrisma = new PrismaClient();
 const findUniqueMock = mockedPrisma.user.findUnique as jest.Mock;
 
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 const compareMock = bcrypt.compare as jest.Mock;
 
 const app = express();
