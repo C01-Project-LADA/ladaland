@@ -10,7 +10,7 @@ RUN npm install
 COPY . .
 
 WORKDIR /app/client
-RUN npm install --legacy-peer-deps
+RUN npm install
 RUN npm run build
 
 FROM node:18-alpine
