@@ -1,10 +1,10 @@
 /// <reference types="cypress" />
 
 function generateRandomUser() {
-    const randomSuffix = Math.floor(Math.random() * 1000000);
-    const username = `testuser${randomSuffix}`;
-    const email = `testuser${randomSuffix}@example.com`;
-    return { username, email };
+  const randomSuffix = Math.floor(Math.random() * 1000000);
+  const username = `testuser${randomSuffix}`;
+  const email = `testuser${randomSuffix}@example.com`;
+  return { username, email };
 }
 
 describe('User Registration', () => {
@@ -72,7 +72,7 @@ describe('Create a Post', () => {
     
         cy.contains(postContent).should('be.visible');
     });
-  });
+});
 
 describe('Logout Test', () => {
     beforeEach(() => {
