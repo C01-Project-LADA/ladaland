@@ -102,6 +102,10 @@ export default function NewTripForm({
     }
   }, [countriesSelected, tripDetailsForm]);
 
+  const remainingBudget =
+    tripDetailsForm.watch('budget') -
+    expenses.reduce((acc, exp) => acc + exp.cost, 0);
+
   return (
     <Form {...tripDetailsForm}>
       <form
@@ -319,7 +323,14 @@ export default function NewTripForm({
             </div>
           ))}
 
-        <div className="flex justify-end items-center gap-3">
+        <div className="flex justify-between items-end gap-3 flex-wrap">
+          <p
+            className="font-bold text-lg"
+            style={{ color: remainingBudget < 0 ? 'red' : 'black' }}
+          >
+            ${remainingBudget}
+            <span className="font-light text-sm"> remaining</span>
+          </p>
           <Button variant="accent" disabled={submitting}>
             PLAN TRIP
           </Button>
