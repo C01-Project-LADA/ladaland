@@ -1,21 +1,16 @@
 'use client';
 
+import { Suspense, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import NewTripForm from '@/components/NewTripForm';
 import PageBanner from '@/components/PageBanner';
 import { toast } from 'sonner';
 import useTripForm from '@/hooks/useTripForm';
-import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
-// import ct from 'i18n-iso-countries';
-// import en from 'i18n-iso-countries/langs/en.json';
 
-// ct.registerLocale(en);
-
-export default function NewTripPage() {
+function NewTripContent() {
   const searchParams = useSearchParams();
   const { submitting, handleSubmit, error, clearError } = useTripForm(true);
 
-  // Toast error message
   useEffect(() => {
     if (error) {
       toast.error(error);
@@ -34,22 +29,26 @@ export default function NewTripPage() {
   }
 
   return (
-    <div
-      className="pl-[20px] pt-[30px]"
-      style={{ width: 'clamp(200px, 50vw, 500px)' }}
-    >
+    <div className="pl-[20px] pt-[30px]" style={{ width: 'clamp(200px, 50vw, 500px)' }}>
       <PageBanner
         title="ALL TRIPS"
         message="Plan a new trip"
         variant="blue"
         backLink="/trips"
       />
-
       <NewTripForm
         submitting={submitting}
         loadedLocation={country || ''}
         onSubmit={handleTripSubmit}
       />
     </div>
+  );
+}
+
+export default function NewTripPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <NewTripContent />
+    </Suspense>
   );
 }
