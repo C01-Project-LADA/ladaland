@@ -112,9 +112,9 @@ function b(e, t) {
       r === 'Map' || r === 'Set'
         ? Array.from(e)
         : r === 'Arguments' ||
-          /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r)
-        ? g(e, t)
-        : void 0
+            /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r)
+          ? g(e, t)
+          : void 0
     );
   }
 }
@@ -123,11 +123,11 @@ var K = function () {
     t = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : [],
     r = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : !0,
     n = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : !1,
-    l = (t instanceof Array ? (t.length ? t : [void 0]) : [t]).map(function (
-      i
-    ) {
-      return { keyAccessor: i, isProp: !(i instanceof Function) };
-    }),
+    l = (t instanceof Array ? (t.length ? t : [void 0]) : [t]).map(
+      function (i) {
+        return { keyAccessor: i, isProp: !(i instanceof Function) };
+      }
+    ),
     s = e.reduce(function (i, u) {
       var a = i,
         o = u;
@@ -145,8 +145,8 @@ var K = function () {
           v + 1 < l.length
             ? (a.hasOwnProperty(c) || (a[c] = {}), (a = a[c]))
             : r
-            ? (a.hasOwnProperty(c) || (a[c] = []), a[c].push(o))
-            : (a[c] = o);
+              ? (a.hasOwnProperty(c) || (a[c] = []), a[c].push(o))
+              : (a[c] = o);
         }),
         i
       );

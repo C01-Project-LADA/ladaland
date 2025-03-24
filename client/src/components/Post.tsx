@@ -74,14 +74,14 @@ export default function Post({
     originallyLiked && !liked
       ? post.likes - 1
       : !originallyLiked && liked
-      ? post.likes + 1
-      : post.likes;
+        ? post.likes + 1
+        : post.likes;
   const dislikes =
     originallyDisliked && !disliked
       ? post.dislikes - 1
       : !originallyDisliked && disliked
-      ? post.dislikes + 1
-      : post.dislikes;
+        ? post.dislikes + 1
+        : post.dislikes;
 
   return (
     <div className="p-[20px] pb-[10px] pl-6 bg-white rounded-md">

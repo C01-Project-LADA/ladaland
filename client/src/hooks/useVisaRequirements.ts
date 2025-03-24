@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+const url = process.env.NEXT_PUBLIC_API_URL;
 
 export default function useVisaRequirements({
   passports,

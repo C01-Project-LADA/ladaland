@@ -62,14 +62,14 @@ export default function Comment({
     originallyLiked && !liked
       ? comment.likes - 1
       : !originallyLiked && liked
-      ? comment.likes + 1
-      : comment.likes;
+        ? comment.likes + 1
+        : comment.likes;
   const dislikes =
     originallyDisliked && !disliked
       ? comment.dislikes - 1
       : !originallyDisliked && disliked
-      ? comment.dislikes + 1
-      : comment.dislikes;
+        ? comment.dislikes + 1
+        : comment.dislikes;
 
   return (
     <div className="p-[15px] pb-[5px] bg-white rounded-md">
