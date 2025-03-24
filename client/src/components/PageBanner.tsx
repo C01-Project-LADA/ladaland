@@ -9,6 +9,7 @@ interface PageBannerProps {
   shadow?: boolean;
   message: string;
   backLink?: string;
+  extraContent?: React.ReactNode;
 }
 
 function mapColorToGradient(
@@ -41,6 +42,7 @@ export default function PageBanner({
   shadow = false,
   message,
   backLink,
+  extraContent,
 }: PageBannerProps) {
   return (
     <div
@@ -64,6 +66,8 @@ export default function PageBanner({
         <h2>{title}</h2>
       )}
       <h1>{message}</h1>
+
+      {extraContent}
     </div>
   );
 }
