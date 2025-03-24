@@ -27,23 +27,28 @@ const prisma = new PrismaClient();
 
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   })
 );
 
 app.use(express.json());
 
+app.set('trust proxy', 1);
+
 app.use(
-    session({
-      secret: process.env.SESSION_SECRET || 'default',
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        maxAge: 1000 * 60 * 60,
-      },
-    })
-  );
+  session({
+    secret: process.env.SESSION_SECRET || 'default',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 60,
+      domain: '.ladaland.com',
+      secure: true,
+      sameSite: 'none',
+    },
+  })
+);
 
 app.use('/api', registerRoute);
 app.use('/api', loginRoute);

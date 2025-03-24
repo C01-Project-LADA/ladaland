@@ -18,6 +18,8 @@ import useNewComment from '@/hooks/useNewComment';
 import useComments from '@/hooks/useComments';
 import Comment from './Comment';
 
+const url = process.env.NEXT_PUBLIC_API_URL;
+
 export default function PostDetails({ postId }: { postId: string }) {
   const router = useRouter();
   const { posts, loading } = usePosts(postId);
@@ -88,7 +90,7 @@ export default function PostDetails({ postId }: { postId: string }) {
 
   async function deletePost(id: string) {
     try {
-      await axios.delete(`http://localhost:4000/api/posts/${id}`, {
+      await axios.delete(`${url}/posts/${id}`, {
         withCredentials: true,
       });
       toast.success('Post deleted successfully');
@@ -103,7 +105,7 @@ export default function PostDetails({ postId }: { postId: string }) {
     setIsVoting(true);
     try {
       await axios.post(
-        `http://localhost:4000/api/post-votes/${id}`,
+        `${url}/post-votes/${id}`,
         { voteType: 'LIKE' },
         { withCredentials: true }
       );
@@ -119,7 +121,7 @@ export default function PostDetails({ postId }: { postId: string }) {
     setIsVoting(true);
     try {
       await axios.post(
-        `http://localhost:4000/api/post-votes/${id}`,
+        `${url}/post-votes/${id}`,
         { voteType: 'DISLIKE' },
         { withCredentials: true }
       );
@@ -136,7 +138,7 @@ export default function PostDetails({ postId }: { postId: string }) {
     const previousPoints = user?.points || 0;
 
     try {
-      await axios.delete(`http://localhost:4000/api/comments/${id}`, {
+      await axios.delete(`${url}/comments/${id}`, {
         withCredentials: true,
       });
 
@@ -166,7 +168,7 @@ export default function PostDetails({ postId }: { postId: string }) {
     setIsVoting(true);
     try {
       await axios.post(
-        `http://localhost:4000/api/comment-votes/${id}`,
+        `${url}/comment-votes/${id}`,
         { voteType: 'LIKE' },
         { withCredentials: true }
       );
@@ -184,7 +186,7 @@ export default function PostDetails({ postId }: { postId: string }) {
     setIsVoting(true);
     try {
       await axios.post(
-        `http://localhost:4000/api/comment-votes/${id}`,
+        `${url}/comment-votes/${id}`,
         { voteType: 'DISLIKE' },
         { withCredentials: true }
       );

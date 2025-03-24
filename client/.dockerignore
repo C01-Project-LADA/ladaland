@@ -1,0 +1,25 @@
+# Exclude all node_modules directories (both root and subdirectories)
+node_modules
+**/node_modules
+
+# Exclude build output directories
+dist
+**/dist
+
+# Exclude environment variable files
+.env
+.env.*
+
+# Exclude log files
+*.log
+
+# Exclude Git files and folders
+.git
+.gitignore
+
+# Optionally, exclude Docker configuration files if not needed in the build context
+Dockerfile*
+docker-compose*
+
+# OS-specific files
+.DS_Store

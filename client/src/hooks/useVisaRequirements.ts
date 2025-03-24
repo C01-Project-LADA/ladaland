@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+const url = process.env.NEXT_PUBLIC_API_URL;
+
 export default function useVisaRequirements({
   passports,
 }: {
@@ -21,7 +23,7 @@ export default function useVisaRequirements({
       setCanBeLoading(false);
     }
 
-    fetch('http://localhost:4000/api/visa-requirements', {
+    fetch(`${url}/visa-requirements`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

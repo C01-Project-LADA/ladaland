@@ -33,6 +33,7 @@ yarn-error.log*
 
 # Environment variable files (exclude all .env files)
 .env
+.env.local
 **/.env
 
 # Vercel deployment files
@@ -117,8 +118,5 @@ Thumbs.db
 # ESLint cache
 .eslintcache
 
-# Jest coverage and cache
-jest.config.js
-**/jest.config.js
 coverage/
 **/coverage/
