@@ -95,7 +95,9 @@ export default function Auth() {
       });
 
       if (response.status === 201) {
-        router.push('/');
+        setTimeout(() => {
+          router.push('/');
+        }, 1000);
       }
     } catch (error: unknown) {
       setLoading(false);
@@ -119,7 +121,9 @@ export default function Auth() {
       });
 
       if (response.status === 200) {
-        router.push('/');
+        setTimeout(() => {
+          router.push('/');
+        }, 1000);
       }
     } catch (error: unknown) {
       setLoading(false);
