@@ -74,6 +74,7 @@ router.post(
         .status(201)
         .json({ message: 'User registered and logged in successfully.' });
     } catch (error) {
+      console.log(error)
       res.status(500).json({ error: 'Internal Server Error' });
     }
   }
