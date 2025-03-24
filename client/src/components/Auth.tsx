@@ -92,10 +92,6 @@ export default function Auth() {
     try {
       const response = await axios.post(`${url}/register`, values, {
         withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': "*",
-        },
       });
 
       if (response.status === 201) {
