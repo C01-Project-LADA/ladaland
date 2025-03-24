@@ -16,7 +16,12 @@ router.post('/logout', async (req: Request, res: Response): Promise<void> => {
       console.error('Logout error:', err);
       res.status(500).json({ error: 'Failed to log out' });
     } else {
-      res.clearCookie('connect.sid');
+      res.clearCookie('connect.sid', {
+        domain: '.ladaland.com',
+        path: '/',
+        secure: true,
+        sameSite: 'none',
+      });
       res.status(200).json({ message: 'Logout successful' });
     }
   });
