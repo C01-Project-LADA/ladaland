@@ -3,9 +3,6 @@ import session from 'express-session';
 import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
-import morgan from 'morgan';
-import fs from 'fs';
-import path from 'path';
 
 // Routes
 import registerRoute from './routes/user/register';
@@ -28,11 +25,11 @@ dotenv.config();
 const app = express();
 const prisma = new PrismaClient();
 
-const logStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
-app.use(morgan('combined', { stream: logStream }));
-
 app.use(
-  cors()
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
 );
 
 app.use(express.json());

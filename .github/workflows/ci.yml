@@ -31,8 +31,8 @@ jobs:
         run: |
           echo "${{ secrets.CLIENT_ENV }}" > client/.env
 
-      # - name: Run tests
-      #   run: npm run test --prefix core
+      - name: Run tests
+        run: npm run test --prefix core
 
       - name: Build core docker image
         run: docker build -t danielalyoshin/lada-core:latest -f core/Dockerfile .
