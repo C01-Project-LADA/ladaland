@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { DollarSign } from 'lucide-react';
 
 export default function ExpenseDialog({
   title,
@@ -32,12 +33,32 @@ export default function ExpenseDialog({
 
   const [expenseType, setExpenseType] = useState<string>('');
   const [expenseName, setExpenseName] = useState<string>('');
-  const [expenseAmount, setExpenseAmount] = useState<number | null>(null);
-
-  const notReady = !expenseType || !expenseName || !expenseAmount;
+  const [expenseAmount, setExpenseAmount] = useState<string>('');
+  const disabled =
+    !expenseType ||
+    !expenseName ||
+    !expenseAmount ||
+    isNaN(+expenseAmount) ||
+    +expenseAmount < 0;
 
   function handleOpenChange(open: boolean) {
+    if (!open) {
+      clearForm();
+    }
+
     setExpenseDialogOpen(open);
+  }
+
+  function clearForm() {
+    setExpenseType('');
+    setExpenseName('');
+    setExpenseAmount('');
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log(expenseType, expenseName, expenseAmount);
   }
 
   return (
@@ -51,25 +72,56 @@ export default function ExpenseDialog({
           {description}
         </DialogDescription>
 
-        <div className="mb-4">
-          <div className="flex gap-3 items-center">
-            <Select value={expenseType} onValueChange={setExpenseType}>
-              <SelectTrigger>
-                <SelectValue placeholder="Expense type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="flight">Flight</SelectItem>
-                <SelectItem value="transportation">Transportation</SelectItem>
-                <SelectItem value="accommodation">Accommodation</SelectItem>
-                <SelectItem value="meals">Meals</SelectItem>
-                <SelectItem value="events">Events</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
+        <form className="mb-1" onSubmit={handleSubmit}>
+          <div className="flex gap-3 items-center flex-wrap">
+            <div className="flex-1">
+              <Select
+                value={expenseType}
+                onValueChange={setExpenseType}
+                required
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Expense type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="flight">Flight</SelectItem>
+                  <SelectItem value="transportation">Transportation</SelectItem>
+                  <SelectItem value="accommodation">Accommodation</SelectItem>
+                  <SelectItem value="meals">Meals</SelectItem>
+                  <SelectItem value="events">Events</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-            <Input />
+            <div className="flex-[2] min-w-24">
+              <Input
+                value={expenseName}
+                onChange={(e) => setExpenseName(e.target.value)}
+                placeholder="Expense name"
+                required
+              />
+            </div>
+
+            <div className="flex-1">
+              <Input
+                type="number"
+                startIcon={DollarSign}
+                value={expenseAmount}
+                onChange={(e) => setExpenseAmount(e.target.value)}
+                placeholder="Cost"
+                required
+              />
+            </div>
           </div>
-        </div>
+
+          <div className="mt-5 flex justify-end items-center gap-5">
+            <Button type="button" variant="secondary" onClick={clearForm}>
+              CLEAR
+            </Button>
+            <Button disabled={disabled}>ADD</Button>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   );

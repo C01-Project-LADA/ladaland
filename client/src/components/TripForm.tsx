@@ -241,7 +241,7 @@ export default function TripForm({ trip }: { trip: Trip }) {
             dialogTrigger={
               <Button type="button">
                 <Plus />
-                Add an expense
+                ADD AN EXPENSE
               </Button>
             }
           />
