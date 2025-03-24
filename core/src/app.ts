@@ -43,7 +43,7 @@ app.use(
       maxAge: 1000 * 60 * 60,
       domain: '.ladaland.com',
       secure: true,
-      sameSite: 'lax',
+      sameSite: 'none',
     },
   })
 );
