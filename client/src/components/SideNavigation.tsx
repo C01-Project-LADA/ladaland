@@ -18,7 +18,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { Separator } from '@/components/ui/separator';
 import useUser from '@/hooks/useUser';
 
 const links = [
@@ -29,7 +28,8 @@ const links = [
   { href: '/passport-tool', text: 'Passport Tool', icon: <BookText /> },
 ];
 
-// TODO: Don't show if user unauthenticated
+const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 export default function SideNavigation() {
   const pathname = usePathname();
   const router = useRouter();
@@ -37,7 +37,7 @@ export default function SideNavigation() {
   const { user } = useUser();
 
   function handleLogOut() {
-    fetch('http://localhost:4000/api/logout', {
+    fetch(`${url}/logout`, {
       method: 'POST',
       credentials: 'include',
     }).then(() => {
@@ -62,7 +62,7 @@ export default function SideNavigation() {
             className={styles.logo_text}
           />
           <Image
-            src="/logo.svg"
+            src="/SmallLADAlogo.svg"
             alt="LADA LAND"
             width={50}
             height={50}

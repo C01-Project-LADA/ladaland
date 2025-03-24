@@ -1,5 +1,7 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+
+const url = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function usePosts(id?: string, query?: string, sortBy?: string) {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -18,27 +20,35 @@ export default function usePosts(id?: string, query?: string, sortBy?: string) {
         if (sortBy) queryParams.append('sortBy', sortBy);
         queryParams.append('page', String(pageToFetch));
         queryParams.append('pageSize', String(pageSize));
-  
+
         const response = await axios.get(
-          `http://localhost:4000/api/posts${id ? `/${id}` : ''}?${queryParams.toString()}`,
+          `${url}/posts${id ? `/${id}` : ''}?${queryParams.toString()}`,
           { withCredentials: true }
         );
-  
+
         const newPosts = Array.isArray(response.data)
           ? response.data.map((post: Post) => ({
               ...post,
               createdAt: new Date(post.createdAt),
               updatedAt: new Date(post.updatedAt),
             }))
-          : [];
-  
+          : [
+              {
+                ...response.data,
+                createdAt: new Date(response.data.createdAt),
+                updatedAt: new Date(response.data.updatedAt),
+              },
+            ];
+
         if (newPosts.length < pageSize) {
           setHasMore(false);
         }
-  
-        setPosts(prev => {
+
+        setPosts((prev) => {
           const combined = [...prev, ...newPosts];
-          const deduped = Array.from(new Map(combined.map(post => [post.id, post])).values());
+          const deduped = Array.from(
+            new Map(combined.map((post) => [post.id, post])).values()
+          );
           return deduped;
         });
       } catch (err) {
@@ -66,11 +76,18 @@ export default function usePosts(id?: string, query?: string, sortBy?: string) {
     }
   }, [page, fetchPosts, loading, hasMore]);
 
-  return { posts, loading, error, refresh: () => {
+  return {
+    posts,
+    loading,
+    error,
+    refresh: () => {
       setPosts([]);
       setPage(1);
       setHasMore(true);
       setLoading(true);
       fetchPosts(1);
-    }, loadMore, hasMore };
+    },
+    loadMore,
+    hasMore,
+  };
 }

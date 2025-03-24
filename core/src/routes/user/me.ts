@@ -45,13 +45,14 @@ router.get('/me', async (req: Request, res: Response): Promise<void> => {
       where: { userId: req.session.user.id },
     });
 
-    const [user, postsCount, postLikes, commentLikes, tripsCount] = await Promise.all([
-      userPromise,
-      postsCountPromise,
-      postLikesPromise,
-      commentLikesPromise,
-      tripsCountPromise,
-    ]);
+    const [user, postsCount, postLikes, commentLikes, tripsCount] =
+      await Promise.all([
+        userPromise,
+        postsCountPromise,
+        postLikesPromise,
+        commentLikesPromise,
+        tripsCountPromise,
+      ]);
 
     if (!user) {
       res.status(404).json({ error: 'User not found' });

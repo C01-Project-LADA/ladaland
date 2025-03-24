@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
 
+const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 export default function useNewPost() {
   /**
    * Location/pin of post (CURRENTLY ONLY COUNTRY)
@@ -37,7 +39,7 @@ export default function useNewPost() {
 
     try {
       await axios.post(
-        'http://localhost:4000/api/posts',
+        `${url}/posts`,
         { country: location.code, content },
         { withCredentials: true }
       );
