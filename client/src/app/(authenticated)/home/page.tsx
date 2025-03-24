@@ -10,7 +10,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import useUser from '@/hooks/useUser';
 
-const url = process.env.API_URL;
+const url = process.env.NEXT_PUBLIC_API_URL;
 
 // EXAMPLE: https://github.com/vasturiano/react-globe.gl/blob/master/example/choropleth-countries/index.html
 export default function Home() {

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
-const url = process.env.API_URL;
+const url = process.env.NEXT_PUBLIC_API_URL;
 
 export default function usePosts(id?: string, query?: string, sortBy?: string) {
   const [posts, setPosts] = useState<Post[]>([]);

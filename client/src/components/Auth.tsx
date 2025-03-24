@@ -48,7 +48,7 @@ const exampleUsernames = [
   'traveladdict',
 ];
 
-const url = process.env.API_URL;
+const url = process.env.NEXT_PUBLIC_API_URL;
 
 // This component renders a GET STARTED button in the navbar that opens a form to sign up or log in
 export default function Auth() {
@@ -90,8 +90,6 @@ export default function Auth() {
   async function onRegisterSubmit(values: z.infer<typeof registerSchema>) {
     setLoading(true);
     try {
-      console.log(url);
-      console.log(process.env.API_URL)
       const response = await axios.post(`${url}/register`, values, {
         withCredentials: true,
       });

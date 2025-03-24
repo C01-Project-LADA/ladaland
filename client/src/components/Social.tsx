@@ -17,7 +17,7 @@ import usePosts from '@/hooks/usePosts';
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 
-const url = process.env.API_URL;
+const url = process.env.NEXT_PUBLIC_API_URL;
 
 export default function Social() {
   const searchParams = useSearchParams();

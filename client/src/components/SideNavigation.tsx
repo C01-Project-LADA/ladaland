@@ -28,7 +28,7 @@ const links = [
   { href: '/passport-tool', text: 'Passport Tool', icon: <BookText /> },
 ];
 
-const url = process.env.API_URL;
+const url = process.env.NEXT_PUBLIC_API_URL;
 
 export default function SideNavigation() {
   const pathname = usePathname();
