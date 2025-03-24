@@ -25,9 +25,8 @@ router.post(
       return;
     }
 
-    
     const { username, email, password } = req.body;
-    
+
     console.log("hello2");
     try {
       const existingUser = await prisma.user.findUnique({
@@ -40,17 +39,15 @@ router.post(
         return;
       }
 
-      console.log("hello2.5")
+      console.log("hello2.5");
 
       const existingEmail = await prisma.user.findUnique({ where: { email } });
       if (existingEmail) {
-        res
-          .status(400)
-          .json({ error: 'Email is already registered. Please log in.' });
+        res.status(400).json({ error: 'Email is already registered. Please log in.' });
         return;
       }
 
-      console.log("hello YALLAH")
+      console.log("hello YALLAH");
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -64,7 +61,7 @@ router.post(
         },
       });
 
-      console.log("hello4")
+      console.log("hello4");
 
       // Log in user
       req.session.user = {
@@ -73,11 +70,17 @@ router.post(
         email: newUser.email,
       };
 
-      res
-        .status(201)
-        .json({ message: 'User registered and logged in successfully.' });
+      // Save the session and send response once done
+      req.session.save((err) => {
+        if (err) {
+          console.error("Error saving session:", err);
+          return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        console.log("Session saved, sending response");
+        res.status(201).json({ message: 'User registered and logged in successfully.' });
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   }
