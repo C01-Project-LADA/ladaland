@@ -1,28 +1,37 @@
 'use client';
 
+import NewTripForm from '@/components/NewTripForm';
 import PageBanner from '@/components/PageBanner';
-import TripForm from '@/components/TripForm';
+import { toast } from 'sonner';
+import useTripForm from '@/hooks/useTripForm';
 import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 // import ct from 'i18n-iso-countries';
 // import en from 'i18n-iso-countries/langs/en.json';
 
 // ct.registerLocale(en);
 
-const mockTrip: Trip = {
-  id: '1',
-  userId: '1',
-  name: 'Trip 1',
-  startDate: new Date(1000000000000),
-  endDate: new Date(1000000000000),
-  budget: 1000,
-  completed: false,
-  expenses: [],
-};
-
 export default function NewTripPage() {
   const searchParams = useSearchParams();
+  const { submitting, handleSubmit, error, clearError } = useTripForm(true);
+
+  // Toast error message
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   const country = searchParams.get('country');
+
+  async function handleTripSubmit(
+    tripData: Omit<Trip, 'expenses' | 'id'> & {
+      expenses: (Omit<Expense, 'id'> & { id?: string })[];
+    }
+  ) {
+    clearError();
+    await handleSubmit(tripData);
+  }
 
   return (
     <div
@@ -36,7 +45,11 @@ export default function NewTripPage() {
         backLink="/trips"
       />
 
-      <TripForm trip={{ ...mockTrip, location: country }} />
+      <NewTripForm
+        submitting={submitting}
+        loadedLocation={country || ''}
+        onSubmit={handleTripSubmit}
+      />
     </div>
   );
 }

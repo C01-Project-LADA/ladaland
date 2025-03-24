@@ -26,6 +26,8 @@ import { Calendar } from '@/components/ui/calendar';
 import SectionHeading from './SectionHeading';
 import { Button } from '@/components/ui/button';
 import ExpenseDialog from './ExpenseDialog';
+import useUser from '@/hooks/useUser';
+import { useRouter } from 'next/navigation';
 
 const tripDetailsSchema = z
   .object({
@@ -34,48 +36,55 @@ const tripDetailsSchema = z
     startDate: z.date(),
     endDate: z.date(),
     // budget should be a positive integer
-    budget: z.number().int().positive(),
+    budget: z.coerce.number().int().positive(),
     completed: z.boolean(),
   })
   .refine((data) => data.startDate < data.endDate, {
     message: 'Start date must be before end date',
+    path: ['startDate'],
   });
 
-export default function TripForm({
-  trip,
+export default function NewTripForm({
+  submitting,
+  loadedLocation,
   onSubmit,
 }: {
-  trip: Omit<Trip, 'expenses'> & {
-    expenses: (Omit<Expense, 'id'> & { id?: string })[];
-  };
+  submitting: boolean;
+  loadedLocation: string;
   onSubmit: (
-    trip: Omit<Trip, 'expenses'> & {
+    trip: Omit<Trip, 'expenses' | 'id'> & {
       expenses: (Omit<Expense, 'id'> & { id?: string })[];
     }
-  ) => void;
+  ) => Promise<void>;
 }) {
   const tripDetailsForm = useForm<z.infer<typeof tripDetailsSchema>>({
     resolver: zodResolver(tripDetailsSchema),
     defaultValues: {
-      name: trip.name,
-      location: trip.location,
-      startDate: trip.startDate,
-      endDate: trip.endDate,
-      budget: trip.budget,
-      completed: trip.completed,
+      name: '',
+      location: loadedLocation,
+      budget: 0,
+      completed: false,
     },
   });
 
+  const router = useRouter();
+  const { user } = useUser();
+
   const [expenses, setExpenses] = useState<
     (Omit<Expense, 'id'> & { id?: string })[]
-  >(trip?.expenses || []);
+  >([]);
 
   function handleExpenseSubmit(expense: Omit<Expense, 'id'>) {
     setExpenses((prevExpenses) => [...prevExpenses, expense]);
   }
 
   async function handleTripSubmit(values: z.infer<typeof tripDetailsSchema>) {
-    onSubmit({ ...values, id: trip.id, expenses, userId: trip.userId });
+    if (user) {
+      console.log(values);
+      onSubmit({ ...values, expenses, userId: user.id }).then(() =>
+        router.push('/trips')
+      );
+    }
   }
 
   const [countriesSelected, setCountriesSelected] = useState<
@@ -311,7 +320,9 @@ export default function TripForm({
           ))}
 
         <div className="flex justify-end items-center gap-3">
-          <Button variant="accent">UPDATE TRIP</Button>
+          <Button variant="accent" disabled={submitting}>
+            PLAN TRIP
+          </Button>
         </div>
       </form>
     </Form>
