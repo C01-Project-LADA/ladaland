@@ -7,13 +7,6 @@ import { Request, Response } from 'express';
 const router = express.Router();
 const prisma = new PrismaClient();
 
-router.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://ladaland.com');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  next();
-});
-
 router.post(
   '/register',
   [
@@ -32,10 +25,10 @@ router.post(
       return;
     }
 
+    
+    const { username, email, password } = req.body;
+    
     console.log("hello2");
-
-    const { username, email, password, phone } = req.body;
-
     try {
       const existingUser = await prisma.user.findUnique({
         where: { username },
@@ -46,6 +39,8 @@ router.post(
         });
         return;
       }
+
+      console.log("hello2.5")
 
       const existingEmail = await prisma.user.findUnique({ where: { email } });
       if (existingEmail) {
@@ -64,7 +59,6 @@ router.post(
           username,
           email,
           password: hashedPassword,
-          phone,
         },
       });
 
