@@ -27,7 +27,7 @@ const prisma = new PrismaClient();
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: "https://ladaland.com",
     credentials: true,
   })
 );
