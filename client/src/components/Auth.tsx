@@ -96,8 +96,8 @@ export default function Auth() {
 
       if (response.status === 201) {
         setTimeout(() => {
-          router.push('/');
-        }, 1000);
+          window.location.href = '/';
+        }, 250);
       }
     } catch (error: unknown) {
       setLoading(false);
@@ -122,8 +122,8 @@ export default function Auth() {
 
       if (response.status === 200) {
         setTimeout(() => {
-          router.push('/');
-        }, 1000);
+          window.location.href = '/';
+        }, 250);
       }
     } catch (error: unknown) {
       setLoading(false);

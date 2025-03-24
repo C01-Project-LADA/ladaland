@@ -42,7 +42,7 @@ export default function SideNavigation() {
       .post(`${url}/logout`, {}, { withCredentials: true })
       .then(() => {
         setTimeout(() => {
-          router.push('/');
+          window.location.href = '/';
         }, 250);
       })
       .catch((error) => {
