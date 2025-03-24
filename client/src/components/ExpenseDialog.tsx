@@ -24,10 +24,12 @@ export default function ExpenseDialog({
   title,
   description,
   dialogTrigger,
+  onSubmit,
 }: {
   title: string;
   description: string;
   dialogTrigger: React.ReactNode;
+  onSubmit: (expense: Omit<Expense, 'id'>) => void;
 }) {
   const [expenseDialogOpen, setExpenseDialogOpen] = useState(false);
 
@@ -58,7 +60,12 @@ export default function ExpenseDialog({
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     e.stopPropagation();
-    console.log(expenseType, expenseName, expenseAmount);
+    onSubmit({
+      type: expenseType,
+      name: expenseName,
+      cost: +expenseAmount,
+    });
+    handleOpenChange(false);
   }
 
   return (

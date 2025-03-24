@@ -13,7 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { CalendarIcon, MapPin, DollarSign, Plus } from 'lucide-react';
+import { CalendarIcon, MapPin, DollarSign, Plus, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { Input } from '@/components/ui/input';
 import CountrySelectDialog from '@/components/CountrySelectDialog';
@@ -41,18 +41,32 @@ const tripDetailsSchema = z
     message: 'Start date must be before end date',
   });
 
-export default function TripForm({ trip }: { trip: Trip }) {
+export default function TripForm({
+  trip,
+  isNew = false,
+}: {
+  trip: Trip;
+  isNew?: boolean;
+}) {
   const tripDetailsForm = useForm<z.infer<typeof tripDetailsSchema>>({
     resolver: zodResolver(tripDetailsSchema),
     defaultValues: {
       name: trip.name,
-      location: '', // TODO
+      location: trip.location,
       startDate: trip.startDate,
       endDate: trip.endDate,
       budget: trip.budget,
       completed: trip.completed,
     },
   });
+
+  const [expenses, setExpenses] = useState<
+    (Omit<Expense, 'id'> & { id?: string })[]
+  >(trip.expenses);
+
+  function handleExpenseSubmit(expense: Omit<Expense, 'id'>) {
+    setExpenses((prevExpenses) => [...prevExpenses, expense]);
+  }
 
   const [countriesSelected, setCountriesSelected] = useState<
     Record<string, Country>
@@ -72,7 +86,7 @@ export default function TripForm({ trip }: { trip: Trip }) {
   return (
     <Form {...tripDetailsForm}>
       <form
-        className="mt-6"
+        className="mt-6 mb-16"
         onSubmit={tripDetailsForm.handleSubmit((data) => {
           console.log(data);
         })}
@@ -244,12 +258,55 @@ export default function TripForm({ trip }: { trip: Trip }) {
                 ADD AN EXPENSE
               </Button>
             }
+            onSubmit={handleExpenseSubmit}
           />
         </div>
 
         <div className="mt-8" />
-        <SectionHeading title="Flights" />
-        <div className="mt-2" />
+
+        {[
+          'flight',
+          'transportation',
+          'accommodation',
+          'meals',
+          'events',
+          'other',
+        ]
+          .filter((type) => expenses.some((exp) => exp.type === type))
+          .map((type) => (
+            <div key={type} className="mb-8">
+              <SectionHeading
+                title={type.charAt(0).toUpperCase() + type.slice(1)}
+              />
+              <div className="mt-3" />
+              <ul className="list-inside list-disc">
+                {expenses
+                  .filter((exp) => exp.type === type)
+                  .map((exp, index) => (
+                    <li
+                      key={exp.type + index}
+                      className="flex items-center justify-between px-3 py-1 border-2 border-input rounded-md mt-2"
+                    >
+                      <p>{exp.name}</p>
+                      <div className="flex items-center gap-3">
+                        <p className="font-semibold text-md">
+                          $ <span className="text-sm">{exp.cost}</span>
+                        </p>
+                        <Button variant="ghost" size="icon" elevated={false}>
+                          <X />
+                        </Button>
+                      </div>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          ))}
+
+        <div className="flex justify-end items-center gap-3">
+          <Button variant="accent">
+            {isNew ? 'PLAN TRIP' : 'UPDATE TRIP'}
+          </Button>
+        </div>
       </form>
     </Form>
   );

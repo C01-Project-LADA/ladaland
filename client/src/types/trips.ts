@@ -17,6 +17,9 @@ type Trip = {
 
 type Expense = {
   id: string;
+  /**
+   * One of the following: flight, transportation, accommodation, meals, events, other
+   */
   type: string;
   name: string;
   cost: number;
