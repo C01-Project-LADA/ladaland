@@ -17,11 +17,15 @@ router.post(
       .withMessage('Password must be at least 8 characters long'),
   ],
   async (req: Request, res: Response): Promise<void> => {
+    console.log("hello1");
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).json({ errors: errors.array() });
       return;
     }
+
+    console.log("hello2");
 
     const { username, email, password, phone } = req.body;
 
@@ -46,6 +50,8 @@ router.post(
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
+      console.log("hello3");
+
       const newUser = await prisma.user.create({
         data: {
           username,
@@ -54,6 +60,8 @@ router.post(
           phone,
         },
       });
+
+      console.log("hello4")
 
       // Log in user
       req.session.user = {
