@@ -1,6 +1,5 @@
 'use client';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
 import styles from '@/styles/Auth.module.css';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
@@ -48,11 +47,10 @@ const exampleUsernames = [
   'traveladdict',
 ];
 
-const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+const url = process.env.NEXT_PUBLIC_API_URL;
 
 // This component renders a GET STARTED button in the navbar that opens a form to sign up or log in
 export default function Auth() {
-  const router = useRouter();
   const [formOpen, setFormOpen] = useState(false);
   const [isSignUp, setIsSignUp] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -95,7 +93,9 @@ export default function Auth() {
       });
 
       if (response.status === 201) {
-        router.push('/');
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 250);
       }
     } catch (error: unknown) {
       setLoading(false);
@@ -119,7 +119,9 @@ export default function Auth() {
       });
 
       if (response.status === 200) {
-        router.push('/');
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 250);
       }
     } catch (error: unknown) {
       setLoading(false);
