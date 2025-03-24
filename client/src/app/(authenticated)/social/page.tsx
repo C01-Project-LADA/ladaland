@@ -1,5 +1,6 @@
 import PageBanner from '@/components/PageBanner';
 import SocialPage from '@/components/Social';
+import { Suspense } from 'react';
 
 export default function Social() {
   return (
@@ -14,7 +15,9 @@ export default function Social() {
         direction="backwards"
       />
 
-      <SocialPage />
+      <Suspense fallback={<div>Loading...</div>}>
+        <SocialPage />
+      </Suspense>
     </div>
   );
 }

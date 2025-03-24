@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { UserWithRanking } from '@/types/user';
 
+const url = process.env.NEXT_PUBLIC_API_URL;
+
 export default function useLeaderboard(sortBy = 'points') {
   const [leaderboard, setLeaderboard] = useState<UserWithRanking[]>([]);
   const [currentUserRanking, setCurrentUserRanking] = useState<number | null>(
@@ -21,18 +23,13 @@ export default function useLeaderboard(sortBy = 'points') {
       const queryParams = new URLSearchParams();
       if (sortBy) queryParams.append('sort', sortBy);
 
-      const response: {
-        data: {
-          leaderboard: UserWithRanking[];
-          currentUserRanking: number;
-          totalUsers: number;
-        };
-      } = await axios.get(
-        `http://localhost:4000/api/leaderboard?${queryParams.toString()}`,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get<{
+        leaderboard: UserWithRanking[];
+        currentUserRanking: number;
+        totalUsers: number;
+      }>(`${url}/leaderboard?${queryParams.toString()}`, {
+        withCredentials: true,
+      });
 
       setLeaderboard(response.data.leaderboard);
       setCurrentUserRanking(response.data.currentUserRanking);
@@ -42,7 +39,7 @@ export default function useLeaderboard(sortBy = 'points') {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [sortBy]);
 
   useEffect(() => {
     fetchLeaderboard();

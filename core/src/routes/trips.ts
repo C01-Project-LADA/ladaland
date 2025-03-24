@@ -9,6 +9,7 @@ router.post(
   '/',
   [
     body('name').notEmpty().withMessage('Trip name is required'),
+    body('location').notEmpty().withMessage('Location is required'),
     body('startDate').notEmpty().withMessage('Start date is required'),
     body('endDate').notEmpty().withMessage('End date is required'),
     body('budget').isNumeric().withMessage('Budget must be a number'),
@@ -32,13 +33,17 @@ router.post(
       res.status(400).json({ errors: errors.array() });
       return;
     }
-    const { name, startDate, endDate, budget, completed, expenses } = req.body;
+
+    const { name, location, startDate, endDate, budget, completed, expenses } =
+      req.body;
     const userId = req.session.user.id;
+
     try {
       const trip = await prisma.trip.create({
         data: {
           userId,
           name,
+          location,
           startDate: new Date(startDate),
           endDate: new Date(endDate),
           budget,
@@ -67,6 +72,10 @@ router.put(
   '/:tripId',
   [
     body('name').optional().notEmpty().withMessage('Trip name cannot be empty'),
+    body('location')
+      .optional()
+      .notEmpty()
+      .withMessage('Location cannot be empty'),
     body('startDate')
       .optional()
       .notEmpty()
@@ -93,14 +102,18 @@ router.put(
       res.status(401).json({ error: 'Unauthorized. Please log in.' });
       return;
     }
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).json({ errors: errors.array() });
       return;
     }
+
     const { tripId } = req.params;
-    const { name, startDate, endDate, budget, completed, expenses } = req.body;
+    const { name, location, startDate, endDate, budget, completed, expenses } =
+      req.body;
     const userId = req.session.user.id;
+
     try {
       const existingTrip = await prisma.trip.findFirst({
         where: { id: tripId, userId },
@@ -114,6 +127,7 @@ router.put(
         where: { id: tripId },
         data: {
           name,
+          location,
           startDate: startDate ? new Date(startDate) : undefined,
           endDate: endDate ? new Date(endDate) : undefined,
           budget,
@@ -274,12 +288,10 @@ router.delete(
       const deletedExpense = await prisma.expense.delete({
         where: { id: expenseId },
       });
-      res
-        .status(200)
-        .json({
-          message: 'Expense deleted successfully',
-          expense: deletedExpense,
-        });
+      res.status(200).json({
+        message: 'Expense deleted successfully',
+        expense: deletedExpense,
+      });
     } catch (error) {
       console.error('Error deleting expense:', error);
       res.status(500).json({ error: 'Error deleting expense' });

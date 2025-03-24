@@ -23,7 +23,11 @@ const transactionMock = prisma.$transaction as jest.Mock;
 
 describe('Mark Visited Countries Routes', () => {
   let app: express.Express;
-  const sessionUser = { id: '1', username: 'testUser', email: 'test@example.com' };
+  const sessionUser = {
+    id: '1',
+    username: 'testUser',
+    email: 'test@example.com',
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();

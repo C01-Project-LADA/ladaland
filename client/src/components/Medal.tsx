@@ -9,8 +9,8 @@ export default function Medal({
     placement === 'gold'
       ? 'rgb(199, 180, 1)'
       : placement === 'silver'
-      ? 'rgb(139, 139, 139)'
-      : 'rgb(166, 100, 0)';
+        ? 'rgb(139, 139, 139)'
+        : 'rgb(166, 100, 0)';
 
   return (
     <div className="scale-[0.8]">
@@ -22,14 +22,14 @@ export default function Medal({
             placement === 'gold'
               ? 'linear-gradient(145deg,rgb(255, 220, 114),rgb(255, 246, 198))'
               : placement === 'silver'
-              ? 'linear-gradient(145deg,rgb(243, 243, 243), #C0C0C0)'
-              : 'linear-gradient(145deg,rgb(234, 178, 121),rgb(249, 231, 214))',
+                ? 'linear-gradient(145deg,rgb(243, 243, 243), #C0C0C0)'
+                : 'linear-gradient(145deg,rgb(234, 178, 121),rgb(249, 231, 214))',
           color:
             placement === 'gold'
               ? 'rgb(207, 138, 0)'
               : placement === 'silver'
-              ? 'black'
-              : primaryColor,
+                ? 'black'
+                : primaryColor,
           borderColor: primaryColor,
           zIndex: 5,
         }}

@@ -13,7 +13,7 @@ jest.mock('@prisma/client', () => {
   return { PrismaClient: mPrismaClient };
 });
 
-jest.mock('bcrypt', () => ({
+jest.mock('bcryptjs', () => ({
   compare: jest.fn(),
 }));
 
@@ -21,7 +21,7 @@ import { PrismaClient } from '@prisma/client';
 const mockedPrisma = new PrismaClient();
 const findUniqueMock = mockedPrisma.user.findUnique as jest.Mock;
 
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 const compareMock = bcrypt.compare as jest.Mock;
 
 const app = express();
@@ -96,9 +96,10 @@ describe('POST /api/login', () => {
       password: 'hashedpassword',
     });
     compareMock.mockResolvedValueOnce(true);
-    const res = await request(app)
-      .post('/api/login')
-      .send({ usernameOrEmail: 'test2@example.com', password: 'correctpassword' });
+    const res = await request(app).post('/api/login').send({
+      usernameOrEmail: 'test2@example.com',
+      password: 'correctpassword',
+    });
     expect(res.status).toBe(200);
     expect(res.body.message).toBe('Login successful');
   });

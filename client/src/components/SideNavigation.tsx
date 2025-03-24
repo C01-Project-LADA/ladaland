@@ -17,8 +17,8 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { useRouter } from 'next/navigation';
 import useUser from '@/hooks/useUser';
+import axios from 'axios';
 
 const links = [
   { href: '/home', text: 'Home', icon: <House /> },
@@ -28,21 +28,24 @@ const links = [
   { href: '/passport-tool', text: 'Passport Tool', icon: <BookText /> },
 ];
 
+const url = process.env.NEXT_PUBLIC_API_URL;
+
 export default function SideNavigation() {
   const pathname = usePathname();
-  const router = useRouter();
 
   const { user } = useUser();
 
   function handleLogOut() {
-    fetch('http://localhost:4000/api/logout', {
-      method: 'POST',
-      credentials: 'include',
-    }).then(() => {
-      setTimeout(() => {
-        router.push('/');
-      }, 250);
-    });
+    axios
+      .post(`${url}/logout`, {}, { withCredentials: true })
+      .then(() => {
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 250);
+      })
+      .catch((error) => {
+        console.error('Logout error:', error);
+      });
   }
 
   return (
@@ -60,7 +63,7 @@ export default function SideNavigation() {
             className={styles.logo_text}
           />
           <Image
-            src="/logo.svg"
+            src="/SmallLADAlogo.svg"
             alt="LADA LAND"
             width={50}
             height={50}
