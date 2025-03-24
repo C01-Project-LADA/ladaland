@@ -52,7 +52,6 @@ const url = process.env.NEXT_PUBLIC_API_URL;
 
 // This component renders a GET STARTED button in the navbar that opens a form to sign up or log in
 export default function Auth() {
-  const router = useRouter();
   const [formOpen, setFormOpen] = useState(false);
   const [isSignUp, setIsSignUp] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
