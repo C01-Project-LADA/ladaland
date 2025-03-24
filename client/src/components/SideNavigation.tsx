@@ -37,14 +37,16 @@ export default function SideNavigation() {
   const { user } = useUser();
 
   function handleLogOut() {
-    fetch(`${url}/logout`, {
-      method: 'POST',
-      credentials: 'include',
-    }).then(() => {
-      setTimeout(() => {
-        router.push('/');
-      }, 250);
-    });
+    axios
+      .post(`${url}/logout`, {}, { withCredentials: true })
+      .then(() => {
+        setTimeout(() => {
+          router.push('/');
+        }, 250);
+      })
+      .catch((error) => {
+        console.error('Logout error:', error);
+      });
   }
 
   return (
