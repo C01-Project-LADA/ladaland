@@ -13,7 +13,15 @@ import en from 'i18n-iso-countries/langs/en.json';
 
 ct.registerLocale(en);
 
-export default function Trip({ trip }: { trip: Trip }) {
+export default function Trip({
+  trip,
+  deleteTrip,
+  toggleCompleteTrip,
+}: {
+  trip: Trip;
+  deleteTrip: () => void;
+  toggleCompleteTrip: () => void;
+}) {
   return (
     <div className="border border-gray-400 px-4 py-3 rounded-md flex gap-2">
       <div className="flex-[2]">
@@ -58,13 +66,19 @@ export default function Trip({ trip }: { trip: Trip }) {
                   </Link>
                 </li>
                 <li>
-                  <button className="hover:bg-[#e9e9e9] duration-150 w-full flex items-center py-3 px-4 gap-3 font-bold text-gray-500 leading-none text-left">
+                  <button
+                    className="hover:bg-[#e9e9e9] duration-150 w-full flex items-center py-3 px-4 gap-3 font-bold text-gray-500 leading-none text-left"
+                    onClick={toggleCompleteTrip}
+                  >
                     <Check />
-                    Mark as completed
+                    {trip.completed ? 'Unmark' : 'Mark'} as completed
                   </button>
                 </li>
                 <li>
-                  <button className="hover:bg-[#e9e9e9] duration-150 w-full flex items-center py-3 px-4 gap-3 font-bold text-red-500 leading-none text-left">
+                  <button
+                    className="hover:bg-[#e9e9e9] duration-150 w-full flex items-center py-3 px-4 gap-3 font-bold text-red-500 leading-none text-left"
+                    onClick={deleteTrip}
+                  >
                     <Trash />
                     Delete trip
                   </button>

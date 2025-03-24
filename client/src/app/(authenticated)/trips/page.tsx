@@ -5,27 +5,23 @@ import Trip from '@/components/Trip';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Plus } from 'lucide-react';
+import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 import CountrySelectDialog from '@/components/CountrySelectDialog';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useTrips from '@/hooks/useTrips';
 
-const mockTrip: Trip = {
-  id: '1',
-  userId: '1',
-  name: 'Trip 1',
-  startDate: new Date(1000000000000),
-  endDate: new Date(1000000000000),
-  budget: 1000,
-  completed: false,
-  expenses: [],
-};
-
 export default function Trips() {
   const router = useRouter();
 
-  const { trips, loading, error } = useTrips();
+  const { trips, loading, error, deleteTrip, toggleCompleteTrip } = useTrips();
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   const [countriesSelected, setCountriesSelected] = useState<
     Record<string, Country>
@@ -83,12 +79,33 @@ export default function Trips() {
         ) : trips.length === 0 ? (
           <p>No trips found. Start planning!</p>
         ) : (
-          trips.map((trip) => <Trip key={trip.id} trip={trip} />)
+          trips
+            .filter((trip) => !trip.completed)
+            .map((trip) => (
+              <Trip
+                key={trip.id}
+                trip={trip}
+                deleteTrip={() => deleteTrip(trip.id)}
+                toggleCompleteTrip={() => toggleCompleteTrip(trip.id)}
+              />
+            ))
         )}
       </div>
 
       <h3 className="mt-10 mb-2 text-gray-500 font-bold">Past Trips</h3>
       <Separator />
+      <div className="my-6 flex flex-col gap-2">
+        {trips
+          .filter((trip) => trip.completed)
+          .map((trip) => (
+            <Trip
+              key={trip.id}
+              trip={trip}
+              deleteTrip={() => deleteTrip(trip.id)}
+              toggleCompleteTrip={() => toggleCompleteTrip(trip.id)}
+            />
+          ))}
+      </div>
     </div>
   );
 }
