@@ -70,7 +70,6 @@ router.post(
         email: newUser.email,
       };
 
-      // Save the session and send response once done
       req.session.save((err) => {
         if (err) {
           console.error("Error saving session:", err);
