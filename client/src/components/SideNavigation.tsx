@@ -19,6 +19,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import useUser from '@/hooks/useUser';
+import axios from 'axios';
 
 const links = [
   { href: '/home', text: 'Home', icon: <House /> },
