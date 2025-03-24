@@ -13,7 +13,7 @@ jest.mock('@prisma/client', () => {
   return { PrismaClient: mPrismaClient };
 });
 
-jest.mock('bcrypt', () => ({
+jest.mock('bcryptjs', () => ({
   compare: jest.fn(),
 }));
 
