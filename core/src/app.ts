@@ -34,6 +34,8 @@ app.use(
 
 app.use(express.json());
 
+app.set('trust proxy', 1);
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'default',
@@ -41,6 +43,9 @@ app.use(
     saveUninitialized: false,
     cookie: {
       maxAge: 1000 * 60 * 60,
+      domain: '.ladaland.com',
+      secure: true,
+      sameSite: 'none',
     },
   })
 );

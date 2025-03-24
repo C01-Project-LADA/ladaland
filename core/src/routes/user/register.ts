@@ -1,6 +1,6 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { body, validationResult } from 'express-validator';
 import { Request, Response } from 'express';
 
@@ -23,7 +23,7 @@ router.post(
       return;
     }
 
-    const { username, email, password, phone } = req.body;
+    const { username, email, password } = req.body;
 
     try {
       const existingUser = await prisma.user.findUnique({
@@ -51,21 +51,27 @@ router.post(
           username,
           email,
           password: hashedPassword,
-          phone,
         },
       });
 
-      // Log in user
       req.session.user = {
         id: newUser.id,
         username: newUser.username,
         email: newUser.email,
       };
 
-      res
-        .status(201)
-        .json({ message: 'User registered and logged in successfully.' });
+      req.session.save((err) => {
+        if (err) {
+          console.error('Error saving session:', err);
+          return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        console.log('Session saved, sending response');
+        res
+          .status(201)
+          .json({ message: 'User registered and logged in successfully.' });
+      });
     } catch (error) {
+      console.log(error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   }

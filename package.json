@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "concurrently \"npm run dev --prefix core\" \"npm run dev --prefix client\"",
     "format": "npx prettier --write .",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "test": "cypress run"
   },
   "keywords": [],
   "author": "",
