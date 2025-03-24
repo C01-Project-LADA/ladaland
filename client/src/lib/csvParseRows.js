@@ -58,10 +58,10 @@ function L(r) {
         (s
           ? 'T' + c(e, 2) + ':' + c(o, 2) + ':' + c(a, 2) + '.' + c(s, 3) + 'Z'
           : a
-          ? 'T' + c(e, 2) + ':' + c(o, 2) + ':' + c(a, 2) + 'Z'
-          : o || e
-          ? 'T' + c(e, 2) + ':' + c(o, 2) + 'Z'
-          : '');
+            ? 'T' + c(e, 2) + ':' + c(o, 2) + ':' + c(a, 2) + 'Z'
+            : o || e
+              ? 'T' + c(e, 2) + ':' + c(o, 2) + 'Z'
+              : '');
 }
 function F(r) {
   var e = new RegExp(
@@ -101,8 +101,8 @@ function F(r) {
           (T = f) >= i
             ? (N = !0)
             : (R = t.charCodeAt(f++)) === w
-            ? (d = !0)
-            : R === E && ((d = !0), t.charCodeAt(f) === w && ++f),
+              ? (d = !0)
+              : R === E && ((d = !0), t.charCodeAt(f) === w && ++f),
           t.slice(g + 1, T - 1).replace(/""/g, '"')
         );
       }
@@ -154,10 +154,10 @@ function F(r) {
     return t == null
       ? ''
       : t instanceof Date
-      ? L(t)
-      : e.test((t += ''))
-      ? '"' + t.replace(/"/g, '""') + '"'
-      : t;
+        ? L(t)
+        : e.test((t += ''))
+          ? '"' + t.replace(/"/g, '""') + '"'
+          : t;
   }
   return {
     parse: a,

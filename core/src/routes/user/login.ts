@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { body, validationResult } from 'express-validator';
 
 const router = express.Router();

@@ -15,7 +15,11 @@ app.use(
 );
 
 app.get('/set-session', (req, res) => {
-  req.session.user = { id: '1', username: 'testUser', email: 'test@example.com' };
+  req.session.user = {
+    id: '1',
+    username: 'testUser',
+    email: 'test@example.com',
+  };
   res.status(200).json({ message: 'Session set' });
 });
 
@@ -41,7 +45,9 @@ describe('Test Posts', () => {
       tags: [],
     };
 
-    PrismaClient.prototype.$transaction = jest.fn().mockResolvedValue([fakePost, {}]);
+    PrismaClient.prototype.$transaction = jest
+      .fn()
+      .mockResolvedValue([fakePost, {}]);
 
     const agent = request.agent(app);
     await agent.get('/set-session');

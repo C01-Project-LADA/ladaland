@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
 
+const url = process.env.NEXT_PUBLIC_API_URL;
+
 export default function useNewComment(postId: string) {
   /**
    * Content of the new comment
@@ -33,7 +35,7 @@ export default function useNewComment(postId: string) {
 
     try {
       await axios.post(
-        'http://localhost:4000/api/comments',
+        `${url}/comments`,
         { content, postId },
         { withCredentials: true }
       );

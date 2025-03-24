@@ -10,6 +10,8 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import useUser from '@/hooks/useUser';
 
+const url = process.env.NEXT_PUBLIC_API_URL;
+
 // EXAMPLE: https://github.com/vasturiano/react-globe.gl/blob/master/example/choropleth-countries/index.html
 export default function Home() {
   const { width, height } = useScreenDimensions();
@@ -25,10 +27,10 @@ export default function Home() {
     async function fetchVisitedData() {
       try {
         const [countriesResponse, percentResponse] = await Promise.all([
-          axios.get('http://localhost:4000/api/getVisitedCountries', {
+          axios.get(`${url}/getVisitedCountries`, {
             withCredentials: true,
           }),
-          axios.get('http://localhost:4000/api/visitedCountriesPercent', {
+          axios.get(`${url}/visitedCountriesPercent`, {
             withCredentials: true,
           }),
         ]);
@@ -70,7 +72,7 @@ export default function Home() {
 
       try {
         const response = await axios.post(
-          'http://localhost:4000/api/markVisitedCountries',
+          `${url}/markVisitedCountries`,
           { countryCode, action },
           { withCredentials: true }
         );
@@ -79,7 +81,7 @@ export default function Home() {
           setVisitedCountries(response.data.visitedCountries);
 
           const percentResponse = await axios.get(
-            'http://localhost:4000/api/visitedCountriesPercent',
+            `${url}/visitedCountriesPercent`,
             { withCredentials: true }
           );
           if (percentResponse.status === 200) {
@@ -93,10 +95,9 @@ export default function Home() {
 
         if (action == 'add') {
           toast.success(`You earned 200 points for visiting a new country!`);
-        } else{ 
+        } else {
           toast.success(`You lost 200 points for unmarking a country.`);
         }
-
       } catch (error) {
         console.error(`Error ${action}ing country ${countryCode}:`, error);
       }
