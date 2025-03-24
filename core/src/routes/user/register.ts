@@ -50,6 +50,8 @@ router.post(
         return;
       }
 
+      console.log("hello YALLAH")
+
       const hashedPassword = await bcrypt.hash(password, 10);
 
       console.log("hello3");
