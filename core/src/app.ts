@@ -26,7 +26,10 @@ const app = express();
 const prisma = new PrismaClient();
 
 app.use(
-  cors()
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
 );
 
 app.use(express.json());
