@@ -31,6 +31,7 @@ import { useRouter } from 'next/navigation';
 
 const tripDetailsSchema = z
   .object({
+    id: z.string().optional(),
     name: z.string().nonempty(),
     location: z.string().nonempty({ message: 'Location is required' }),
     startDate: z.date(),
@@ -45,10 +46,14 @@ const tripDetailsSchema = z
   });
 
 export default function NewTripForm({
+  isNewTrip = true,
+  existingTrip,
   submitting,
   loadedLocation,
   onSubmit,
 }: {
+  isNewTrip?: boolean;
+  existingTrip?: Trip;
   submitting: boolean;
   loadedLocation: string;
   onSubmit: (
@@ -66,6 +71,21 @@ export default function NewTripForm({
       completed: false,
     },
   });
+
+  // When existing trip is passed in, set the form values to the existing trip values
+  useEffect(() => {
+    if (existingTrip) {
+      tripDetailsForm.reset({
+        id: existingTrip.id,
+        name: existingTrip.name,
+        location: existingTrip.location,
+        startDate: existingTrip.startDate,
+        endDate: existingTrip.endDate,
+        budget: existingTrip.budget,
+        completed: existingTrip.completed,
+      });
+    }
+  }, [existingTrip, tripDetailsForm]);
 
   const router = useRouter();
   const { user } = useUser();
@@ -332,7 +352,7 @@ export default function NewTripForm({
             <span className="font-light text-sm"> remaining</span>
           </p>
           <Button variant="accent" disabled={submitting}>
-            PLAN TRIP
+            {isNewTrip ? 'PLAN TRIP' : 'UPDATE TRIP'}
           </Button>
         </div>
       </form>

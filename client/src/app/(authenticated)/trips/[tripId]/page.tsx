@@ -1,15 +1,24 @@
 'use client';
 
 import { Suspense, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import NewTripForm from '@/components/NewTripForm';
 import PageBanner from '@/components/PageBanner';
 import { toast } from 'sonner';
 import useTripForm from '@/hooks/useTripForm';
+import useTrip from '@/hooks/useTrip';
 
 function ExistingTripContent() {
   const searchParams = useSearchParams();
-  const { submitting, handleSubmit, error, clearError } = useTripForm(true);
+  const { tripId } = useParams();
+  const { submitting, handleSubmit, error, clearError } = useTripForm();
+  const {
+    trip,
+    // loading,
+    // error: getTripError,
+    // deleteTrip,
+    // toggleCompleteTrip,
+  } = useTrip((tripId as string) || '');
 
   useEffect(() => {
     if (error) {
@@ -40,6 +49,8 @@ function ExistingTripContent() {
         backLink="/trips"
       />
       <NewTripForm
+        isNewTrip={false}
+        existingTrip={trip || undefined}
         submitting={submitting}
         loadedLocation={country || ''}
         onSubmit={handleTripSubmit}

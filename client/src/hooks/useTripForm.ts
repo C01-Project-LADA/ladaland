@@ -39,7 +39,7 @@ export default function useTripForm(isNew = false) {
     setError(null);
 
     try {
-      if (isNew || !trip?.id) {
+      if (isNew) {
         console.log(trip);
         await axios.post(`${url}/trips`, trip, { withCredentials: true });
       } else {
