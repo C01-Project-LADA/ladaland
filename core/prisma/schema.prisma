@@ -39,7 +39,7 @@ model Post {
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   country    String
   content    String
-  images     Json?
+  imageUrl   String?
   tags       String[] @default([])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt

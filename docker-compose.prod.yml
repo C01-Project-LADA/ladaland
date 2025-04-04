@@ -35,12 +35,17 @@ services:
     environment:
       - VIRTUAL_HOST=api.ladaland.com
       - LETSENCRYPT_HOST=api.ladaland.com
+      - GCLOUD_PROJECT_ID=vast-collective-454403-n7
+      - GCLOUD_STORAGE_BUCKET=lada-bucket
+      - GCLOUD_KEYFILE=/run/secrets/gcloud_key.json
+    volumes:
+      - /home/daniel.alyoshin/secure-keys/gcloud_key.json:/run/secrets/gcloud_key.json:ro
 
   frontend:
     image: docker.io/danielalyoshin/lada-client:latest
     ports:
       - '3000:3000'
-    restart:
+    restart: always
     expose:
       - 3000
     environment:
