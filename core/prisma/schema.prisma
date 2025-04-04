@@ -106,10 +106,10 @@ model Trip {
 }
 
 model Expense {
-  id          String    @id @default(uuid())
-  tripId      String
-  trip        Trip      @relation(fields: [tripId], references: [id])
-  type        String
-  name        String
-  cost        Int
+  id      String @id @default(uuid())
+  tripId  String
+  trip    Trip   @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  type    String
+  name    String
+  cost    Int
 }
