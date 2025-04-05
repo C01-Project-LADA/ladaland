@@ -9,7 +9,7 @@ type Post = {
    */
   country: string;
   content: string;
-  // images: string[];
+  imageUrl: string | null;
   createdAt: Date;
   updatedAt: Date;
   username: string;

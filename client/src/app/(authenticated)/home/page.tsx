@@ -9,11 +9,13 @@ import useScreenDimensions from '@/hooks/useScreenDimensions';
 import axios from 'axios';
 import { toast } from 'sonner';
 import useUser from '@/hooks/useUser';
+import { useRouter } from 'next/navigation';
 
 const url = process.env.NEXT_PUBLIC_API_URL;
 
 // EXAMPLE: https://github.com/vasturiano/react-globe.gl/blob/master/example/choropleth-countries/index.html
 export default function Home() {
+  const router = useRouter();
   const { width, height } = useScreenDimensions();
 
   const [hoverD, setHoverD] = useState<GlobeCountry>();
@@ -59,6 +61,14 @@ export default function Home() {
       return 'rgba(14, 143, 0, 0.7)';
     },
     [visitedCountries]
+  );
+
+  const handleLeftClick = useCallback(
+    (d: GlobeCountry) => {
+      const countryCode = d.properties.ISO_A2;
+      router.push(`/trips/new?country=${countryCode}`);
+    },
+    [router]
   );
 
   /**
@@ -133,10 +143,8 @@ export default function Home() {
           polygonSideColor={() => '#14c600'}
           // @ts-expect-error: react-globe.gl has terrible ts support, SAD!
           onPolygonHover={setHoverD}
-          onPolygonClick={(polygon) => {
-            // @ts-expect-error: react-globe.gl has terrible ts support, SAD!
-            console.log(polygon.properties.ISO_A2);
-          }}
+          // @ts-expect-error: react-globe.gl has terrible ts support, SAD!
+          onPolygonClick={handleLeftClick}
           // @ts-expect-error: react-globe.gl has terrible ts support, SAD!
           onPolygonRightClick={handleRightClick}
           // @ts-expect-error: react-globe.gl has terrible ts support, SAD!
