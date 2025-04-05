@@ -268,6 +268,9 @@ export default function Social() {
                 src={URL.createObjectURL(image)}
                 alt="Preview"
                 className="object-contain w-full h-full"
+                onLoad={(e) => {
+                  URL.revokeObjectURL((e.target as HTMLImageElement).src);
+                }}
               />
               <button
                 className="absolute top-2 right-2 text-white bg-red-500 rounded-full w-5 h-5 flex items-center justify-center"
