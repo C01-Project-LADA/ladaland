@@ -1,6 +1,6 @@
 # Release Plan
 
-## Release Name: 0.4.0
+## Release Name: 1.1.0
 
 ## Release Objectives
 
