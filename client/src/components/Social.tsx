@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { MapPin } from 'lucide-react';
+import { MapPin, Image, X } from 'lucide-react';
 import Post from '@/components/Post';
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
@@ -16,6 +16,7 @@ import useNewPost from '@/hooks/useNewPost';
 import usePosts from '@/hooks/usePosts';
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
+import { Input } from './ui/input';
 
 const url = process.env.NEXT_PUBLIC_API_URL;
 
@@ -41,6 +42,8 @@ export default function Social() {
     setLocation,
     content,
     setContent,
+    image,
+    setImage,
     posting,
     handleSubmit,
     error: newPostError,
@@ -56,6 +59,23 @@ export default function Social() {
     hasMore,
   } = usePosts(undefined, searchQuery || '', sortBy || '');
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file && file.size > 25 * 1024 * 1024) {
+      toast.error('File size exceeds 25MB limit');
+      e.target.value = ''; // Clear the input
+    } else if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(file);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImage(null);
+    }
+  }
+  const imageButtonRef = useRef<HTMLInputElement>(null);
 
   // Set up an Intersection Observer to load more posts when the sentinel comes into view.
   useEffect(() => {
@@ -241,12 +261,51 @@ export default function Social() {
             }}
           />
 
+          {image && (
+            <div className="mt-2 mb-3 relative w-full h-64 overflow-hidden rounded-md bg-gray-100">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={URL.createObjectURL(image)}
+                alt="Preview"
+                className="object-contain w-full h-full"
+              />
+              <button
+                className="absolute top-2 right-2 text-white bg-red-500 rounded-full w-5 h-5 flex items-center justify-center"
+                onClick={() => {
+                  setImage(null);
+                }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+          )}
+
           <p className="text-xs mt-1" style={{ color: 'var(--lada-accent)' }}>
             Everyone can view and reply
           </p>
 
+          <Input
+            id="image"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            ref={imageButtonRef}
+            onChange={handleImageChange}
+            disabled={posting}
+          />
+
           <div className="mt-2 flex justify-between items-center">
             <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                elevated={false}
+                onClick={() => imageButtonRef.current?.click()}
+                disabled={posting}
+              >
+                {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                <Image className="scale-150" />
+              </Button>
               <CountrySelectDialog
                 title="Select location"
                 description="Select a country to post about"
