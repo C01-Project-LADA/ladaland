@@ -95,16 +95,20 @@ export default function Trips() {
       <h3 className="mt-10 mb-2 text-gray-500 font-bold">Past Trips</h3>
       <Separator />
       <div className="my-6 flex flex-col gap-2">
-        {trips
-          .filter((trip) => trip.completed)
-          .map((trip) => (
-            <Trip
-              key={trip.id}
-              trip={trip}
-              deleteTrip={() => deleteTrip(trip.id)}
-              toggleCompleteTrip={() => toggleCompleteTrip(trip.id)}
-            />
-          ))}
+        {loading ? (
+          <Skeleton className="h-24" />
+        ) : (
+          trips
+            .filter((trip) => trip.completed)
+            .map((trip) => (
+              <Trip
+                key={trip.id}
+                trip={trip}
+                deleteTrip={() => deleteTrip(trip.id)}
+                toggleCompleteTrip={() => toggleCompleteTrip(trip.id)}
+              />
+            ))
+        )}
       </div>
     </div>
   );

@@ -393,9 +393,19 @@ export default function NewTripForm({
                           elevated={false}
                           type="button"
                           onClick={() => {
-                            setExpenses((prev) =>
-                              prev.filter((_, i) => i !== index)
+                            const indToDel = expenses.findIndex(
+                              (e) =>
+                                e.name === exp.name &&
+                                e.type === exp.type &&
+                                e.cost === exp.cost
                             );
+                            if (indToDel !== -1) {
+                              setExpenses((prev) => {
+                                const newExpenses = [...prev];
+                                newExpenses.splice(indToDel, 1);
+                                return newExpenses;
+                              });
+                            }
                             if (exp.id) {
                               setExpIdsToDelete((prev) => [
                                 ...prev,
