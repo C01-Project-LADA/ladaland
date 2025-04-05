@@ -1,15 +1,25 @@
 'use client';
 
 import { Suspense, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import NewTripForm from '@/components/NewTripForm';
 import PageBanner from '@/components/PageBanner';
 import { toast } from 'sonner';
 import useTripForm from '@/hooks/useTripForm';
+import useTrip from '@/hooks/useTrip';
 
-function NewTripContent() {
+function ExistingTripContent() {
   const searchParams = useSearchParams();
-  const { submitting, handleSubmit, error, clearError } = useTripForm(true);
+  const { tripId } = useParams();
+  const { submitting, handleSubmit, error, clearError, deleteExpense } =
+    useTripForm();
+  const {
+    trip,
+    // loading,
+    // error: getTripError,
+    // deleteTrip,
+    // toggleCompleteTrip,
+  } = useTrip((tripId as string) || '');
 
   useEffect(() => {
     if (error) {
@@ -29,14 +39,20 @@ function NewTripContent() {
   }
 
   return (
-    <div className="pl-[20px] pt-[30px]" style={{ width: 'clamp(200px, 50vw, 500px)' }}>
+    <div
+      className="pl-[20px] pt-[30px]"
+      style={{ width: 'clamp(200px, 50vw, 500px)' }}
+    >
       <PageBanner
         title="ALL TRIPS"
-        message="Plan a new trip"
+        message="Edit your trip"
         variant="blue"
         backLink="/trips"
       />
       <NewTripForm
+        isNewTrip={false}
+        existingTrip={trip || undefined}
+        deleteExpense={deleteExpense}
         submitting={submitting}
         loadedLocation={country || ''}
         onSubmit={handleTripSubmit}
@@ -45,10 +61,10 @@ function NewTripContent() {
   );
 }
 
-export default function NewTripPage() {
+export default function ExistingTripPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <NewTripContent />
+      <ExistingTripContent />
     </Suspense>
   );
 }
