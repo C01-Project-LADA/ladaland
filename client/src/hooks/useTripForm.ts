@@ -18,7 +18,7 @@ export default function useTripForm(isNew = false) {
    */
   async function deleteExpense(expenseId: string) {
     try {
-      await axios.delete(`${url}/expenses/${expenseId}`, {
+      await axios.delete(`${url}/trips/expense/${expenseId}`, {
         withCredentials: true,
       });
     } catch (err) {

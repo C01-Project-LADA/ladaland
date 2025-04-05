@@ -11,7 +11,8 @@ import useTrip from '@/hooks/useTrip';
 function ExistingTripContent() {
   const searchParams = useSearchParams();
   const { tripId } = useParams();
-  const { submitting, handleSubmit, error, clearError } = useTripForm();
+  const { submitting, handleSubmit, error, clearError, deleteExpense } =
+    useTripForm();
   const {
     trip,
     // loading,
@@ -51,6 +52,7 @@ function ExistingTripContent() {
       <NewTripForm
         isNewTrip={false}
         existingTrip={trip || undefined}
+        deleteExpense={deleteExpense}
         submitting={submitting}
         loadedLocation={country || ''}
         onSubmit={handleTripSubmit}

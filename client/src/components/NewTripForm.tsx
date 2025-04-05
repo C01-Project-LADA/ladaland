@@ -28,6 +28,7 @@ import { Button } from '@/components/ui/button';
 import ExpenseDialog from './ExpenseDialog';
 import useUser from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 const tripDetailsSchema = z
   .object({
@@ -45,12 +46,18 @@ const tripDetailsSchema = z
     path: ['startDate'],
   });
 
+/**
+ * Trip Form component used for creating new trips and editing existing trips (contrary to its name).
+ * It uses react-hook-form for form handling and zod for validation.
+ * It also uses a custom CountrySelectDialog component for selecting countries.
+ */
 export default function NewTripForm({
   isNewTrip = true,
   existingTrip,
   submitting,
   loadedLocation,
   onSubmit,
+  deleteExpense,
 }: {
   isNewTrip?: boolean;
   existingTrip?: Trip;
@@ -61,6 +68,7 @@ export default function NewTripForm({
       expenses: (Omit<Expense, 'id'> & { id?: string })[];
     }
   ) => Promise<void>;
+  deleteExpense?: (expenseId: string) => Promise<void>;
 }) {
   const tripDetailsForm = useForm<z.infer<typeof tripDetailsSchema>>({
     resolver: zodResolver(tripDetailsSchema),
@@ -72,27 +80,13 @@ export default function NewTripForm({
     },
   });
 
-  // When existing trip is passed in, set the form values to the existing trip values
-  useEffect(() => {
-    if (existingTrip) {
-      tripDetailsForm.reset({
-        id: existingTrip.id,
-        name: existingTrip.name,
-        location: existingTrip.location,
-        startDate: existingTrip.startDate,
-        endDate: existingTrip.endDate,
-        budget: existingTrip.budget,
-        completed: existingTrip.completed,
-      });
-    }
-  }, [existingTrip, tripDetailsForm]);
-
   const router = useRouter();
   const { user } = useUser();
 
   const [expenses, setExpenses] = useState<
     (Omit<Expense, 'id'> & { id?: string })[]
   >([]);
+  const [expIdsToDelete, setExpIdsToDelete] = useState<string[]>([]);
 
   function handleExpenseSubmit(expense: Omit<Expense, 'id'>) {
     setExpenses((prevExpenses) => [...prevExpenses, expense]);
@@ -100,10 +94,10 @@ export default function NewTripForm({
 
   async function handleTripSubmit(values: z.infer<typeof tripDetailsSchema>) {
     if (user) {
-      console.log(values);
-      onSubmit({ ...values, expenses, userId: user.id }).then(() =>
-        router.push('/trips')
-      );
+      await Promise.all(expIdsToDelete.map((id) => deleteExpense?.(id)));
+      onSubmit({ ...values, expenses, userId: user.id })
+        .then(() => router.push('/trips'))
+        .catch((err) => toast.error(err.message));
     }
   }
 
@@ -125,6 +119,22 @@ export default function NewTripForm({
   const remainingBudget =
     tripDetailsForm.watch('budget') -
     expenses.reduce((acc, exp) => acc + exp.cost, 0);
+
+  // When existing trip is passed in, set the form values to the existing trip values
+  useEffect(() => {
+    if (existingTrip) {
+      tripDetailsForm.reset({
+        id: existingTrip.id,
+        name: existingTrip.name,
+        location: existingTrip.location,
+        startDate: existingTrip.startDate,
+        endDate: existingTrip.endDate,
+        budget: existingTrip.budget,
+        completed: existingTrip.completed,
+      });
+      setExpenses(existingTrip.expenses || []);
+    }
+  }, [existingTrip, tripDetailsForm]);
 
   return (
     <Form {...tripDetailsForm}>
@@ -333,7 +343,23 @@ export default function NewTripForm({
                         <p className="font-semibold text-md">
                           $ <span className="text-sm">{exp.cost}</span>
                         </p>
-                        <Button variant="ghost" size="icon" elevated={false}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          elevated={false}
+                          type="button"
+                          onClick={() => {
+                            setExpenses((prev) =>
+                              prev.filter((_, i) => i !== index)
+                            );
+                            if (exp.id) {
+                              setExpIdsToDelete((prev) => [
+                                ...prev,
+                                exp.id as string,
+                              ]);
+                            }
+                          }}
+                        >
                           <X />
                         </Button>
                       </div>
