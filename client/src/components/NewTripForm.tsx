@@ -28,6 +28,10 @@ import { Button } from '@/components/ui/button';
 import ExpenseDialog from './ExpenseDialog';
 import useUser from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
+import ct from 'i18n-iso-countries';
+import en from 'i18n-iso-countries/langs/en.json';
+
+ct.registerLocale(en);
 
 const tripDetailsSchema = z
   .object({
@@ -140,7 +144,9 @@ export default function NewTripForm({
           dialogTrigger={
             <button className="flex flex-col items-start w-full mt-2">
               <div className="px-3 py-2 border border-input rounded-md w-full text-left flex justify-between items-center">
-                {location ? location : 'Click to select a location'}
+                {location
+                  ? ct.getName(location, 'en')
+                  : 'Click to select a location'}
                 <MapPin />
               </div>
             </button>

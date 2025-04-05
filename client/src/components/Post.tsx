@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { formatNumberToKorM, formatLastUpdatedDate } from '@/lib/utils';
 import { useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, animate } from 'motion/react';
 import {
   Popover,
@@ -37,6 +38,8 @@ export default function Post({
   likePost: () => void;
   dislikePost: () => void;
 }) {
+  const router = useRouter();
+
   const likeRef = useRef<HTMLDivElement>(null);
 
   const [liked, setLiked] = useState(post.userVote === 'LIKE');
@@ -140,7 +143,12 @@ export default function Post({
                 </li>
               )}
               <li>
-                <button className="hover:bg-[#e9e9e9] duration-150 w-full flex items-center py-3 px-4 gap-3 font-bold text-gray-500 leading-none text-left">
+                <button
+                  className="hover:bg-[#e9e9e9] duration-150 w-full flex items-center py-3 px-4 gap-3 font-bold text-gray-500 leading-none text-left"
+                  onClick={() =>
+                    router.push(`/trips/new?country=${post.country}`)
+                  }
+                >
                   <Plane />
                   Plan a trip here
                 </button>
