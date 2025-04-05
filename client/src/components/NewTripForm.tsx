@@ -13,7 +13,14 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { CalendarIcon, MapPin, DollarSign, Plus, X } from 'lucide-react';
+import {
+  CalendarIcon,
+  MapPin,
+  DollarSign,
+  Plus,
+  X,
+  Rocket,
+} from 'lucide-react';
 import { format } from 'date-fns';
 import { Input } from '@/components/ui/input';
 import CountrySelectDialog from '@/components/CountrySelectDialog';
@@ -23,14 +30,21 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import SectionHeading from './SectionHeading';
+import SectionHeading from '@/components/SectionHeading';
 import { Button } from '@/components/ui/button';
-import ExpenseDialog from './ExpenseDialog';
+import ExpenseDialog from '@/components/ExpenseDialog';
 import useUser from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import SuggestionDialog from '@/components/SuggestionDialog';
+import ct from 'i18n-iso-countries';
+import en from 'i18n-iso-countries/langs/en.json';
+
+ct.registerLocale(en);
 
 const tripDetailsSchema = z
   .object({
+    id: z.string().optional(),
     name: z.string().nonempty(),
     location: z.string().nonempty({ message: 'Location is required' }),
     startDate: z.date(),
@@ -44,11 +58,21 @@ const tripDetailsSchema = z
     path: ['startDate'],
   });
 
+/**
+ * Trip Form component used for creating new trips and editing existing trips (contrary to its name).
+ * It uses react-hook-form for form handling and zod for validation.
+ * It also uses a custom CountrySelectDialog component for selecting countries.
+ */
 export default function NewTripForm({
+  isNewTrip = true,
+  existingTrip,
   submitting,
   loadedLocation,
   onSubmit,
+  deleteExpense,
 }: {
+  isNewTrip?: boolean;
+  existingTrip?: Trip;
   submitting: boolean;
   loadedLocation: string;
   onSubmit: (
@@ -56,6 +80,7 @@ export default function NewTripForm({
       expenses: (Omit<Expense, 'id'> & { id?: string })[];
     }
   ) => Promise<void>;
+  deleteExpense?: (expenseId: string) => Promise<void>;
 }) {
   const tripDetailsForm = useForm<z.infer<typeof tripDetailsSchema>>({
     resolver: zodResolver(tripDetailsSchema),
@@ -73,6 +98,7 @@ export default function NewTripForm({
   const [expenses, setExpenses] = useState<
     (Omit<Expense, 'id'> & { id?: string })[]
   >([]);
+  const [expIdsToDelete, setExpIdsToDelete] = useState<string[]>([]);
 
   function handleExpenseSubmit(expense: Omit<Expense, 'id'>) {
     setExpenses((prevExpenses) => [...prevExpenses, expense]);
@@ -80,10 +106,10 @@ export default function NewTripForm({
 
   async function handleTripSubmit(values: z.infer<typeof tripDetailsSchema>) {
     if (user) {
-      console.log(values);
-      onSubmit({ ...values, expenses, userId: user.id }).then(() =>
-        router.push('/trips')
-      );
+      await Promise.all(expIdsToDelete.map((id) => deleteExpense?.(id)));
+      onSubmit({ ...values, expenses, userId: user.id })
+        .then(() => router.push('/trips'))
+        .catch((err) => toast.error(err.message));
     }
   }
 
@@ -105,6 +131,22 @@ export default function NewTripForm({
   const remainingBudget =
     tripDetailsForm.watch('budget') -
     expenses.reduce((acc, exp) => acc + exp.cost, 0);
+
+  // When existing trip is passed in, set the form values to the existing trip values
+  useEffect(() => {
+    if (existingTrip) {
+      tripDetailsForm.reset({
+        id: existingTrip.id,
+        name: existingTrip.name,
+        location: existingTrip.location,
+        startDate: existingTrip.startDate,
+        endDate: existingTrip.endDate,
+        budget: existingTrip.budget,
+        completed: existingTrip.completed,
+      });
+      setExpenses(existingTrip.expenses || []);
+    }
+  }, [existingTrip, tripDetailsForm]);
 
   return (
     <Form {...tripDetailsForm}>
@@ -269,7 +311,7 @@ export default function NewTripForm({
           )}
         />
 
-        <div className="mt-6">
+        <div className="mt-6 flex justify-between items-center gap-3 flex-wrap">
           <ExpenseDialog
             title="Add an expense"
             description="Add an expense to your trip. This could be anything from a flight to a meal to a hotel stay."
@@ -281,6 +323,36 @@ export default function NewTripForm({
             }
             onSubmit={handleExpenseSubmit}
           />
+
+          {tripDetailsForm.watch('budget') > 0 && (
+            <SuggestionDialog
+              title={`Our curated budget-friendly destinations in ${ct.getName(
+                location,
+                'en'
+              )}!`}
+              description="Let AI (courtesy of OpenAI) suggest budget-friendly destinations in your selected country."
+              dialogTrigger={
+                <Button
+                  type="button"
+                  variant="ghost"
+                  style={{
+                    color: 'var(--lada-accent)',
+                    fontWeight: 'bold',
+                    border: '1px solid var(--lada-accent)',
+                  }}
+                >
+                  <Rocket />
+                  AI SUGGESTIONS
+                </Button>
+              }
+              budget={tripDetailsForm.getValues('budget')}
+              country={location}
+              onSubmit={(expenses) => {
+                setExpenses((prev) => [...prev, ...expenses]);
+                toast.success('Added suggestions to your trip!');
+              }}
+            />
+          )}
         </div>
 
         <div className="mt-8" />
@@ -313,7 +385,23 @@ export default function NewTripForm({
                         <p className="font-semibold text-md">
                           $ <span className="text-sm">{exp.cost}</span>
                         </p>
-                        <Button variant="ghost" size="icon" elevated={false}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          elevated={false}
+                          type="button"
+                          onClick={() => {
+                            setExpenses((prev) =>
+                              prev.filter((_, i) => i !== index)
+                            );
+                            if (exp.id) {
+                              setExpIdsToDelete((prev) => [
+                                ...prev,
+                                exp.id as string,
+                              ]);
+                            }
+                          }}
+                        >
                           <X />
                         </Button>
                       </div>
@@ -332,7 +420,7 @@ export default function NewTripForm({
             <span className="font-light text-sm"> remaining</span>
           </p>
           <Button variant="accent" disabled={submitting}>
-            PLAN TRIP
+            {isNewTrip ? 'PLAN TRIP' : 'UPDATE TRIP'}
           </Button>
         </div>
       </form>

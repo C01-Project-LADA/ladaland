@@ -77,7 +77,7 @@ export default function Trips() {
         {loading ? (
           <Skeleton className="h-24" />
         ) : trips.length === 0 ? (
-          <p>No trips found. Start planning!</p>
+          <p className="text-gray-500">No trips found. Start planning!</p>
         ) : (
           trips
             .filter((trip) => !trip.completed)
