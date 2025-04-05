@@ -22,12 +22,14 @@ import tripRoute from './routes/trips';
 
 dotenv.config();
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const app = express();
 const prisma = new PrismaClient();
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: isProduction ? process.env.FRONTEND_URL : 'http://localhost:3000',
     credentials: true,
   })
 );
@@ -43,9 +45,9 @@ app.use(
     saveUninitialized: false,
     cookie: {
       maxAge: 1000 * 60 * 60,
-      domain: '.ladaland.com',
-      secure: true,
-      sameSite: 'none',
+      domain: isProduction ? '.ladaland.com' : undefined,
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
     },
   })
 );

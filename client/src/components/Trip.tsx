@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { MapPin, EllipsisVertical, Pencil, Trash, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -22,6 +24,8 @@ export default function Trip({
   deleteTrip: () => void;
   toggleCompleteTrip: () => void;
 }) {
+  const router = useRouter();
+
   return (
     <div className="border border-gray-400 px-4 py-3 rounded-md flex gap-2">
       <div className="flex-[2]">
@@ -98,6 +102,7 @@ export default function Trip({
             size="sm"
             variant="outline"
             style={{ color: 'var(--lada-primary)' }}
+            onClick={() => router.push(`/trips/${trip.id}`)}
           >
             EDIT TRIP
           </Button>

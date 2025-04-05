@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { formatNumberToKorM, formatLastUpdatedDate } from '@/lib/utils';
 import { useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, animate } from 'motion/react';
 import {
   Popover,
@@ -37,6 +38,8 @@ export default function Post({
   likePost: () => void;
   dislikePost: () => void;
 }) {
+  const router = useRouter();
+
   const likeRef = useRef<HTMLDivElement>(null);
 
   const [liked, setLiked] = useState(post.userVote === 'LIKE');
@@ -74,14 +77,14 @@ export default function Post({
     originallyLiked && !liked
       ? post.likes - 1
       : !originallyLiked && liked
-        ? post.likes + 1
-        : post.likes;
+      ? post.likes + 1
+      : post.likes;
   const dislikes =
     originallyDisliked && !disliked
       ? post.dislikes - 1
       : !originallyDisliked && disliked
-        ? post.dislikes + 1
-        : post.dislikes;
+      ? post.dislikes + 1
+      : post.dislikes;
 
   return (
     <div className="p-[20px] pb-[10px] pl-6 bg-white rounded-md">
@@ -140,7 +143,12 @@ export default function Post({
                 </li>
               )}
               <li>
-                <button className="hover:bg-[#e9e9e9] duration-150 w-full flex items-center py-3 px-4 gap-3 font-bold text-gray-500 leading-none text-left">
+                <button
+                  className="hover:bg-[#e9e9e9] duration-150 w-full flex items-center py-3 px-4 gap-3 font-bold text-gray-500 leading-none text-left"
+                  onClick={() =>
+                    router.push(`/trips/new?country=${post.country}`)
+                  }
+                >
                   <Plane />
                   Plan a trip here
                 </button>
@@ -151,6 +159,17 @@ export default function Post({
       </div>
 
       <p className="mt-2 break-words">{post.content}</p>
+
+      {post.imageUrl && (
+        <div className="mt-5 mb-3 w-full h-64 overflow-hidden rounded-md bg-gray-100">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={post.imageUrl}
+            alt={`Post image by ${post.username}`}
+            className="object-contain w-full h-full"
+          />
+        </div>
+      )}
 
       <div className="mt-2 flex gap-8 -ml-3">
         <Button
