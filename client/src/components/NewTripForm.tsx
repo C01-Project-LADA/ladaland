@@ -182,7 +182,9 @@ export default function NewTripForm({
           dialogTrigger={
             <button className="flex flex-col items-start w-full mt-2">
               <div className="px-3 py-2 border border-input rounded-md w-full text-left flex justify-between items-center">
-                {location ? location : 'Click to select a location'}
+                {location
+                  ? ct.getName(location, 'en')
+                  : 'Click to select a location'}
                 <MapPin />
               </div>
             </button>
@@ -391,9 +393,19 @@ export default function NewTripForm({
                           elevated={false}
                           type="button"
                           onClick={() => {
-                            setExpenses((prev) =>
-                              prev.filter((_, i) => i !== index)
+                            const indToDel = expenses.findIndex(
+                              (e) =>
+                                e.name === exp.name &&
+                                e.type === exp.type &&
+                                e.cost === exp.cost
                             );
+                            if (indToDel !== -1) {
+                              setExpenses((prev) => {
+                                const newExpenses = [...prev];
+                                newExpenses.splice(indToDel, 1);
+                                return newExpenses;
+                              });
+                            }
                             if (exp.id) {
                               setExpIdsToDelete((prev) => [
                                 ...prev,

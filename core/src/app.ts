@@ -19,7 +19,6 @@ import logoutRoute from './routes/user/logout';
 import commentVotesRoute from './routes/comment-votes';
 import leaderboardRoute from './routes/leaderboard';
 import tripRoute from './routes/trips';
-import uploadRoute from '@routes/upload';
 
 dotenv.config();
 
@@ -67,6 +66,5 @@ app.use('/api', logoutRoute);
 app.use('/api/comment-votes', commentVotesRoute);
 app.use('/api', leaderboardRoute);
 app.use('/api/trips', tripRoute);
-app.use('/api/upload', uploadRoute);
 
 export default app;

@@ -13,6 +13,10 @@ export default function useNewPost() {
    */
   const [content, setContent] = useState<string>('');
   /**
+   * Image of the new post
+   */
+  const [image, setImage] = useState<File | null>(null);
+  /**
    * Whether the post is currently being processed & submitted
    */
   const [posting, setPosting] = useState(false);
@@ -38,14 +42,23 @@ export default function useNewPost() {
     setError(null);
 
     try {
-      await axios.post(
-        `${url}/posts`,
-        { country: location.code, content },
-        { withCredentials: true }
-      );
+      const formData = new FormData();
+      formData.append('country', location.code);
+      formData.append('content', content);
+      if (image) {
+        formData.append('image', image);
+      }
+
+      await axios.post(`${url}/posts`, formData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
       setContent('');
       setLocation(null);
+      setImage(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create post');
     } finally {
@@ -65,6 +78,8 @@ export default function useNewPost() {
     setLocation,
     content,
     setContent,
+    image,
+    setImage,
     posting,
     handleSubmit,
     error,

@@ -1,12 +1,26 @@
 import { Router, Request, Response } from 'express';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { body, param, query } from 'express-validator';
+import multer from 'multer';
+import { Storage } from '@google-cloud/storage';
 
 const router = Router();
 const prisma = new PrismaClient();
 
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB limit
+});
+
+const storageClient = new Storage({
+  projectId: process.env.GCLOUD_PROJECT_ID,
+  keyFilename: process.env.GCLOUD_KEYFILE,
+});
+const bucket = storageClient.bucket(process.env.GCLOUD_STORAGE_BUCKET!);
+
 router.post(
   '/',
+  upload.single('image'),
   [
     body('country')
       .notEmpty()
@@ -26,12 +40,49 @@ router.post(
     }
 
     const userId = req.session.user.id;
-    const { country, content, images, tags } = req.body;
+    const { country, content, tags } = req.body;
+    let imageUrl: string | undefined = undefined;
+
+    if (req.file) {
+      const fileData = req.file;
+      const filename = `${Date.now()}-${req.file.originalname}`;
+      const file = bucket.file(filename);
+
+      try {
+        await new Promise<void>((resolve, reject) => {
+          const stream = file.createWriteStream({
+            resumable: false,
+            metadata: { contentType: req.file!.mimetype },
+          });
+
+          stream.on('error', (err) => {
+            console.error('Error uploading file:', err);
+            reject(err);
+          });
+
+          stream.on('finish', () => {
+            imageUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`;
+            resolve();
+          });
+
+          stream.end(fileData.buffer);
+        });
+      } catch (error) {
+        res.status(500).json({ error: 'Error uploading file.' });
+        return;
+      }
+    }
 
     try {
       const [post] = await prisma.$transaction([
         prisma.post.create({
-          data: { userId, country, content, images, tags: tags || [] },
+          data: {
+            userId,
+            country,
+            content,
+            imageUrl,
+            tags: tags || [],
+          },
         }),
         prisma.user.update({
           where: { id: userId },
@@ -44,6 +95,7 @@ router.post(
         pointsAwarded: 20,
       });
     } catch (error) {
+      console.error('Error creating post:', error);
       res.status(500).json({ message: 'Something went wrong.' });
     }
   }
@@ -154,7 +206,7 @@ router.get(
           userId: post.userId,
           country: post.country,
           content: post.content,
-          images: post.images,
+          imageUrl: post.imageUrl,
           tags: post.tags,
           createdAt: new Date(post.createdAt),
           updatedAt: new Date(post.updatedAt),
@@ -213,7 +265,7 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
       userId: post.userId,
       country: post.country,
       content: post.content,
-      images: post.images,
+      imageUrl: post.imageUrl,
       tags: post.tags,
       createdAt: new Date(post.createdAt),
       updatedAt: new Date(post.updatedAt),
