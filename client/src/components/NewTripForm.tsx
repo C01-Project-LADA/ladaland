@@ -13,7 +13,14 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { CalendarIcon, MapPin, DollarSign, Plus, X } from 'lucide-react';
+import {
+  CalendarIcon,
+  MapPin,
+  DollarSign,
+  Plus,
+  X,
+  Rocket,
+} from 'lucide-react';
 import { format } from 'date-fns';
 import { Input } from '@/components/ui/input';
 import CountrySelectDialog from '@/components/CountrySelectDialog';
@@ -23,12 +30,17 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import SectionHeading from './SectionHeading';
+import SectionHeading from '@/components/SectionHeading';
 import { Button } from '@/components/ui/button';
-import ExpenseDialog from './ExpenseDialog';
+import ExpenseDialog from '@/components/ExpenseDialog';
 import useUser from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import SuggestionDialog from '@/components/SuggestionDialog';
+import ct from 'i18n-iso-countries';
+import en from 'i18n-iso-countries/langs/en.json';
+
+ct.registerLocale(en);
 
 const tripDetailsSchema = z
   .object({
@@ -299,7 +311,7 @@ export default function NewTripForm({
           )}
         />
 
-        <div className="mt-6">
+        <div className="mt-6 flex justify-between items-center gap-3 flex-wrap">
           <ExpenseDialog
             title="Add an expense"
             description="Add an expense to your trip. This could be anything from a flight to a meal to a hotel stay."
@@ -311,6 +323,36 @@ export default function NewTripForm({
             }
             onSubmit={handleExpenseSubmit}
           />
+
+          {tripDetailsForm.watch('budget') > 0 && (
+            <SuggestionDialog
+              title={`Our curated budget-friendly destinations in ${ct.getName(
+                location,
+                'en'
+              )}!`}
+              description="Let AI (courtesy of OpenAI) suggest budget-friendly destinations in your selected country."
+              dialogTrigger={
+                <Button
+                  type="button"
+                  variant="ghost"
+                  style={{
+                    color: 'var(--lada-accent)',
+                    fontWeight: 'bold',
+                    border: '1px solid var(--lada-accent)',
+                  }}
+                >
+                  <Rocket />
+                  AI SUGGESTIONS
+                </Button>
+              }
+              budget={tripDetailsForm.getValues('budget')}
+              country={location}
+              onSubmit={(expenses) => {
+                setExpenses((prev) => [...prev, ...expenses]);
+                toast.success('Added suggestions to your trip!');
+              }}
+            />
+          )}
         </div>
 
         <div className="mt-8" />
